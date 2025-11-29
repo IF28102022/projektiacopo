@@ -12,11 +12,11 @@
 
         map = L.map("map", {
             center: [48, 8],
-            zoom: 5
+            zoom: 5,
         });
 
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-            attribution: "© OpenStreetMap contributors"
+            attribution: "© OpenStreetMap contributors",
         }).addTo(map);
 
         // 👉 Klick-Handler: immer nur EIN Marker
@@ -31,10 +31,13 @@
             // neuen Marker setzen und merken
             currentMarker = L.marker([lat, lng])
                 .addTo(map)
-                .bindPopup(`Spot gesetzt<br>${lat.toFixed(4)}, ${lng.toFixed(4)}`)
+                .bindPopup(
+                    `Spot gesetzt<br>${lat.toFixed(4)}, ${lng.toFixed(4)}`,
+                )
                 .openPopup();
         });
     });
+    // ciao
 </script>
 
 <div id="map"></div>
