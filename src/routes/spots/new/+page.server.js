@@ -5,22 +5,27 @@ export const actions = {
     default: async ({ request }) => {
         const form = await request.formData();
 
-        const spot = {
-            name: String(form.get("name") || "").trim(),
-            region: String(form.get("region") || "").trim(),
-            imageUrl: String(form.get("imageUrl") || "").trim(),
-            description: String(form.get("description") || "").trim(),
-            lat: Number(form.get("lat")),
-            lng: Number(form.get("lng")),
-            createdAt: new Date()
-        };
+        const name = String(form.get("name") || "").trim();
+        const region = String(form.get("region") || "").trim();
+        const description = String(form.get("description") || "").trim();
+        const imageData = String(form.get("imageData") || "").trim();
+        const lat = Number(form.get("lat"));
+        const lng = Number(form.get("lng"));
 
-        if (!spot.name || Number.isNaN(spot.lat) || Number.isNaN(spot.lng)) {
+        if (!name || Number.isNaN(lat) || Number.isNaN(lng)) {
             return { error: "Name, Lat und Lng sind Pflichtfelder." };
         }
 
         const db = await getDb();
-        await db.collection("spots").insertOne(spot);
+        await db.collection("spots").insertOne({
+            name,
+            region,
+            description,
+            imageData,   // hier das Base64-Bild
+            lat,
+            lng,
+            createdAt: new Date()
+        });
 
         throw redirect(303, "/spots");
     }
