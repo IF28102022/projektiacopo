@@ -1,5 +1,6 @@
-<script lang="ts">
-    export let data: { spots: any[] };
+<script>
+    // einfach JS, kein TS:
+    export let data;
 </script>
 
 <main class="page">
@@ -20,8 +21,29 @@
             <ul class="list">
                 {#each data.spots as spot}
                     <li class="item">
-                        <strong>{spot.name}</strong> – {spot.region}<br />
-                        ({spot.lat}, {spot.lng})
+                        <div class="item-main">
+                            <div>
+                                <strong>{spot.name}</strong> – {spot.region}<br
+                                />
+                                ({spot.lat}, {spot.lng})
+                            </div>
+
+                            <!-- Lösch-Button -->
+                            <form
+                                method="POST"
+                                action="?/delete"
+                                class="delete-form"
+                            >
+                                <input
+                                    type="hidden"
+                                    name="id"
+                                    value={spot.id}
+                                />
+                                <button type="submit" class="delete-btn">
+                                    Löschen
+                                </button>
+                            </form>
+                        </div>
                     </li>
                 {/each}
             </ul>
@@ -80,5 +102,31 @@
     }
     .item {
         font-size: 0.95rem;
+    }
+
+    .item-main {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .delete-form {
+        margin: 0;
+    }
+
+    .delete-btn {
+        background: #dc2626;
+        color: #fff;
+        border: none;
+        padding: 0.35rem 0.75rem;
+        border-radius: 0.5rem;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: background 0.15s ease;
+    }
+
+    .delete-btn:hover {
+        background: #ef4444;
     }
 </style>

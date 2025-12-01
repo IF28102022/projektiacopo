@@ -11,7 +11,6 @@ if (!uri) {
 
 const client = new MongoClient(uri);
 
-// Verbindung zwischenspeichern, damit bei Hot-Reload nicht ständig neu verbunden wird
 let clientPromise;
 
 if (!globalThis.__mongoClientPromise) {
