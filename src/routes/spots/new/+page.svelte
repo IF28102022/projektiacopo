@@ -82,119 +82,176 @@
 
 <main class="page">
     <section class="section">
-        <h1>Neuer Spot</h1>
-        <p class="subtitle">
-            Klicke auf die Karte und gib die Spotdetails ein.
-        </p>
+        <div class="container">
+            <h1>Neuer Spot</h1>
+            <p class="subtitle">
+                Klicke auf die Karte und gib die Spotdetails ein. Hell, klar,
+                modern.
+            </p>
 
-        <div class="layout">
-            <form method="POST" class="form">
-                <label>
-                    Name *
-                    <input name="name" required bind:value={name} />
-                </label>
+            <div class="layout">
+                <form method="POST" class="form">
+                    <label>
+                        Name *
+                        <input
+                            name="name"
+                            required
+                            bind:value={name}
+                            placeholder="Ankerplatz oder Marina"
+                        />
+                    </label>
 
-                <label>
-                    Region
-                    <input name="region" bind:value={region} />
-                </label>
+                    <label>
+                        Region
+                        <input
+                            name="region"
+                            bind:value={region}
+                            placeholder="z. B. Südliche Adria"
+                        />
+                    </label>
 
-                <label>
-                    Beschreibung
-                    <textarea
-                        name="description"
-                        rows="4"
-                        bind:value={description}
-                    ></textarea>
-                </label>
+                    <label>
+                        Beschreibung
+                        <textarea
+                            name="description"
+                            rows="4"
+                            bind:value={description}
+                            placeholder="Besonderheiten, Windschutz, Restaurants ..."
+                        ></textarea>
+                    </label>
 
-                <!-- Hidden Feld für das Base64-Bild -->
-                <input type="hidden" name="imageData" value={imageData} />
+                    <!-- Hidden Feld für das Base64-Bild -->
+                    <input type="hidden" name="imageData" value={imageData} />
 
-                <div
-                    class="dropzone {dragActive ? 'drop-active' : ''}"
-                    on:dragover={onDragOver}
-                    on:dragenter={onDragOver}
-                    on:dragleave={onDragLeave}
-                    on:drop={onDrop}
-                >
-                    <input
-                        class="file-input"
-                        type="file"
-                        accept="image/*"
-                        on:change={onFileInputChange}
-                    />
+                    <div
+                        class="dropzone {dragActive ? 'drop-active' : ''}"
+                        on:dragover={onDragOver}
+                        on:dragenter={onDragOver}
+                        on:dragleave={onDragLeave}
+                        on:drop={onDrop}
+                    >
+                        <input
+                            class="file-input"
+                            type="file"
+                            accept="image/*"
+                            on:change={onFileInputChange}
+                        />
 
-                    {#if imageData}
-                        <div class="preview">
-                            <img src={imageData} alt="Preview" />
-                            <p class="file-name">{imageName}</p>
+                        {#if imageData}
+                            <div class="preview">
+                                <img src={imageData} alt="Preview" />
+                                <p class="file-name">{imageName}</p>
+                            </div>
+                        {:else}
+                            <p class="drop-text">
+                                Bild hierher ziehen oder klicken, um ein Bild
+                                auszuwählen.
+                            </p>
+                        {/if}
+                    </div>
+
+                    <div class="coords">
+                        <label>
+                            Latitude *
+                            <input
+                                name="lat"
+                                readonly
+                                required
+                                value={lat ?? ""}
+                                placeholder="Karte klicken"
+                            />
+                        </label>
+
+                        <label>
+                            Longitude *
+                            <input
+                                name="lng"
+                                readonly
+                                required
+                                value={lng ?? ""}
+                                placeholder="Karte klicken"
+                            />
+                        </label>
+                    </div>
+
+                    <button
+                        class="btn-primary"
+                        type="submit"
+                        disabled={lat === null}
+                    >
+                        Spot speichern
+                    </button>
+                </form>
+
+                <div class="map-wrapper">
+                    <div class="map-head">
+                        <div class="row">
+                            <span class="dot accent"></span>
+                            <p>Position setzen</p>
                         </div>
-                    {:else}
-                        <p class="drop-text">
-                            Bild hierher ziehen oder klicken, um ein Bild
-                            auszuwählen.
-                        </p>
-                    {/if}
+                        <p class="hint">Karte klicken, Marker wird platziert</p>
+                    </div>
+                    <div id="select-map"></div>
                 </div>
-
-                <div class="coords">
-                    <label>
-                        Latitude *
-                        <input name="lat" readonly required value={lat ?? ""} />
-                    </label>
-
-                    <label>
-                        Longitude *
-                        <input name="lng" readonly required value={lng ?? ""} />
-                    </label>
-                </div>
-
-                <button
-                    class="btn-primary"
-                    type="submit"
-                    disabled={lat === null}
-                >
-                    Spot speichern
-                </button>
-            </form>
-
-            <div class="map-wrapper">
-                <div id="select-map"></div>
-                <p class="map-hint">
-                    Auf die Karte klicken, um die Position zu setzen.
-                </p>
             </div>
         </div>
     </section>
 </main>
 
 <style>
+    @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap");
+
+    :global(:root) {
+        --bg: #f7f4ec;
+        --card: #ffffff;
+        --text: #0f172a;
+        --muted: #5f6b7a;
+        --border: #e5e7eb;
+        --accent: #0f6fb8;
+        --accent-soft: #e6f0fa;
+        --shadow: 0 18px 60px rgba(15, 81, 146, 0.08);
+    }
+
+    :global(*),
+    :global(*::before),
+    :global(*::after) {
+        box-sizing: border-box;
+    }
+
+    :global(body) {
+        margin: 0;
+        font-family: "Manrope", "Inter", system-ui, sans-serif;
+        background: radial-gradient(circle at 20% 20%, #f2f2ff 0%, #f7f4ec 50%)
+                no-repeat,
+            var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+    }
+
     .page {
         min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        padding: 2rem;
+    }
+
+    .container {
+        width: min(1180px, 100%);
+        margin: 0 auto;
+        padding: 0 1.5rem;
     }
 
     .section {
-        width: 100%;
-        max-width: 1100px;
-        background: rgba(15, 23, 42, 0.9);
-        border-radius: 1.2rem;
-        border: 1px solid rgba(55, 65, 81, 0.8);
-        padding: 2rem;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        padding: 2.8rem 0 3.2rem;
     }
 
     h1 {
         margin: 0;
-        font-size: 1.6rem;
+        font-size: 2rem;
+        letter-spacing: -0.01em;
     }
 
     .subtitle {
-        color: #94a3b8;
-        font-size: 0.9rem;
+        color: var(--muted);
+        font-size: 1rem;
         margin-bottom: 1.5rem;
     }
 
@@ -202,6 +259,11 @@
         display: grid;
         grid-template-columns: 1fr 1.2fr;
         gap: 2rem;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 1.2rem;
+        box-shadow: var(--shadow);
+        padding: 1.5rem;
     }
 
     @media (max-width: 900px) {
@@ -221,15 +283,18 @@
         flex-direction: column;
         gap: 0.3rem;
         font-size: 0.9rem;
+        color: var(--muted);
     }
 
     input,
     textarea {
-        background: #020617;
-        border: 1px solid #374151;
+        background: #fff;
+        border: 1px solid var(--border);
         border-radius: 0.5rem;
         padding: 0.6rem;
-        color: #e5e7eb;
+        color: var(--text);
+        font-size: 1rem;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
 
     textarea {
@@ -243,21 +308,23 @@
     }
 
     .coords input {
-        color: #9ca3af;
+        color: var(--muted);
     }
 
     .btn-primary {
-        background: #0ea5e9;
-        color: #0b1120;
+        background: var(--accent);
+        color: #f8fbff;
         padding: 0.7rem 1.3rem;
         border-radius: 999px;
-        font-weight: 600;
-        border: none;
-        box-shadow: 0 10px 25px rgba(14, 165, 233, 0.4);
+        font-weight: 700;
+        border: 1px solid transparent;
+        box-shadow: 0 14px 45px rgba(15, 111, 184, 0.24);
+        cursor: pointer;
     }
 
     .btn-primary:hover {
-        background: #38bdf8;
+        background: #0c5c99;
+        transform: translateY(-1px);
     }
 
     .btn-primary:disabled {
@@ -268,9 +335,10 @@
 
     .map-wrapper {
         border-radius: 1rem;
-        border: 1px solid #374151;
-        background: #020617;
+        border: 1px solid var(--border);
+        background: #fff;
         overflow: hidden;
+        box-shadow: var(--shadow);
     }
 
     #select-map {
@@ -278,30 +346,65 @@
         height: 340px;
     }
 
+    .map-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.85rem 1rem;
+        border-bottom: 1px solid var(--border);
+        background: #fafbfd;
+        color: var(--text);
+    }
+
+    .row {
+        display: flex;
+        gap: 0.6rem;
+        align-items: center;
+    }
+
+    .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--muted);
+    }
+
+    .dot.accent {
+        background: var(--accent);
+        box-shadow: 0 0 0 8px var(--accent-soft);
+    }
+
+    .hint {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.9rem;
+    }
+
     .map-hint {
         font-size: 0.8rem;
-        color: #94a3b8;
+        color: var(--muted);
         padding: 0.5rem 0.8rem;
-        border-top: 1px solid #374151;
+        border-top: 1px solid var(--border);
     }
 
     .dropzone {
         margin-top: 0.5rem;
         border-radius: 0.75rem;
-        border: 1.5px dashed #4b5563;
+        border: 1.5px dashed var(--border);
         padding: 0.9rem;
         display: flex;
         align-items: center;
         justify-content: center;
         text-align: center;
-        background: rgba(15, 23, 42, 0.7);
+        background: #fafbfd;
         position: relative;
         overflow: hidden;
+        transition: border-color 0.12s ease, background 0.12s ease;
     }
 
     .dropzone.drop-active {
-        border-color: #0ea5e9;
-        background: rgba(15, 23, 42, 0.9);
+        border-color: var(--accent);
+        background: #eef4fb;
     }
 
     .file-input {
@@ -312,7 +415,7 @@
     }
 
     .drop-text {
-        color: #9ca3af;
+        color: var(--muted);
         font-size: 0.85rem;
     }
 
@@ -332,6 +435,6 @@
 
     .file-name {
         font-size: 0.8rem;
-        color: #e5e7eb;
+        color: var(--muted);
     }
 </style>
