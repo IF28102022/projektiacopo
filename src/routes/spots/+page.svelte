@@ -1,6 +1,11 @@
 <script>
+    import Header from "$lib/components/Header.svelte";
+    import Footer from "$lib/components/Footer.svelte";
+
     export let data;
 </script>
+
+<Header />
 
 <main class="page">
     <section class="section">
@@ -72,6 +77,8 @@
         </div>
     </section>
 </main>
+
+<Footer />
 
 <style>
     @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap");
