@@ -1,8 +1,8 @@
 <script>
     import { onMount } from "svelte";
     import { browser } from "$app/environment";
-    import Header from "$lib/components/Header.svelte";
-    import Footer from "$lib/components/Footer.svelte";
+    import Header from "$lib/components/header.svelte";
+    import Footer from "$lib/components/footer.svelte";
 
     let map;
     let currentMarker = null;

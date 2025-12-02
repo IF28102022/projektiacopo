@@ -1,8 +1,8 @@
 <script>
     import { onMount } from "svelte";
     import { browser } from "$app/environment";
-    import Header from "$lib/components/Header.svelte";
-    import Footer from "$lib/components/Footer.svelte";
+    import Header from "$lib/components/header.svelte";
+    import Footer from "$lib/components/footer.svelte";
 
     let name = "";
     let region = "";
@@ -133,6 +133,9 @@
                         on:dragenter={onDragOver}
                         on:dragleave={onDragLeave}
                         on:drop={onDrop}
+                        role="button"
+                        tabindex="0"
+                        aria-label="Bild hochladen durch Ziehen oder Klicken"
                     >
                         <input
                             class="file-input"
@@ -384,13 +387,6 @@
         margin: 0;
         color: var(--muted);
         font-size: 0.9rem;
-    }
-
-    .map-hint {
-        font-size: 0.8rem;
-        color: var(--muted);
-        padding: 0.5rem 0.8rem;
-        border-top: 1px solid var(--border);
     }
 
     .dropzone {
