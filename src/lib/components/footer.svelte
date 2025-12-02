@@ -74,7 +74,9 @@
         padding: 0.45rem 0.75rem;
         border: 1px solid var(--border);
         border-radius: 999px;
-        transition: color 0.12s ease, border-color 0.12s ease,
+        transition:
+            color 0.12s ease,
+            border-color 0.12s ease,
             background 0.12s ease;
     }
 
