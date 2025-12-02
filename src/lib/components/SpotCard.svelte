@@ -7,31 +7,33 @@
 </script>
 
 <article class="card">
-    {#if imageSrc}
-        <img class="card-img" src={imageSrc} alt={spot.name} />
-    {/if}
+    <a class="card-link" href={`/spots/${spot.id}`}>
+        {#if imageSrc}
+            <img class="card-img" src={imageSrc} alt={spot.name} />
+        {/if}
 
-    <div class="card-body">
-        <div class="top">
-            <h3>{spot.name}</h3>
-            {#if spot.region}
-                <p class="region">{spot.region}</p>
+        <div class="card-body">
+            <div class="top">
+                <h3>{spot.name}</h3>
+                {#if spot.region}
+                    <p class="region">{spot.region}</p>
+                {/if}
+            </div>
+
+            {#if spot.description}
+                <p class="desc">{spot.description}</p>
             {/if}
+
+            <p class="coords">📍 {spot.lat}, {spot.lng}</p>
         </div>
+    </a>
 
-        {#if spot.description}
-            <p class="desc">{spot.description}</p>
-        {/if}
-
-        <p class="coords">📍 {spot.lat}, {spot.lng}</p>
-
-        {#if showDelete}
-            <form method="POST" action={action} class="delete-form">
-                <input type="hidden" name="id" value={spot.id} />
-                <button type="submit" class="delete-btn">Löschen</button>
-            </form>
-        {/if}
-    </div>
+    {#if showDelete}
+        <form method="POST" action={action} class="delete-form">
+            <input type="hidden" name="id" value={spot.id} />
+            <button type="submit" class="delete-btn">Löschen</button>
+        </form>
+    {/if}
 </article>
 
 <style>
@@ -49,6 +51,12 @@
     .card:hover {
         transform: translateY(-4px);
         box-shadow: 0 20px 70px rgba(15, 81, 146, 0.12);
+    }
+
+    .card-link {
+        color: inherit;
+        text-decoration: none;
+        display: block;
     }
 
     .card-img {
@@ -96,7 +104,7 @@
     }
 
     .delete-form {
-        margin-top: 0.8rem;
+        margin: 0.9rem 1.1rem 1.1rem;
     }
 
     .delete-btn {
