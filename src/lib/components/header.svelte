@@ -114,7 +114,9 @@
         padding: 0.45rem 0.75rem;
         border-radius: 999px;
         border: 1px solid transparent;
-        transition: color 0.12s ease, border-color 0.12s ease,
+        transition:
+            color 0.12s ease,
+            border-color 0.12s ease,
             background 0.12s ease;
     }
 
@@ -140,7 +142,9 @@
         font-weight: 700;
         border: 1px solid transparent;
         box-shadow: 0 12px 35px rgba(15, 111, 184, 0.22);
-        transition: transform 0.12s ease, box-shadow 0.12s ease,
+        transition:
+            transform 0.12s ease,
+            box-shadow 0.12s ease,
             background 0.12s ease;
     }
 
