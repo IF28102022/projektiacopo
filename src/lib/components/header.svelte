@@ -52,9 +52,14 @@
         position: sticky;
         top: 0;
         z-index: 20;
-        background: rgba(255, 255, 255, 0.92);
+        background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.96),
+                rgba(242, 247, 255, 0.95)
+            )
+            no-repeat;
         backdrop-filter: blur(12px);
-        border-bottom: 1px solid var(--border);
+        border-bottom: 1px solid rgba(15, 23, 42, 0.08);
         box-shadow: 0 10px 40px rgba(15, 81, 146, 0.06);
     }
 
@@ -84,14 +89,15 @@
     .brand-name {
         margin: 0;
         text-transform: uppercase;
-        letter-spacing: 0.06em;
-        font-size: 0.8rem;
+        letter-spacing: 0.08em;
+        font-size: 0.95rem;
+        color: #0f172a;
     }
 
     .brand-sub {
         margin: 0;
         color: var(--muted);
-        font-size: 0.82rem;
+        font-size: 0.85rem;
         letter-spacing: 0.02em;
     }
 
@@ -103,7 +109,7 @@
 
     .nav a {
         text-decoration: none;
-        color: var(--muted);
+        color: #1f2937;
         font-weight: 600;
         padding: 0.45rem 0.75rem;
         border-radius: 999px;
@@ -119,9 +125,10 @@
     }
 
     .nav a.selected {
-        color: var(--accent);
-        background: var(--accent-soft);
-        border-color: var(--accent-soft);
+        color: #0b1f35;
+        background: #dfeeff;
+        border-color: #c2dcff;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
     }
 
     .cta {
