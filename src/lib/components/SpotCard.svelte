@@ -2,11 +2,13 @@
     export let spot;
     export let action = "?/delete";
     export let showDelete = true;
+
+    $: imageSrc = spot?.imageUrl || spot?.imageData;
 </script>
 
 <article class="card">
-    {#if spot.imageUrl}
-        <img class="card-img" src={spot.imageUrl} alt={spot.name} />
+    {#if imageSrc}
+        <img class="card-img" src={imageSrc} alt={spot.name} />
     {/if}
 
     <div class="card-body">
