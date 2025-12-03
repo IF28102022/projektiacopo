@@ -8,7 +8,10 @@ export const actions = {
         const name = String(form.get("name") || "").trim();
         const region = String(form.get("region") || "").trim();
         const description = String(form.get("description") || "").trim();
-        const spotType = String(form.get("spotType") || "").trim();
+        const spotTypeRaw = String(form.get("spotType") || "Bucht").trim();
+        const spotType = ["Bucht", "Ankerplatz", "Marina"].includes(spotTypeRaw)
+            ? spotTypeRaw
+            : "Bucht";
         const bottomType = String(form.get("bottomType") || "").trim();
         const holdingQuality = String(form.get("holdingQuality") || "").trim();
         const shelterWindDirections = String(form.get("shelterWindDirections") || "").trim();
@@ -21,7 +24,7 @@ export const actions = {
         const depthMaxRaw = form.get("depthMax");
         const depthMin = depthMinRaw === null || depthMinRaw === "" ? null : Number(depthMinRaw);
         const depthMax = depthMaxRaw === null || depthMaxRaw === "" ? null : Number(depthMaxRaw);
-        const facilities = form.getAll("facilities").map((f) => String(f));
+        const facilitiesRaw = form.getAll("facilities").map((f) => String(f));
         const imageData = String(form.get("imageData") || "").trim();
         const lat = Number(form.get("lat"));
         const lng = Number(form.get("lng"));
@@ -29,6 +32,26 @@ export const actions = {
         if (!name || Number.isNaN(lat) || Number.isNaN(lng)) {
             return { error: "Name, Lat und Lng sind Pflichtfelder." };
         }
+
+        const facilitySets = {
+            Bucht: ["restaurant", "mooring", "calm", "protected"],
+            Ankerplatz: ["restaurant", "mooring", "calm", "protected", "water", "waste"],
+            Marina: [
+                "water",
+                "power",
+                "diesel",
+                "mooring",
+                "restaurant",
+                "supermarket",
+                "service",
+                "waste",
+                "wifi",
+                "showers",
+            ],
+        };
+
+        const allowedFacilities = facilitySets[spotType] || facilitySets.Bucht;
+        const facilities = facilitiesRaw.filter((f) => allowedFacilities.includes(f));
 
         const db = await getDb();
         await db.collection("spots").insertOne({
