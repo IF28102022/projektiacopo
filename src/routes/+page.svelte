@@ -31,9 +31,9 @@
                     Struktur.
                 </h1>
                 <p class="hero-subtitle">
-                    Eine ruhige, professionelle Oberfläche für Segler:innen: Orte
-                    entdecken, Spots markieren, Routen vorbereiten. Alles klar,
-                    hell und fokussiert.
+                    Eine ruhige, professionelle Oberfläche für Segler:innen:
+                    Orte entdecken, Spots markieren, Routen vorbereiten. Alles
+                    klar, hell und fokussiert.
                 </p>
 
                 <div class="hero-actions">
@@ -113,8 +113,8 @@
             </div>
             <ol class="steps">
                 <li>
-                    <span class="step-number">1</span> Auf der Startseite den
-                    Zweck erfassen.
+                    <span class="step-number">1</span> Auf der Startseite den Zweck
+                    erfassen.
                 </li>
                 <li>
                     <span class="step-number">2</span> Schöne Spots in der Liste
@@ -423,7 +423,9 @@
         padding: 1.4rem 1.5rem;
         border: 1px solid rgba(15, 111, 184, 0.08);
         box-shadow: 0 18px 50px rgba(12, 50, 94, 0.08);
-        transition: transform 0.16s ease, box-shadow 0.16s ease,
+        transition:
+            transform 0.16s ease,
+            box-shadow 0.16s ease,
             border-color 0.16s ease;
     }
 
