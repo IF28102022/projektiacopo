@@ -18,6 +18,17 @@ export async function load() {
             description: s.description,
             imageData: s.imageData,   // neu
             imageUrl: s.imageUrl,     // falls du noch alte Einträge hast
+            spotType: s.spotType,
+            depthMin: s.depthMin,
+            depthMax: s.depthMax,
+            bottomType: s.bottomType,
+            holdingQuality: s.holdingQuality,
+            shelterWindDirections: s.shelterWindDirections,
+            swellInfo: s.swellInfo,
+            facilities: s.facilities || [],
+            season: s.season,
+            rating: s.rating,
+            notesSkipper: s.notesSkipper,
             lat: s.lat,
             lng: s.lng
         }))

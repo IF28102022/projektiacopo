@@ -4,6 +4,42 @@
     export let showDelete = true;
 
     $: imageSrc = spot?.imageUrl || spot?.imageData;
+    const typeIcons = {
+        Ankerplatz: "⚓",
+        Marina: "🛥",
+        Bucht: "🏝",
+        Mooringfeld: "🟡",
+        Hafen: "🚢",
+    };
+    const facilityLabels = {
+        water: "Wasser",
+        diesel: "Diesel",
+        mooring: "Mooringbojen",
+        power: "Strom",
+        restaurant: "Restaurant",
+        supermarket: "Supermarkt",
+        service: "Werft/Service",
+        waste: "Müllentsorgung",
+    };
+
+    $: typeIcon = typeIcons[spot?.spotType] || "📍";
+    $: depthText =
+        spot?.depthMin || spot?.depthMax
+            ? `Tiefe ${spot?.depthMin ?? "?"}–${spot?.depthMax ?? "?"} m`
+            : "";
+    $: bottomText = spot?.bottomType ? `${spot.bottomType} Boden` : "";
+    $: holdingText = spot?.holdingQuality
+        ? `Halten: ${spot.holdingQuality}`
+        : "";
+    $: shelterText = spot?.shelterWindDirections || "";
+    $: swellText = spot?.swellInfo || "";
+    $: facilities = (spot?.facilities || []).map(
+        (f) => facilityLabels[f] || f,
+    );
+    $: ratingText =
+        spot?.rating === null || spot?.rating === undefined
+            ? ""
+            : `${spot.rating}/5`;
 </script>
 
 <article class="card">
@@ -14,17 +50,60 @@
 
         <div class="card-body">
             <div class="top">
-                <h3>{spot.name}</h3>
-                {#if spot.region}
-                    <p class="region">{spot.region}</p>
+                <div class="title">
+                    <span class="icon">{typeIcon}</span>
+                    <div>
+                        <h3>{spot.name}</h3>
+                        {#if spot.spotType}
+                            <p class="muted">{spot.spotType}</p>
+                        {/if}
+                    </div>
+                </div>
+                {#if ratingText}
+                    <span class="badge rating">{ratingText}</span>
                 {/if}
             </div>
+
+            {#if spot.region}
+                <p class="muted region">📍 {spot.region}</p>
+            {/if}
 
             {#if spot.description}
                 <p class="desc">{spot.description}</p>
             {/if}
 
-            <p class="coords">📍 {spot.lat}, {spot.lng}</p>
+            <div class="meta">
+                {#if depthText}
+                    <span class="pill">{depthText}</span>
+                {/if}
+                {#if bottomText}
+                    <span class="pill">{bottomText}</span>
+                {/if}
+                {#if holdingText}
+                    <span class="pill">{holdingText}</span>
+                {/if}
+                {#if swellText}
+                    <span class="pill pill-soft">{swellText}</span>
+                {/if}
+            </div>
+
+            {#if shelterText}
+                <p class="muted small">Schutz: {shelterText}</p>
+            {/if}
+
+            {#if facilities.length}
+                <div class="facilities">
+                    {#each facilities as facility}
+                        <span class="chip">{facility}</span>
+                    {/each}
+                </div>
+            {/if}
+
+            {#if spot.notesSkipper}
+                <p class="muted small">Skipper: {spot.notesSkipper}</p>
+            {/if}
+
+            <p class="coords">{spot.lat}, {spot.lng}</p>
         </div>
     </a>
 
@@ -82,13 +161,22 @@
         gap: 0.75rem;
     }
 
+    .title {
+        display: flex;
+        gap: 0.6rem;
+        align-items: center;
+    }
+
+    .icon {
+        font-size: 1.3rem;
+    }
+
     h3 {
         margin: 0;
         font-size: 1.1rem;
     }
 
     .region {
-        color: var(--muted);
         font-size: 0.92rem;
         margin: 0;
     }
@@ -97,6 +185,66 @@
         color: var(--text);
         font-size: 0.95rem;
         line-height: 1.5;
+    }
+
+    .muted {
+        color: var(--muted);
+    }
+
+    .small {
+        font-size: 0.9rem;
+    }
+
+    .badge {
+        display: inline-flex;
+        padding: 0.3rem 0.7rem;
+        border-radius: 0.8rem;
+        background: #f1f5fb;
+        color: #0f6fb8;
+        font-weight: 700;
+        font-size: 0.9rem;
+    }
+
+    .rating {
+        background: #0f6fb8;
+        color: #f8fbff;
+        box-shadow: 0 10px 30px rgba(15, 111, 184, 0.18);
+    }
+
+    .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+    }
+
+    .pill {
+        padding: 0.35rem 0.7rem;
+        border-radius: 999px;
+        background: #eef4fb;
+        color: #0f6fb8;
+        font-size: 0.9rem;
+        border: 1px solid rgba(15, 111, 184, 0.18);
+    }
+
+    .pill-soft {
+        background: #f9fbff;
+        color: var(--muted);
+        border-color: var(--border);
+    }
+
+    .facilities {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+    }
+
+    .chip {
+        padding: 0.28rem 0.6rem;
+        border-radius: 0.7rem;
+        background: #fafbfd;
+        border: 1px solid var(--border);
+        font-size: 0.85rem;
+        color: var(--muted);
     }
 
     .coords {

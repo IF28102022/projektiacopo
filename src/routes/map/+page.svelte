@@ -4,8 +4,68 @@
     import Header from "$lib/components/header.svelte";
     import Footer from "$lib/components/footer.svelte";
 
+    export let data;
+
     let map;
     let currentMarker = null;
+
+    const typeIcons = {
+        Ankerplatz: "⚓",
+        Marina: "🛥",
+        Bucht: "🏝",
+        Mooringfeld: "🟡",
+        Hafen: "🚢",
+    };
+
+    const facilityLabels = {
+        water: "Wasser",
+        diesel: "Diesel",
+        mooring: "Mooringbojen",
+        power: "Strom",
+        restaurant: "Restaurant",
+        supermarket: "Supermarkt",
+        service: "Werft/Service",
+        waste: "Müllentsorgung",
+    };
+
+    function formatDepth(spot) {
+        if (spot.depthMin || spot.depthMax) {
+            return `Tiefe ${spot.depthMin ?? "?"}–${spot.depthMax ?? "?"} m`;
+        }
+        return "";
+    }
+
+    function buildPopup(spot) {
+        const icon = typeIcons[spot.spotType] || "📍";
+        const depth = formatDepth(spot);
+        const bottom = spot.bottomType ? `${spot.bottomType} Boden` : "";
+        const holding = spot.holdingQuality
+            ? `Halten: ${spot.holdingQuality}`
+            : "";
+        const shelter = spot.shelterWindDirections || "";
+        const facilities = (spot.facilities || [])
+            .map((f) => facilityLabels[f] || f)
+            .join(" · ");
+
+        return `
+            <div class="popup">
+                <div class="popup-title">${icon} <strong>${spot.name || "Spot"}</strong> ${spot.spotType ? "· " + spot.spotType : ""}</div>
+                <div class="popup-meta">
+                    ${depth ? `<span>${depth}</span>` : ""}
+                    ${bottom ? `<span>${bottom}</span>` : ""}
+                    ${holding ? `<span>${holding}</span>` : ""}
+                </div>
+                ${shelter ? `<div class="popup-line">Schutz: ${shelter}</div>` : ""}
+                ${facilities ? `<div class="popup-line">Ausstattung: ${facilities}</div>` : ""}
+                ${
+                    spot.swellInfo
+                        ? `<div class="popup-line">Schwell: ${spot.swellInfo}</div>`
+                        : ""
+                }
+                <div class="popup-coords">${Number(spot.lat).toFixed(4)}, ${Number(spot.lng).toFixed(4)}</div>
+            </div>
+        `;
+    }
 
     onMount(async () => {
         if (!browser) return;
@@ -32,6 +92,23 @@
                 attribution: "© OpenSeaMap contributors",
             },
         ).addTo(map);
+
+        const markersInView = [];
+
+        for (const spot of data?.spots ?? []) {
+            const lat = Number(spot.lat);
+            const lng = Number(spot.lng);
+            if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
+
+            L.marker([lat, lng])
+                .addTo(map)
+                .bindPopup(buildPopup(spot));
+            markersInView.push([lat, lng]);
+        }
+
+        if (markersInView.length) {
+            map.fitBounds(markersInView, { padding: [40, 40] });
+        }
 
         // Click → Marker
         map.on("click", (e) => {
@@ -268,5 +345,39 @@
 
     :global(.leaflet-control-attribution) {
         font-size: 10px !important;
+    }
+
+    :global(.leaflet-popup-content) {
+        margin: 0.3rem;
+        font-family: "Manrope", system-ui, sans-serif;
+        color: var(--text);
+    }
+
+    :global(.popup-title) {
+        font-weight: 800;
+        margin-bottom: 0.35rem;
+        display: flex;
+        gap: 0.3rem;
+        align-items: center;
+    }
+
+    :global(.popup-meta) {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem 0.5rem;
+        font-size: 0.9rem;
+        color: var(--muted);
+    }
+
+    :global(.popup-line) {
+        font-size: 0.9rem;
+        color: var(--muted);
+        margin-top: 0.2rem;
+    }
+
+    :global(.popup-coords) {
+        margin-top: 0.4rem;
+        font-size: 0.85rem;
+        color: var(--muted);
     }
 </style>

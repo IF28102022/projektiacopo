@@ -10,6 +10,18 @@
     let lat = null;
     let lng = null;
 
+    let spotType = "";
+    let depthMin = "";
+    let depthMax = "";
+    let bottomType = "";
+    let holdingQuality = "";
+    let shelterWindDirections = "";
+    let swellInfo = "";
+    let facilities = [];
+    let season = "";
+    let rating = "";
+    let notesSkipper = "";
+
     let imageData = ""; // Base64 vom Bild
     let imageName = "";
     let dragActive = false;
@@ -80,6 +92,17 @@
         event.preventDefault();
         dragActive = false;
     }
+
+    const facilityOptions = [
+        { label: "Wasser", value: "water" },
+        { label: "Diesel", value: "diesel" },
+        { label: "Mooringbojen", value: "mooring" },
+        { label: "Strom", value: "power" },
+        { label: "Restaurant", value: "restaurant" },
+        { label: "Supermarkt", value: "supermarket" },
+        { label: "Werft/Service", value: "service" },
+        { label: "Müllentsorgung", value: "waste" },
+    ];
 </script>
 
 <Header />
@@ -95,32 +118,163 @@
 
             <div class="layout">
                 <form method="POST" class="form">
-                    <label>
-                        Name *
-                        <input
-                            name="name"
-                            required
-                            bind:value={name}
-                            placeholder="Ankerplatz oder Marina"
-                        />
-                    </label>
+                    <div class="field-grid">
+                        <label>
+                            Name *
+                            <input
+                                name="name"
+                                required
+                                bind:value={name}
+                                placeholder="Ankerplatz oder Marina"
+                            />
+                        </label>
 
-                    <label>
-                        Region
-                        <input
-                            name="region"
-                            bind:value={region}
-                            placeholder="z. B. Südliche Adria"
-                        />
-                    </label>
+                        <label>
+                            Spot-Typ
+                            <select name="spotType" bind:value={spotType}>
+                                <option value="">Bitte wählen</option>
+                                <option value="Ankerplatz">Ankerplatz</option>
+                                <option value="Marina">Marina</option>
+                                <option value="Bucht">Bucht</option>
+                                <option value="Mooringfeld">Mooringfeld</option>
+                                <option value="Hafen">Hafen</option>
+                            </select>
+                        </label>
+
+                        <label>
+                            Region
+                            <input
+                                name="region"
+                                bind:value={region}
+                                placeholder="z. B. Südliche Adria"
+                            />
+                        </label>
+                    </div>
+
+                    <div class="field-grid">
+                        <label>
+                            Tiefe min (m)
+                            <input
+                                type="number"
+                                name="depthMin"
+                                min="0"
+                                step="0.1"
+                                bind:value={depthMin}
+                                placeholder="z. B. 4"
+                            />
+                        </label>
+                        <label>
+                            Tiefe max (m)
+                            <input
+                                type="number"
+                                name="depthMax"
+                                min="0"
+                                step="0.1"
+                                bind:value={depthMax}
+                                placeholder="z. B. 12"
+                            />
+                        </label>
+                        <label>
+                            Boden
+                            <select name="bottomType" bind:value={bottomType}>
+                                <option value="">Bitte wählen</option>
+                                <option value="Sand">Sand</option>
+                                <option value="Seegras">Seegras</option>
+                                <option value="Fels">Fels</option>
+                                <option value="Schlamm">Schlamm</option>
+                                <option value="Gemischt">Gemischt</option>
+                            </select>
+                        </label>
+                        <label>
+                            Haltequalität
+                            <select
+                                name="holdingQuality"
+                                bind:value={holdingQuality}
+                            >
+                                <option value="">Bitte wählen</option>
+                                <option value="gut">gut</option>
+                                <option value="mittel">mittel</option>
+                                <option value="schlecht">schlecht</option>
+                            </select>
+                        </label>
+                        <label>
+                            Schutz (Windrichtungen)
+                            <input
+                                name="shelterWindDirections"
+                                bind:value={shelterWindDirections}
+                                placeholder="z. B. gut bei N–E, offen bei SW"
+                            />
+                        </label>
+                        <label>
+                            Schwell
+                            <input
+                                name="swellInfo"
+                                bind:value={swellInfo}
+                                placeholder="ruhig, Schwell bei Südwind ..."
+                            />
+                        </label>
+                    </div>
 
                     <label>
                         Beschreibung
                         <textarea
                             name="description"
-                            rows="4"
+                            rows="3"
                             bind:value={description}
                             placeholder="Besonderheiten, Windschutz, Restaurants ..."
+                        ></textarea>
+                    </label>
+
+                    <div class="field-grid facilities">
+                        <p class="label">Ausstattung</p>
+                        <div class="facility-grid">
+                            {#each facilityOptions as option}
+                                <label class="chip">
+                                    <input
+                                        type="checkbox"
+                                        name="facilities"
+                                        value={option.value}
+                                        bind:group={facilities}
+                                    />
+                                    <span>{option.label}</span>
+                                </label>
+                            {/each}
+                        </div>
+                    </div>
+
+                    <div class="field-grid">
+                        <label>
+                            Saison
+                            <input
+                                name="season"
+                                bind:value={season}
+                                placeholder="z. B. Juni–September"
+                            />
+                        </label>
+
+                        <label class="rating">
+                            Bewertung
+                            <div class="rating-row">
+                                <input
+                                    type="range"
+                                    name="rating"
+                                    min="0"
+                                    max="5"
+                                    step="0.5"
+                                    bind:value={rating}
+                                />
+                                <span>{rating || "0"}/5</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <label>
+                        Notizen für Skipper
+                        <textarea
+                            name="notesSkipper"
+                            rows="3"
+                            bind:value={notesSkipper}
+                            placeholder="Ansteuerung, Besonderheiten, Funk, Gebühren ..."
                         ></textarea>
                     </label>
 
@@ -285,6 +439,13 @@
         gap: 1rem;
     }
 
+    .field-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1rem;
+        margin-bottom: 0.2rem;
+    }
+
     label {
         display: flex;
         flex-direction: column;
@@ -304,9 +465,57 @@
         transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
 
+    select {
+        background: #f9fbff;
+        border-radius: 0.5rem;
+        padding: 0.65rem;
+    }
+
     textarea {
         min-height: 80px;
         resize: vertical;
+    }
+
+    .facilities {
+        align-items: start;
+    }
+
+    .facility-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        gap: 0.5rem;
+    }
+
+    .chip {
+        background: #f9fbff;
+        border: 1px solid var(--border);
+        border-radius: 0.8rem;
+        padding: 0.55rem 0.7rem;
+        display: flex;
+        gap: 0.4rem;
+        align-items: center;
+        font-size: 0.9rem;
+    }
+
+    .chip input {
+        margin: 0;
+    }
+
+    .label {
+        font-weight: 700;
+        color: var(--text);
+        margin: 0;
+    }
+
+    .rating-row {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        margin-top: 0.35rem;
+    }
+
+    input[type="range"] {
+        width: 100%;
     }
 
     .coords {
