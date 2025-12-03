@@ -586,12 +586,50 @@
     .rating-row {
         display: flex;
         align-items: center;
-        gap: 0.65rem;
+        gap: 1.2rem;
         margin-top: 0.2rem;
+    }
+
+    .rating-row span {
+        min-width: 3.4rem;
+        text-align: right;
     }
 
     input[type="range"] {
         width: 100%;
+        appearance: none;
+        height: 6px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #d9e3f8 0%, #3b82f6 100%);
+        outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #ffffff;
+        border: 2px solid #3b82f6;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        cursor: pointer;
+        margin-top: -6px;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #ffffff;
+        border: 2px solid #3b82f6;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        cursor: pointer;
+    }
+
+    input[type="range"]::-moz-range-track {
+        height: 6px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #d9e3f8 0%, #3b82f6 100%);
     }
 
     .coords {
