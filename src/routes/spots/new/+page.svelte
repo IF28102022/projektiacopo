@@ -586,13 +586,8 @@
     .rating-row {
         display: flex;
         align-items: center;
-        gap: 1.2rem;
+        gap: 0.65rem;
         margin-top: 0.2rem;
-    }
-
-    .rating-row span {
-        min-width: 3.4rem;
-        text-align: right;
     }
 
     input[type="range"] {
