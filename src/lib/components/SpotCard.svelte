@@ -38,19 +38,21 @@
 
 <style>
     .card {
-        background: var(--card);
+        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
         border: 1px solid var(--border);
         border-radius: 1rem;
         overflow: hidden;
         display: flex;
         flex-direction: column;
-        box-shadow: var(--shadow);
-        transition: transform 0.12s ease, box-shadow 0.12s ease;
+        box-shadow: 0 18px 50px rgba(12, 50, 94, 0.08);
+        transition: transform 0.16s ease, box-shadow 0.16s ease,
+            border-color 0.16s ease;
     }
 
     .card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 20px 70px rgba(15, 81, 146, 0.12);
+        transform: translateY(-6px);
+        border-color: rgba(15, 111, 184, 0.18);
+        box-shadow: 0 26px 80px rgba(12, 50, 94, 0.14);
     }
 
     .card-link {
@@ -61,7 +63,7 @@
 
     .card-img {
         width: 100%;
-        height: 150px;
+        height: 180px;
         object-fit: cover;
         display: block;
     }
@@ -87,7 +89,7 @@
 
     .region {
         color: var(--muted);
-        font-size: 0.9rem;
+        font-size: 0.92rem;
         margin: 0;
     }
 

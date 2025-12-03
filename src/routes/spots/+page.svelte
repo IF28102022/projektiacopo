@@ -61,9 +61,7 @@
     :global(body) {
         margin: 0;
         font-family: "Manrope", "Inter", system-ui, sans-serif;
-        background: radial-gradient(circle at 20% 20%, #f2f2ff 0%, #f7f4ec 50%)
-                no-repeat,
-            var(--bg);
+        background: linear-gradient(180deg, #f8f7f3 0%, #f3f6ff 100%);
         color: var(--text);
         line-height: 1.6;
         -webkit-font-smoothing: antialiased;

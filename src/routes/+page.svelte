@@ -158,9 +158,7 @@
     :global(body) {
         margin: 0;
         font-family: "Manrope", "Inter", system-ui, sans-serif;
-        background: radial-gradient(circle at 20% 20%, #f2f2ff 0%, #f7f4ec 50%)
-                no-repeat,
-            var(--bg);
+        background: linear-gradient(180deg, #f8f7f3 0%, #f3f6ff 100%);
         color: var(--text);
         line-height: 1.6;
         -webkit-font-smoothing: antialiased;
@@ -188,16 +186,16 @@
         position: absolute;
         inset: 0;
         background: radial-gradient(
-                circle at 85% 10%,
-                rgba(15, 111, 184, 0.12),
-                transparent 32%
-            ),
-            radial-gradient(
-                circle at 0% 20%,
-                rgba(255, 255, 255, 0.9),
+                circle at 80% 20%,
+                rgba(15, 111, 184, 0.16),
                 transparent 35%
             ),
-            linear-gradient(135deg, #f7f4ec 0%, #fefefe 45%, #f6f9ff 100%);
+            radial-gradient(
+                circle at 12% 18%,
+                rgba(255, 255, 255, 0.9),
+                transparent 45%
+            ),
+            linear-gradient(135deg, #f7f4ec 0%, #ffffff 45%, #f0f5ff 100%);
         z-index: 0;
     }
 
@@ -420,11 +418,19 @@
     }
 
     .feature-card {
-        background: var(--card);
+        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
         border-radius: 1rem;
         padding: 1.4rem 1.5rem;
-        border: 1px solid var(--border);
-        box-shadow: var(--shadow);
+        border: 1px solid rgba(15, 111, 184, 0.08);
+        box-shadow: 0 18px 50px rgba(12, 50, 94, 0.08);
+        transition: transform 0.16s ease, box-shadow 0.16s ease,
+            border-color 0.16s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(15, 111, 184, 0.18);
+        box-shadow: 0 26px 80px rgba(12, 50, 94, 0.12);
     }
 
     @media (min-width: 768px) {

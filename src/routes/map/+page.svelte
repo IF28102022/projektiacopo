@@ -113,9 +113,7 @@
     :global(body) {
         margin: 0;
         font-family: "Manrope", "Inter", system-ui, sans-serif;
-        background: radial-gradient(circle at 20% 20%, #f2f2ff 0%, #f7f4ec 50%)
-                no-repeat,
-            var(--bg);
+        background: linear-gradient(180deg, #f8f7f3 0%, #f3f6ff 100%);
         color: var(--text);
         line-height: 1.6;
         -webkit-font-smoothing: antialiased;
@@ -212,10 +210,10 @@
     }
 
     .panel {
-        background: var(--card);
+        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
         border-radius: 1.2rem;
-        border: 1px solid var(--border);
-        box-shadow: var(--shadow);
+        border: 1px solid rgba(15, 111, 184, 0.08);
+        box-shadow: 0 18px 50px rgba(12, 50, 94, 0.08);
         overflow: hidden;
     }
 
