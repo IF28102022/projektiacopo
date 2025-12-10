@@ -19,7 +19,11 @@
     let swellInfo = "";
     let facilities = [];
     let season = "";
-    let rating = "3";
+    let rating = 3;
+
+    $: ratingValue = Number(rating);
+    $: ratingPercent = Math.min(100, Math.max(0, (ratingValue / 5) * 100));
+    $: ratingDisplay = ratingValue.toFixed(1).replace(/\.0$/, "");
     let notesSkipper = "";
 
     let imageData = "";
@@ -298,17 +302,22 @@
                                 />
                             </label>
                             <label class="rating">
-                                Bewertung
+                                <div class="rating-head">
+                                    <span>Bewertung</span>
+                                    <span class="rating-value">{ratingDisplay}/5</span>
+                                </div>
                                 <div class="rating-row">
-                                    <input
-                                        type="range"
-                                        name="rating"
-                                        min="0"
-                                        max="5"
-                                        step="0.5"
-                                        bind:value={rating}
-                                    />
-                                    <span>{rating}/5</span>
+                                    <div class="range-wrap">
+                                        <input
+                                            type="range"
+                                            name="rating"
+                                            min="0"
+                                            max="5"
+                                            step="0.5"
+                                            bind:value={rating}
+                                            style={`--fill:${ratingPercent}%;`}
+                                        />
+                                    </div>
                                 </div>
                             </label>
                         </div>
@@ -590,41 +599,75 @@
         margin-top: 0.2rem;
     }
 
+    .rating-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .range-wrap {
+        position: relative;
+        width: 100%;
+    }
+
     input[type="range"] {
         width: 100%;
         appearance: none;
         height: 6px;
         border-radius: 999px;
-        background: linear-gradient(90deg, #d9e3f8 0%, #3b82f6 100%);
+        background: linear-gradient(
+            90deg,
+            #3b82f6 var(--fill, 50%),
+            #d9e3f8 var(--fill, 50%)
+        );
         outline: none;
+        transition: background 0.2s ease;
+        position: relative;
+        z-index: 1;
     }
 
     input[type="range"]::-webkit-slider-thumb {
-        appearance: none;
-        width: 18px;
-        height: 18px;
+        -webkit-appearance: none;
+        width: 22px;
+        height: 22px;
         border-radius: 50%;
-        background: #ffffff;
-        border: 2px solid #3b82f6;
-        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        background: transparent;
+        border: none;
+        box-shadow: none !important;
         cursor: pointer;
-        margin-top: -6px;
+        margin-top: -8px;
     }
 
     input[type="range"]::-moz-range-thumb {
-        width: 18px;
-        height: 18px;
+        -moz-appearance: none;
+        width: 22px;
+        height: 22px;
         border-radius: 50%;
-        background: #ffffff;
-        border: 2px solid #3b82f6;
-        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        background: transparent;
+        background-color: transparent;
+        border: none;
+        box-shadow: none !important;
         cursor: pointer;
     }
 
     input[type="range"]::-moz-range-track {
         height: 6px;
         border-radius: 999px;
-        background: linear-gradient(90deg, #d9e3f8 0%, #3b82f6 100%);
+        background: linear-gradient(
+            90deg,
+            #3b82f6 var(--fill, 50%),
+            #d9e3f8 var(--fill, 50%)
+        );
+    }
+
+    .rating-value {
+        min-width: 40px;
+        text-align: right;
+        color: var(--muted);
+        font-weight: 600;
+        font-size: 0.9rem;
     }
 
     .coords {
