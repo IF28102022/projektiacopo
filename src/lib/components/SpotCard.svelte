@@ -36,9 +36,7 @@
         : "";
     $: shelterText = spot?.shelterWindDirections || "";
     $: swellText = spot?.swellInfo || "";
-    $: facilities = (spot?.facilities || []).map(
-        (f) => facilityLabels[f] || f,
-    );
+    $: facilities = (spot?.facilities || []).map((f) => facilityLabels[f] || f);
     $: ratingText =
         spot?.rating === null || spot?.rating === undefined
             ? ""
@@ -111,7 +109,7 @@
     </a>
 
     {#if showDelete}
-        <form method="POST" action={action} class="delete-form">
+        <form method="POST" {action} class="delete-form">
             <input type="hidden" name="id" value={spot.id} />
             <button type="submit" class="delete-btn">Löschen</button>
         </form>
@@ -127,7 +125,9 @@
         display: flex;
         flex-direction: column;
         box-shadow: 0 18px 50px rgba(12, 50, 94, 0.08);
-        transition: transform 0.16s ease, box-shadow 0.16s ease,
+        transition:
+            transform 0.16s ease,
+            box-shadow 0.16s ease,
             border-color 0.16s ease;
     }
 
@@ -271,7 +271,9 @@
         cursor: pointer;
         box-shadow: 0 12px 30px rgba(197, 48, 48, 0.25);
         border: 1px solid rgba(197, 48, 48, 0.35);
-        transition: transform 0.12s ease, box-shadow 0.12s ease,
+        transition:
+            transform 0.12s ease,
+            box-shadow 0.12s ease,
             background 0.12s ease;
     }
 
