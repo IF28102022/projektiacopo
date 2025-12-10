@@ -132,6 +132,7 @@
                     {spot.description || "Noch keine Beschreibung hinterlegt."}
                 </p>
             </div>
+
             <div class="card">
                 <p class="label">Skipper-Notizen</p>
                 <p class="muted">
@@ -158,13 +159,14 @@
                         : "Keine Angaben zu Schutz."}
                 </p>
             </div>
-            <div class="card">
+
+            <div class="card span2">
                 <p class="label">Schwell</p>
                 <p class="value">
                     {spot.swellInfo || "—"}
                 </p>
             </div>
-            <div class="card wide">
+            <div class="card span2">
                 <p class="label">Ausstattung</p>
                 {#if facilities.length}
                     <div class="chip-row">
@@ -382,7 +384,7 @@
 
     .grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
         gap: 1rem;
     }
 
@@ -394,7 +396,7 @@
         box-shadow: 0 18px 50px rgba(12, 50, 94, 0.08);
     }
 
-    .card.wide {
+    .card.span2 {
         grid-column: span 2;
     }
 

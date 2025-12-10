@@ -769,6 +769,8 @@
         display: flex;
         flex-direction: column;
         min-height: 640px;
+        align-self: start;
+        margin-top: 0.75rem;
     }
 
     #select-map {
