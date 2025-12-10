@@ -5,7 +5,39 @@
     export let data;
 
     const spot = data.spot;
-    const imageSrc = spot.imageUrl || spot.imageData;
+    const facilityLabels = {
+        water: "Wasser",
+        diesel: "Diesel",
+        mooring: "Mooringbojen",
+        power: "Strom",
+        restaurant: "Restaurant",
+        supermarket: "Supermarkt",
+        service: "Werft/Service",
+        waste: "Müllentsorgung",
+        wifi: "WLAN",
+        showers: "Duschen",
+        calm: "Ruhig",
+        protected: "Geschützt",
+    };
+    const images = (spot.imageDataList && spot.imageDataList.length
+        ? spot.imageDataList
+        : spot.imageData
+          ? [spot.imageData]
+          : []
+    ).filter(Boolean);
+    let activeImageIndex = 0;
+    $: activeImage = images[activeImageIndex] || spot.imageUrl || spot.imageData || null;
+    $: facilities = (spot.facilities || []).map((f) => facilityLabels[f] || f);
+
+    function prevImage() {
+        if (!images.length) return;
+        activeImageIndex = (activeImageIndex - 1 + images.length) % images.length;
+    }
+
+    function nextImage() {
+        if (!images.length) return;
+        activeImageIndex = (activeImageIndex + 1) % images.length;
+    }
 </script>
 
 <Header />
@@ -29,12 +61,53 @@
                                 ? new Date(spot.createdAt).toLocaleDateString()
                                 : "ohne Datum"}
                         </span>
+                        {#if spot.rating !== null && spot.rating !== undefined}
+                            <span class="pill rating-pill">★ {spot.rating}/5</span>
+                        {/if}
+                        {#if spot.spotType}
+                            <span class="pill pill-soft">{spot.spotType}</span>
+                        {/if}
+                        {#if spot.season}
+                            <span class="pill pill-soft">Saison: {spot.season}</span>
+                        {/if}
                     </div>
                 </div>
 
-                {#if imageSrc}
+                {#if activeImage}
                     <div class="image">
-                        <img src={imageSrc} alt={spot.name} />
+                        {#if images.length > 1}
+                            <div class="slide-frame">
+                                <img src={activeImage} alt={spot.name} />
+                                <button
+                                    class="nav prev"
+                                    type="button"
+                                    on:click={prevImage}
+                                    aria-label="Vorheriges Bild"
+                                >
+                                    ‹
+                                </button>
+                                <button
+                                    class="nav next"
+                                    type="button"
+                                    on:click={nextImage}
+                                    aria-label="Nächstes Bild"
+                                >
+                                    ›
+                                </button>
+                            </div>
+                            <div class="dots">
+                                {#each images as img, idx}
+                                    <button
+                                        class:selected={idx === activeImageIndex}
+                                        type="button"
+                                        aria-label={`Bild ${idx + 1} anzeigen`}
+                                        on:click={() => (activeImageIndex = idx)}
+                                    ></button>
+                                {/each}
+                            </div>
+                        {:else}
+                            <img src={activeImage} alt={spot.name} />
+                        {/if}
                     </div>
                 {/if}
             </div>
@@ -54,10 +127,54 @@
                 <p class="muted">Land / Seegebiet</p>
             </div>
             <div class="card">
-                <p class="label">Notizen</p>
+                <p class="label">Beschreibung</p>
                 <p class="muted">
-                    {spot.description || "Noch keine Notizen hinterlegt."}
+                    {spot.description || "Noch keine Beschreibung hinterlegt."}
                 </p>
+            </div>
+            <div class="card">
+                <p class="label">Skipper-Notizen</p>
+                <p class="muted">
+                    {spot.notesSkipper || "Keine speziellen Hinweise."}
+                </p>
+            </div>
+            <div class="card">
+                <p class="label">Tiefe & Boden</p>
+                <p class="value">
+                    {spot.depthMin ?? "?"}–{spot.depthMax ?? "?"} m
+                </p>
+                <p class="muted">
+                    {spot.bottomType ? `Boden: ${spot.bottomType}` : "Kein Bodentyp angegeben."}
+                </p>
+            </div>
+            <div class="card">
+                <p class="label">Halten & Schutz</p>
+                <p class="value">
+                    {spot.holdingQuality || "—"}
+                </p>
+                <p class="muted">
+                    {spot.shelterWindDirections
+                        ? `Schutz: ${spot.shelterWindDirections}`
+                        : "Keine Angaben zu Schutz."}
+                </p>
+            </div>
+            <div class="card">
+                <p class="label">Schwell</p>
+                <p class="value">
+                    {spot.swellInfo || "—"}
+                </p>
+            </div>
+            <div class="card wide">
+                <p class="label">Ausstattung</p>
+                {#if facilities.length}
+                    <div class="chip-row">
+                        {#each facilities as facility}
+                            <span class="chip">{facility}</span>
+                        {/each}
+                    </div>
+                {:else}
+                    <p class="muted">Keine Ausstattung hinterlegt.</p>
+                {/if}
             </div>
         </div>
     </section>
@@ -177,6 +294,16 @@
         color: var(--muted);
     }
 
+    .pill-soft {
+        background: #eef4ff;
+        color: #0f6fb8;
+    }
+
+    .rating-pill {
+        background: #fff4d6;
+        color: #b45309;
+    }
+
     .image {
         border-radius: 1rem;
         overflow: hidden;
@@ -189,6 +316,64 @@
         height: 100%;
         object-fit: cover;
         display: block;
+    }
+
+    .slide-frame {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .slide-frame img {
+        display: block;
+        width: 100%;
+        max-height: 340px;
+        object-fit: cover;
+    }
+
+    .nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid #dbe6ff;
+        color: #0f6fb8;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .nav.prev {
+        left: 12px;
+    }
+
+    .nav.next {
+        right: 12px;
+    }
+
+    .dots {
+        display: flex;
+        justify-content: center;
+        gap: 0.45rem;
+        padding: 0.6rem 0 0;
+    }
+
+    .dots button {
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        border: none;
+        background: #d6deed;
+        cursor: pointer;
+        padding: 0;
+    }
+
+    .dots button.selected {
+        background: #0f6fb8;
+        transform: scale(1.05);
     }
 
     .cards {
@@ -209,6 +394,10 @@
         box-shadow: 0 18px 50px rgba(12, 50, 94, 0.08);
     }
 
+    .card.wide {
+        grid-column: span 2;
+    }
+
     .label {
         margin: 0;
         color: var(--muted);
@@ -220,6 +409,24 @@
         margin: 0.1rem 0 0.2rem;
         font-weight: 800;
         font-size: 1.1rem;
+    }
+
+    .chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin: 0.3rem 0 0;
+    }
+
+    .chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.3rem 0.65rem;
+        border-radius: 999px;
+        background: #eef4ff;
+        color: #0f6fb8;
+        font-weight: 600;
+        font-size: 0.9rem;
     }
 
     .muted {

@@ -3,7 +3,10 @@
     export let action = "?/delete";
     export let showDelete = true;
 
-    $: imageSrc = spot?.imageUrl || spot?.imageData;
+    $: imageSrc =
+        spot?.imageUrl ||
+        (Array.isArray(spot?.imageDataList) ? spot.imageDataList[0] : null) ||
+        spot?.imageData;
     const typeIcons = {
         Ankerplatz: "⚓",
         Marina: "🛥",

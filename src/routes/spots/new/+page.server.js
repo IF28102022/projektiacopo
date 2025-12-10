@@ -25,7 +25,23 @@ export const actions = {
         const depthMin = depthMinRaw === null || depthMinRaw === "" ? null : Number(depthMinRaw);
         const depthMax = depthMaxRaw === null || depthMaxRaw === "" ? null : Number(depthMaxRaw);
         const facilitiesRaw = form.getAll("facilities").map((f) => String(f));
-        const imageData = String(form.get("imageData") || "").trim();
+        const imageDataSingle = String(form.get("imageData") || "").trim();
+        const imageDataListRaw = form.get("imageDataList");
+        let imageDataList = [];
+        if (imageDataListRaw) {
+            try {
+                const parsed = JSON.parse(imageDataListRaw);
+                if (Array.isArray(parsed)) {
+                    imageDataList = parsed.filter(Boolean).map((item) => String(item));
+                }
+            } catch (error) {
+                console.error("Konnte imageDataList nicht parsen", error);
+            }
+        }
+        if (!imageDataList.length && imageDataSingle) {
+            imageDataList = [imageDataSingle];
+        }
+        const imageData = imageDataList[0] || "";
         const lat = Number(form.get("lat"));
         const lng = Number(form.get("lng"));
 
@@ -69,7 +85,8 @@ export const actions = {
             season,
             rating: Number.isNaN(rating) ? null : rating,
             notesSkipper,
-            imageData,   // hier das Base64-Bild
+            imageData,   // erstes Bild (Fallback)
+            imageDataList, // alle Bilder als Base64
             lat,
             lng,
             createdAt: new Date()

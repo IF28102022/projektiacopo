@@ -18,6 +18,7 @@ export async function load() {
             description: s.description,
             imageData: s.imageData,   // neu
             imageUrl: s.imageUrl,     // falls du noch alte Einträge hast
+            imageDataList: s.imageDataList || [],
             spotType: s.spotType,
             depthMin: s.depthMin,
             depthMax: s.depthMax,

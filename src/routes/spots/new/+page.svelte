@@ -26,9 +26,13 @@
     $: ratingDisplay = ratingValue.toFixed(1).replace(/\.0$/, "");
     let notesSkipper = "";
 
-    let imageData = "";
-    let imageName = "";
+    let images = [];
+    let activeImageIndex = 0;
     let dragActive = false;
+
+    $: activeImage = images[activeImageIndex] || null;
+    $: imageDataListJson = JSON.stringify(images.map((img) => img.src));
+    $: firstImage = images[0]?.src || "";
 
     let map;
     let marker;
@@ -102,21 +106,37 @@
         });
     });
 
-    function handleFiles(files) {
-        const file = files?.[0];
-        if (!file) return;
+    const fileToDataUrl = (file) =>
+        new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve({ src: e.target.result, name: file.name });
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
 
-        imageName = file.name;
+    async function handleFiles(files) {
+        const fileList = files ? Array.from(files) : [];
+        if (!fileList.length) return;
 
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            imageData = e.target.result;
-        };
-        reader.readAsDataURL(file);
+        const startEmpty = images.length === 0;
+        const newImages = await Promise.all(fileList.map((file) => fileToDataUrl(file)));
+
+        images = [...images, ...newImages];
+        if (startEmpty) activeImageIndex = 0;
     }
 
     function onFileInputChange(event) {
         handleFiles(event.target.files);
+    }
+
+    function prevImage() {
+        if (!images.length) return;
+        activeImageIndex = (activeImageIndex - 1 + images.length) % images.length;
+    }
+
+    function nextImage() {
+        if (!images.length) return;
+        activeImageIndex = (activeImageIndex + 1) % images.length;
     }
 
     function onDrop(event) {
@@ -337,7 +357,8 @@
                             <h3>Bild</h3>
                             <p>Optionales Foto (Drag & Drop).</p>
                         </div>
-                        <input type="hidden" name="imageData" value={imageData} />
+                        <input type="hidden" name="imageData" value={firstImage} />
+                        <input type="hidden" name="imageDataList" value={imageDataListJson} />
                         <div
                             class="dropzone {dragActive ? 'drop-active' : ''}"
                             on:dragover={onDragOver}
@@ -352,17 +373,55 @@
                                 class="file-input"
                                 type="file"
                                 accept="image/*"
+                                multiple
                                 on:change={onFileInputChange}
                             />
 
-                            {#if imageData}
+                            {#if images.length}
                                 <div class="preview">
-                                    <img src={imageData} alt="Preview" />
-                                    <p class="file-name">{imageName}</p>
+                                    <div class="slideshow">
+                                        <div class="slide-frame">
+                                            <img src={activeImage.src} alt="Preview" />
+                                            {#if images.length > 1}
+                                                <button
+                                                    type="button"
+                                                    class="nav prev"
+                                                    on:click|preventDefault={prevImage}
+                                                    aria-label="Vorheriges Bild"
+                                                >
+                                                    ‹
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    class="nav next"
+                                                    on:click|preventDefault={nextImage}
+                                                    aria-label="Nächstes Bild"
+                                                >
+                                                    ›
+                                                </button>
+                                            {/if}
+                                        </div>
+                                        {#if images.length > 1}
+                                            <div class="dots">
+                                                {#each images as img, idx}
+                                                    <button
+                                                        type="button"
+                                                        class:selected={idx === activeImageIndex}
+                                                        aria-label={`Bild ${idx + 1} anzeigen`}
+                                                        on:click|preventDefault={() =>
+                                                            (activeImageIndex = idx)}
+                                                    ></button>
+                                                {/each}
+                                            </div>
+                                        {/if}
+                                    </div>
+                                    <p class="file-name">
+                                        {activeImage.name} ({activeImageIndex + 1}/{images.length})
+                                    </p>
                                 </div>
                             {:else}
                                 <p class="drop-text">
-                                    Bild hierher ziehen oder klicken, um ein Bild auszuwählen.
+                                    Bilder hierher ziehen oder klicken, um mehrere Bilder auszuwählen.
                                 </p>
                             {/if}
                         </div>
@@ -795,16 +854,74 @@
     .preview {
         display: flex;
         flex-direction: column;
-        align-items: center;
+        align-items: stretch;
         gap: 0.4rem;
+        width: 100%;
     }
 
-    .preview img {
-        max-width: 100%;
-        max-height: 200px;
-        border-radius: 0.6rem;
-        object-fit: cover;
+    .slideshow {
+        width: 100%;
+    }
+
+    .slide-frame {
+        position: relative;
+        border-radius: 0.8rem;
+        overflow: hidden;
+        background: #e8f0ff;
         box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+    }
+
+    .slide-frame img {
+        width: 100%;
+        max-height: 220px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid #dbe6ff;
+        color: #1e3a8a;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+    }
+
+    .nav.prev {
+        left: 10px;
+    }
+
+    .nav.next {
+        right: 10px;
+    }
+
+    .dots {
+        display: flex;
+        justify-content: center;
+        gap: 0.4rem;
+        padding: 0.5rem 0 0.1rem;
+    }
+
+    .dots button {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        border: none;
+        background: #d7def0;
+        cursor: pointer;
+        padding: 0;
+    }
+
+    .dots button.selected {
+        background: #3b82f6;
+        transform: scale(1.05);
     }
 
     .file-name {
