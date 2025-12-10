@@ -3,108 +3,64 @@
     export let action = "?/delete";
     export let showDelete = true;
 
-    $: imageSrc =
-        spot?.imageUrl ||
-        (Array.isArray(spot?.imageDataList) ? spot.imageDataList[0] : null) ||
-        spot?.imageData;
-    const typeIcons = {
-        Ankerplatz: "⚓",
-        Marina: "🛥",
-        Bucht: "🏝",
-        Mooringfeld: "🟡",
-        Hafen: "🚢",
-    };
-    const facilityLabels = {
-        water: "Wasser",
-        diesel: "Diesel",
-        mooring: "Mooringbojen",
-        power: "Strom",
-        restaurant: "Restaurant",
-        supermarket: "Supermarkt",
-        service: "Werft/Service",
-        waste: "Müllentsorgung",
-    };
+    const imageList = Array.isArray(spot?.imageDataList)
+        ? spot.imageDataList.filter(Boolean)
+        : [];
+    $: images = imageList.length
+        ? imageList
+        : (spot?.imageData ? [spot.imageData] : []).filter(Boolean);
+    $: fallbackImage = spot?.imageUrl || spot?.imageData || null;
+    let activeIndex = 0;
+    $: activeImage = images[activeIndex] || fallbackImage;
 
-    $: typeIcon = typeIcons[spot?.spotType] || "📍";
-    $: depthText =
-        spot?.depthMin || spot?.depthMax
-            ? `Tiefe ${spot?.depthMin ?? "?"}–${spot?.depthMax ?? "?"} m`
-            : "";
-    $: bottomText = spot?.bottomType ? `${spot.bottomType} Boden` : "";
-    $: holdingText = spot?.holdingQuality
-        ? `Halten: ${spot.holdingQuality}`
-        : "";
-    $: shelterText = spot?.shelterWindDirections || "";
-    $: swellText = spot?.swellInfo || "";
-    $: facilities = (spot?.facilities || []).map((f) => facilityLabels[f] || f);
-    $: ratingText =
-        spot?.rating === null || spot?.rating === undefined
-            ? ""
-            : `${spot.rating}/5`;
+    function nextImage() {
+        if (!images.length) return;
+        activeIndex = (activeIndex + 1) % images.length;
+    }
+
+    function prevImage() {
+        if (!images.length) return;
+        activeIndex = (activeIndex - 1 + images.length) % images.length;
+    }
 </script>
 
 <article class="card">
     <a class="card-link" href={`/spots/${spot.id}`}>
-        {#if imageSrc}
-            <img class="card-img" src={imageSrc} alt={spot.name} />
-        {/if}
-
-        <div class="card-body">
-            <div class="top">
-                <div class="title">
-                    <span class="icon">{typeIcon}</span>
-                    <div>
-                        <h3>{spot.name}</h3>
-                        {#if spot.spotType}
-                            <p class="muted">{spot.spotType}</p>
-                        {/if}
-                    </div>
-                </div>
-                {#if ratingText}
-                    <span class="badge rating">{ratingText}</span>
-                {/if}
-            </div>
-
-            {#if spot.region}
-                <p class="muted region">📍 {spot.region}</p>
-            {/if}
-
-            {#if spot.description}
-                <p class="desc">{spot.description}</p>
-            {/if}
-
-            <div class="meta">
-                {#if depthText}
-                    <span class="pill">{depthText}</span>
-                {/if}
-                {#if bottomText}
-                    <span class="pill">{bottomText}</span>
-                {/if}
-                {#if holdingText}
-                    <span class="pill">{holdingText}</span>
-                {/if}
-                {#if swellText}
-                    <span class="pill pill-soft">{swellText}</span>
-                {/if}
-            </div>
-
-            {#if shelterText}
-                <p class="muted small">Schutz: {shelterText}</p>
-            {/if}
-
-            {#if facilities.length}
-                <div class="facilities">
-                    {#each facilities as facility}
-                        <span class="chip">{facility}</span>
+        <div
+            class="card-bg"
+            style={activeImage
+                ? `background-image: linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.25) 70%), url(${activeImage})`
+                : ""}
+        >
+            {#if images.length > 1}
+                <button
+                    class="nav prev"
+                    type="button"
+                    on:click|preventDefault={prevImage}
+                    aria-label="Vorheriges Bild"
+                >
+                    ‹
+                </button>
+                <button
+                    class="nav next"
+                    type="button"
+                    on:click|preventDefault={nextImage}
+                    aria-label="Nächstes Bild"
+                >
+                    ›
+                </button>
+                <div class="dots">
+                    {#each images as img, idx}
+                        <span class:selected={idx === activeIndex}></span>
                     {/each}
                 </div>
             {/if}
-
-            {#if spot.notesSkipper}
-                <p class="muted small">Skipper: {spot.notesSkipper}</p>
-            {/if}
-
-            <p class="coords">{spot.lat}, {spot.lng}</p>
+            <div class="info">
+                <h3>{spot.name}</h3>
+                {#if spot.region}
+                    <p class="muted region">📍 {spot.region}</p>
+                {/if}
+            </div>
         </div>
     </a>
 
@@ -118,146 +74,116 @@
 
 <style>
     .card {
-        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
-        border: 1px solid var(--border);
-        border-radius: 1rem;
+        position: relative;
+        border-radius: 1.2rem;
         overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        box-shadow: 0 18px 50px rgba(12, 50, 94, 0.08);
+        box-shadow: 0 18px 50px rgba(12, 50, 94, 0.12);
         transition:
             transform 0.16s ease,
-            box-shadow 0.16s ease,
-            border-color 0.16s ease;
+            box-shadow 0.16s ease;
+        min-height: 260px;
+        background: #e9eef6;
     }
 
     .card:hover {
         transform: translateY(-6px);
-        border-color: rgba(15, 111, 184, 0.18);
-        box-shadow: 0 26px 80px rgba(12, 50, 94, 0.14);
+        box-shadow: 0 26px 80px rgba(12, 50, 94, 0.16);
     }
 
     .card-link {
         color: inherit;
         text-decoration: none;
         display: block;
+        height: 100%;
     }
 
-    .card-img {
-        width: 100%;
-        height: 180px;
-        object-fit: cover;
-        display: block;
+    .card-bg {
+        height: 100%;
+        background: linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0.04),
+            rgba(0, 0, 0, 0.2)
+        );
+        background-size: cover;
+        background-position: center;
+        position: relative;
     }
 
-    .card-body {
-        padding: 1.1rem 1.2rem 1.2rem;
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-
-    .top {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        gap: 0.75rem;
-    }
-
-    .title {
-        display: flex;
-        gap: 0.6rem;
-        align-items: center;
-    }
-
-    .icon {
-        font-size: 1.3rem;
+    .info {
+        position: absolute;
+        left: 1rem;
+        right: 1rem;
+        bottom: 1rem;
+        color: #f5f7fb;
+        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
     }
 
     h3 {
-        margin: 0;
-        font-size: 1.1rem;
+        margin: 0 0 0.15rem;
+        font-size: 1.25rem;
+        color: #f8fbff;
     }
 
     .region {
-        font-size: 0.92rem;
-        margin: 0;
-    }
-
-    .desc {
-        color: var(--text);
         font-size: 0.95rem;
-        line-height: 1.5;
+        margin: 0;
+        color: #e6ebf5;
     }
 
     .muted {
-        color: var(--muted);
+        color: #d9e1ee;
     }
 
-    .small {
-        font-size: 0.9rem;
+    .nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.85);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        color: #0f172a;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
     }
 
-    .badge {
-        display: inline-flex;
-        padding: 0.3rem 0.7rem;
-        border-radius: 0.8rem;
-        background: #f1f5fb;
-        color: #0f6fb8;
-        font-weight: 700;
-        font-size: 0.9rem;
+    .nav.prev {
+        left: 10px;
     }
 
-    .rating {
-        background: #0f6fb8;
-        color: #f8fbff;
-        box-shadow: 0 10px 30px rgba(15, 111, 184, 0.18);
+    .nav.next {
+        right: 10px;
     }
 
-    .meta {
+    .dots {
+        position: absolute;
+        left: 50%;
+        bottom: 0.65rem;
+        transform: translateX(-50%);
         display: flex;
-        flex-wrap: wrap;
-        gap: 0.4rem;
+        gap: 0.35rem;
     }
 
-    .pill {
-        padding: 0.35rem 0.7rem;
-        border-radius: 999px;
-        background: #eef4fb;
-        color: #0f6fb8;
-        font-size: 0.9rem;
-        border: 1px solid rgba(15, 111, 184, 0.18);
+    .dots span {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.5);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
     }
 
-    .pill-soft {
-        background: #f9fbff;
-        color: var(--muted);
-        border-color: var(--border);
-    }
-
-    .facilities {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.4rem;
-    }
-
-    .chip {
-        padding: 0.28rem 0.6rem;
-        border-radius: 0.7rem;
-        background: #fafbfd;
-        border: 1px solid var(--border);
-        font-size: 0.85rem;
-        color: var(--muted);
-    }
-
-    .coords {
-        font-size: 0.85rem;
-        color: var(--muted);
-        margin-top: 0.3rem;
+    .dots span.selected {
+        background: #fff;
     }
 
     .delete-form {
-        margin: 0.9rem 1.1rem 1.1rem;
+        position: absolute;
+        right: 0.8rem;
+        bottom: 0.8rem;
+        margin: 0;
     }
 
     .delete-btn {
