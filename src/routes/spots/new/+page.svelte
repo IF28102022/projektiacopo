@@ -771,12 +771,22 @@
         min-height: 640px;
         align-self: start;
         margin-top: 0.75rem;
+        position: relative;
+        z-index: 1;
     }
 
     #select-map {
         width: 100%;
         height: 100%;
         min-height: 520px;
+        position: relative;
+    }
+
+    /* Leaflet panes can sit above the header by default; keep them under it. */
+    :global(.leaflet-pane),
+    :global(.leaflet-top),
+    :global(.leaflet-bottom) {
+        z-index: 1;
     }
 
     .map-head {
