@@ -5,9 +5,9 @@
     import Footer from "$lib/components/footer.svelte";
 
     export let data;
+    $: isOwner = data?.user?.role === "owner";
 
     let map;
-    let currentMarker = null;
 
     const typeIcons = {
         Ankerplatz: "⚓",
@@ -110,19 +110,6 @@
             map.fitBounds(markersInView, { padding: [40, 40] });
         }
 
-        // Click → Marker
-        map.on("click", (e) => {
-            const { lat, lng } = e.latlng;
-
-            if (currentMarker) currentMarker.remove();
-
-            currentMarker = L.marker([lat, lng])
-                .addTo(map)
-                .bindPopup(
-                    `Spot gesetzt<br>${lat.toFixed(4)}, ${lng.toFixed(4)}`,
-                )
-                .openPopup();
-        });
     });
 </script>
 
@@ -144,7 +131,9 @@
                 </div>
                 <div class="cta">
                     <a class="ghost-link" href="/spots">Zur Liste</a>
-                    <a class="btn-primary" href="/spots/new">Neuer Spot</a>
+                    {#if isOwner}
+                        <a class="btn-primary" href="/spots/new">Neuer Spot</a>
+                    {/if}
                 </div>
             </header>
 

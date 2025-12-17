@@ -4,6 +4,7 @@
     import SpotList from "$lib/components/SpotList.svelte";
 
     export let data;
+    $: isOwner = data?.user?.role === "owner";
 </script>
 
 <Header />
@@ -20,7 +21,9 @@
                         Helles Layout, glatte Cards, klare Typo.
                     </p>
                 </div>
-                <a href="/spots/new" class="btn-primary">+ Neuer Spot</a>
+                {#if isOwner}
+                    <a href="/spots/new" class="btn-primary">+ Neuer Spot</a>
+                {/if}
             </header>
 
             {#if data.spots.length === 0}
@@ -29,7 +32,7 @@
                     <a href="/spots/new" class="ghost-link">Jetzt ersten Spot anlegen</a>
                 </div>
             {:else}
-                <SpotList spots={data.spots} action="?/delete" />
+                <SpotList spots={data.spots} action="?/delete" showDelete={isOwner} />
             {/if}
         </div>
     </section>
@@ -149,6 +152,21 @@
         color: var(--accent);
         text-decoration: none;
         font-weight: 700;
+    }
+
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.4rem 0.75rem;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        border: 1px solid var(--border);
+    }
+
+    .badge.muted {
+        background: #f8f8fb;
+        color: var(--muted);
     }
 
 </style>

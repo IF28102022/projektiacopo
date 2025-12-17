@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Sailspots Logo">
+  <title>Sailspots</title>
+  <g fill="none" stroke="#0f2f4a" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M60 16 L60 78" /> <!-- Mast -->
+    <path d="M60 18 L28 68 L60 68 Z" /> <!-- Front sail -->
+    <path d="M60 18 L98 78 L60 78 Z" /> <!-- Main sail -->
+    <path d="M20 78 L85 78 L75 96 Q52 102 30 96 Z" /> <!-- Hull -->
+    <path d="M18 98 Q34 106 50 98 T82 98" /> <!-- Wave -->
+  </g>
+</svg>

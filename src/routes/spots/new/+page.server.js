@@ -1,8 +1,16 @@
 import { getDb } from "$lib/server/db";
 import { redirect } from "@sveltejs/kit";
+import { requireOwner } from "$lib/server/auth";
+
+export function load({ locals }) {
+    requireOwner(locals);
+    return {};
+}
 
 export const actions = {
-    default: async ({ request }) => {
+    default: async ({ request, locals }) => {
+        requireOwner(locals);
+
         const form = await request.formData();
 
         const name = String(form.get("name") || "").trim();

@@ -1,5 +1,6 @@
 import { getDb } from "$lib/server/db";
 import { ObjectId } from "mongodb";
+import { requireOwner } from "$lib/server/auth";
 
 export async function load() {
     const db = await getDb();
@@ -37,7 +38,9 @@ export async function load() {
 }
 
 export const actions = {
-    delete: async ({ request }) => {
+    delete: async ({ request, locals }) => {
+        requireOwner(locals);
+
         const form = await request.formData();
         const id = form.get("id");
         if (!id) return { error: "Keine ID übergeben" };

@@ -7,17 +7,20 @@
         { href: "/map", label: "Karte" },
         { href: "/ai", label: "KI" },
     ];
+
+    $: user = $page.data?.user;
+    $: isOwner = user?.role === "owner";
 </script>
 
 <header class="topbar">
     <div class="container">
-        <div class="brand">
-            <span class="emoji" aria-hidden="true">⛵️</span>
+        <a class="brand" href="/">
+            <img class="logo" src="/logo-sailspots.svg" alt="Sailspots Logo" loading="lazy" />
             <div>
-                <p class="brand-name">Segelspots</p>
+                <p class="brand-name">Sailspots</p>
                 <p class="brand-sub">ruhig & klar</p>
             </div>
-        </div>
+        </a>
 
         <nav class="nav">
             {#each links as link}
@@ -39,7 +42,21 @@
             {/each}
         </nav>
 
-        <a class="cta" href="/spots/new">Neuer Spot</a>
+        <div class="actions">
+            {#if isOwner}
+                <a class="cta" href="/spots/new">Neuer Spot</a>
+            {/if}
+
+            {#if user}
+                <div class="user">
+                    <span class="pill">{isOwner ? "Owner" : "Crew"}</span>
+                    <span class="email">{user.email}</span>
+                    <a class="auth-link" href="/logout">Logout</a>
+                </div>
+            {:else}
+                <a class="auth-link" href="/login">Login</a>
+            {/if}
+        </div>
     </div>
 </header>
 
@@ -77,13 +94,15 @@
     .brand {
         display: flex;
         align-items: center;
-        gap: 0.75rem;
+        gap: 0.65rem;
         font-weight: 700;
         color: var(--text);
     }
 
-    .emoji {
-        font-size: 1.2rem;
+    .logo {
+        width: 42px;
+        height: 42px;
+        display: block;
     }
 
     .brand-name {
@@ -133,6 +152,14 @@
         box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
     }
 
+    .actions {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
     .cta {
         background: var(--accent);
         color: #f8fbff;
@@ -152,6 +179,42 @@
         background: #0c5c99;
         transform: translateY(-1px);
         box-shadow: 0 14px 40px rgba(12, 92, 153, 0.26);
+    }
+
+    .user {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(15, 111, 184, 0.08);
+        border: 1px solid rgba(15, 111, 184, 0.18);
+        border-radius: 999px;
+        padding: 0.35rem 0.65rem;
+        color: #0b1f35;
+        font-weight: 700;
+    }
+
+    .pill {
+        background: #ffffff;
+        border-radius: 999px;
+        padding: 0.2rem 0.55rem;
+        font-size: 0.82rem;
+        border: 1px solid rgba(15, 111, 184, 0.18);
+    }
+
+    .email {
+        color: var(--muted);
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .auth-link {
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 700;
+    }
+
+    .auth-link:hover {
+        text-decoration: underline;
     }
 
     @media (max-width: 720px) {

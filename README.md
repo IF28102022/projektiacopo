@@ -2,6 +2,16 @@
 
 Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
 
+## Auth Setup
+
+Create a `.env` with the credentials for the new Login:
+
+- `AUTH_SECRET` – random long string for signing the session cookie.
+- `OWNER_EMAIL` / `OWNER_PASSWORD` – deine persönlichen Owner-Zugangsdaten.
+- `USER_PASSWORD` – gemeinsames Passwort für alle anderen Nutzer:innen (Leserechte).
+- Optional: Registrierungs-Flow legt Nutzer:innen in MongoDB (`users` Collection) an
+  und vergibt Rolle `user`. Owner-Rechte bleiben an die ENV-Credentials gebunden.
+
 ## Creating a project
 
 If you're seeing this, you've probably already done this step. Congrats!
