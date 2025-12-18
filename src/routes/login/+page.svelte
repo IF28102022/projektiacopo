@@ -47,13 +47,16 @@
                 {/if}
 
                 <label>
-                    E-Mail
+                    E-Mail (kann auch Fake/Platzhalter sein)
                     <input
                         name="email"
-                        type="email"
-                        placeholder="du@example.com"
+                        type="text"
+                        placeholder="z. B. gast oder fake@mail"
                         value={form?.email || ""}
                         required
+                        autocapitalize="none"
+                        autocomplete="off"
+                        spellcheck="false"
                     />
                 </label>
 
