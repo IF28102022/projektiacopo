@@ -43,11 +43,8 @@
         </nav>
 
         <div class="actions">
-            {#if isOwner}
-                <a class="cta" href="/spots/new">Neuer Spot</a>
-            {/if}
-
             {#if user}
+                <a class="cta" href="/spots/new">Neuer Spot</a>
                 <div class="user">
                     <span class="pill">{isOwner ? "Owner" : "Crew"}</span>
                     <span class="email">{user.email}</span>

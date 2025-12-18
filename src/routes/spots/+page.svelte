@@ -21,7 +21,7 @@
                         Helles Layout, glatte Cards, klare Typo.
                     </p>
                 </div>
-                {#if isOwner}
+                {#if data.user}
                     <a href="/spots/new" class="btn-primary">+ Neuer Spot</a>
                 {/if}
             </header>

@@ -1,15 +1,11 @@
 import { getDb } from "$lib/server/db";
-import { redirect } from "@sveltejs/kit";
-import { requireOwner } from "$lib/server/auth";
-
-export function load({ locals }) {
-    requireOwner(locals);
-    return {};
-}
+import { redirect, error } from "@sveltejs/kit";
 
 export const actions = {
     default: async ({ request, locals }) => {
-        requireOwner(locals);
+        if (!locals.user) {
+            throw error(401, "Bitte einloggen.");
+        }
 
         const form = await request.formData();
 
