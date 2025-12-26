@@ -1,22 +1,45 @@
+<script>
+    const year = new Date().getFullYear();
+</script>
+
 <footer class="footer">
     <div class="container">
         <div class="brand">
             <span class="emoji" aria-hidden="true">⛵️</span>
             <div>
                 <p class="brand-name">Segelspots</p>
-                <p class="brand-sub">Gepflegte Logbücher, helle UI.</p>
+                <p class="brand-sub">Logbücher, Spots und Crew-Notizen an einem Ort.</p>
             </div>
         </div>
 
-        <div class="links">
+        <div class="stack">
+            <p class="heading">Produkt</p>
             <a href="/spots">Spots</a>
             <a href="/map">Karte</a>
-            <a href="/spots/new">Neuer Spot</a>
+            <a href="/spots/new">Spot anlegen</a>
         </div>
 
-        <div class="note">
-            <span class="pill">Bald: KI-Ideen</span>
-            <p class="muted">Für ruhige Törns und klare Crews.</p>
+        <div class="stack">
+            <p class="heading">Support</p>
+            <a href="mailto:hallo@segelspots.app">Kontakt</a>
+            <a href="/ai">Updates & KI-Ideen</a>
+            <a href="/spots/new">Feedback geben</a>
+        </div>
+
+        <div class="stack">
+            <p class="heading">Rechtliches</p>
+            <span class="muted">Impressum (folgt)</span>
+            <span class="muted">Datenschutz (folgt)</span>
+            <span class="muted">Nutzungsbedingungen (folgen)</span>
+        </div>
+    </div>
+
+    <div class="footer-base">
+        <p>© {year} Segelspots. Für ruhige Törns und klare Crews.</p>
+        <div class="meta-links">
+            <span class="muted">Beta-Release</span>
+            <a href="mailto:hallo@segelspots.app">Support</a>
+            <a href="/ai">Changelog</a>
         </div>
     </div>
 </footer>
@@ -31,9 +54,9 @@
     .container {
         width: min(1180px, 100%);
         margin: 0 auto;
-        padding: 1.6rem 1.25rem 1.8rem;
+        padding: 1.6rem 1.25rem 1.2rem;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: 1rem;
         align-items: start;
     }
@@ -60,53 +83,72 @@
         font-size: 0.92rem;
     }
 
-    .links {
-        display: flex;
-        gap: 0.6rem;
-        flex-wrap: wrap;
-        align-items: center;
-    }
-
-    .links a {
-        color: var(--muted);
-        text-decoration: none;
-        font-weight: 600;
-        padding: 0.45rem 0.75rem;
-        border: 1px solid var(--border);
-        border-radius: 999px;
-        transition:
-            color 0.12s ease,
-            border-color 0.12s ease,
-            background 0.12s ease;
-    }
-
-    .links a:hover {
-        color: var(--accent);
-        border-color: var(--accent);
-        background: var(--accent-soft);
-    }
-
-    .note {
+    .stack {
         display: flex;
         flex-direction: column;
         gap: 0.35rem;
+        align-items: flex-start;
     }
 
-    .pill {
-        display: inline-flex;
-        align-items: center;
-        padding: 0.4rem 0.8rem;
-        border-radius: 999px;
-        background: var(--accent-soft);
-        color: var(--accent);
+    .heading {
+        margin: 0 0 0.15rem;
         font-weight: 700;
-        font-size: 0.85rem;
-        width: fit-content;
+        font-size: 0.95rem;
+        letter-spacing: 0.01em;
+    }
+
+    .stack a {
+        color: var(--muted);
+        text-decoration: none;
+        font-weight: 600;
+        padding: 0.35rem 0;
+        transition: color 0.12s ease;
+    }
+
+    .stack a:hover {
+        color: var(--accent);
     }
 
     .muted {
         margin: 0;
         color: var(--muted);
-        font-size: 0.95rem;
+        font-size: 0.92rem;
+    }
+
+    .footer-base {
+        width: min(1180px, 100%);
+        margin: 0 auto;
+        padding: 0.75rem 1.25rem 1.4rem;
+        border-top: 1px solid var(--border);
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .footer-base p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.92rem;
+        font-weight: 600;
+    }
+
+    .meta-links {
+        display: flex;
+        gap: 0.9rem;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .meta-links a {
+        color: var(--muted);
+        font-weight: 600;
+        text-decoration: none;
+        transition: color 0.12s ease;
+    }
+
+    .meta-links a:hover {
+        color: var(--accent);
     }
 </style>
