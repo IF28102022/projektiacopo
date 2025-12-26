@@ -167,10 +167,7 @@
                 <div>
                     <p class="eyebrow">Nautischer Spot</p>
                     <h1>Neuer Spot</h1>
-                    <p class="subtitle">
-                        Erfassung wie bei Navily & Co: Typ wählen, Nautik ausfüllen,
-                        Ausstattung nach Logik des Typs.
-                    </p>
+                    <p class="subtitle">Felder ausfüllen, Koordinaten setzen, speichern.</p>
                 </div>
                 <a class="ghost-link" href="/spots">Zurück zur Liste</a>
             </div>
@@ -180,7 +177,6 @@
                     <div class="group">
                         <div class="group-head">
                             <h3>Allgemein</h3>
-                            <p>Basisdaten für alle Spot-Typen.</p>
                         </div>
                         <div class="field-grid">
                             <label>
@@ -223,7 +219,6 @@
                     <div class="group">
                         <div class="group-head">
                             <h3>Nautik</h3>
-                            <p>Tiefe, Boden, Halten, Schutz & Schwell.</p>
                         </div>
                         <div class="field-grid">
                             <label>
@@ -290,7 +285,6 @@
                     <div class="group">
                         <div class="group-head">
                             <h3>Ausstattung</h3>
-                            <p>Optionen je nach Spot-Typ (automatisch gefiltert).</p>
                         </div>
                         <div class="facility-grid">
                             {#each visibleFacilities as facility}
@@ -310,7 +304,6 @@
                     <div class="group">
                         <div class="group-head">
                             <h3>Saison & Rating</h3>
-                            <p>Beste Reisezeit und deine Bewertung.</p>
                         </div>
                         <div class="field-grid">
                             <label>
@@ -355,7 +348,7 @@
                     <div class="group">
                         <div class="group-head">
                             <h3>Bild</h3>
-                            <p>Optionales Foto (Drag & Drop).</p>
+                            <p>Optional</p>
                         </div>
                         <input type="hidden" name="imageData" value={firstImage} />
                         <input type="hidden" name="imageDataList" value={imageDataListJson} />

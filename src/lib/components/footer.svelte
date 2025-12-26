@@ -8,7 +8,7 @@
             <span class="emoji" aria-hidden="true">⛵️</span>
             <div>
                 <p class="brand-name">Segelspots</p>
-                <p class="brand-sub">Logbücher, Spots und Crew-Notizen an einem Ort.</p>
+                <p class="brand-sub">Spots speichern und abrufen.</p>
             </div>
         </div>
 
@@ -22,8 +22,8 @@
         <div class="stack">
             <p class="heading">Support</p>
             <a href="mailto:hallo@segelspots.app">Kontakt</a>
-            <a href="/ai">Updates & KI-Ideen</a>
-            <a href="/spots/new">Feedback geben</a>
+            <a href="/ai">Updates</a>
+            <a href="/spots/new">Feedback</a>
         </div>
 
         <div class="stack">
@@ -35,7 +35,7 @@
     </div>
 
     <div class="footer-base">
-        <p>© {year} Segelspots. Für ruhige Törns und klare Crews.</p>
+        <p>© {year} Segelspots.</p>
         <div class="meta-links">
             <span class="muted">Beta-Release</span>
             <a href="mailto:hallo@segelspots.app">Support</a>

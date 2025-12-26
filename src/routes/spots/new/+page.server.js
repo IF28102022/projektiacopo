@@ -1,8 +1,19 @@
 import { getDb } from "$lib/server/db";
-import { redirect } from "@sveltejs/kit";
+import { redirect, fail } from "@sveltejs/kit";
+import { ObjectId } from "mongodb";
+
+export async function load({ locals }) {
+    if (!locals.user) throw redirect(303, "/login");
+    return {};
+}
 
 export const actions = {
-    default: async ({ request }) => {
+    default: async ({ request, locals }) => {
+        if (!locals.user) return fail(403, { error: "Nicht eingeloggt" });
+        const role = locals.user.role || "guest";
+        if (role !== "user" && role !== "admin") {
+            return fail(403, { error: "Keine Berechtigung" });
+        }
         const form = await request.formData();
 
         const name = String(form.get("name") || "").trim();
@@ -89,7 +100,8 @@ export const actions = {
             imageDataList, // alle Bilder als Base64
             lat,
             lng,
-            createdAt: new Date()
+            createdAt: new Date(),
+            ownerId: new ObjectId(locals.user.id)
         });
 
         throw redirect(303, "/spots");

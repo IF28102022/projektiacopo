@@ -3,12 +3,11 @@
 
     export let spots = [];
     export let action = "?/delete";
-    export let showDelete = true;
 </script>
 
 <div class="grid">
     {#each spots as spot}
-        <SpotCard {spot} {action} {showDelete} />
+        <SpotCard {spot} {action} showDelete={spot.canDelete} />
     {/each}
 </div>
 

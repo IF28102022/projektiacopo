@@ -119,12 +119,10 @@
             <div class="card">
                 <p class="label">Koordinaten</p>
                 <p class="value">{spot.lat}, {spot.lng}</p>
-                <p class="muted">In Dezimalgrad gespeichert.</p>
             </div>
             <div class="card">
                 <p class="label">Region</p>
                 <p class="value">{spot.region || "—"}</p>
-                <p class="muted">Land / Seegebiet</p>
             </div>
             <div class="card">
                 <p class="label">Beschreibung</p>

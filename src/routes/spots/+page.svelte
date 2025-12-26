@@ -16,14 +16,14 @@
             <div class="toolbar">
                 <div>
                     <p class="eyebrow">Spots</p>
-                    <h1>Deine Segel-Bibliothek</h1>
-                    <p class="subtitle">
-                        Dropbox-ähnliche Übersicht mit ruhigen Flächen, klarer Typo und Cards wie Dateien.
-                    </p>
+                    <h1>Segel-Spots</h1>
+                    <p class="subtitle">Alle Spots als schnelle Übersicht.</p>
                 </div>
                 <div class="toolbar-actions">
                     <span class="badge">{total} gespeichert</span>
-                    <a href="/spots/new" class="btn-primary">+ Neuer Spot</a>
+                    {#if data.canCreate}
+                        <a href="/spots/new" class="btn-primary">+ Neuer Spot</a>
+                    {/if}
                 </div>
             </div>
 
@@ -31,7 +31,7 @@
                 <div class="panel-head">
                     <div>
                         <p class="panel-title">Spots & Karte</p>
-                        <p class="panel-meta">Saubere Cards, klickbar wie Dateien</p>
+                        <p class="panel-meta">Liste und Karten-Link</p>
                     </div>
                     <a class="ghost-link" href="/map">Karte öffnen</a>
                 </div>
@@ -40,9 +40,11 @@
                     <div class="empty">
                         <div>
                             <p class="empty-title">Noch keine Spots gespeichert</p>
-                            <p class="empty-text">Lege den ersten Spot an und teile ihn wie eine Datei.</p>
+                            <p class="empty-text">Lege den ersten Spot an.</p>
                         </div>
-                        <a href="/spots/new" class="btn-primary ghost-btn">Jetzt starten</a>
+                        {#if data.canCreate}
+                            <a href="/spots/new" class="btn-primary ghost-btn">Jetzt starten</a>
+                        {/if}
                     </div>
                 {:else}
                     <SpotList spots={data.spots} action="?/delete" />

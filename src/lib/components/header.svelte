@@ -7,6 +7,9 @@
         { href: "/map", label: "Karte" },
         { href: "/ai", label: "KI" },
     ];
+
+    $: user = $page.data?.user || null;
+    $: canCreate = user && (user.role === "user" || user.role === "admin");
 </script>
 
 <header class="topbar">
@@ -15,7 +18,6 @@
             <span class="emoji" aria-hidden="true">⛵️</span>
             <div>
                 <p class="brand-name">Segelspots</p>
-                <p class="brand-sub">ruhig & klar</p>
             </div>
         </div>
 
@@ -39,7 +41,19 @@
             {/each}
         </nav>
 
-        <a class="cta" href="/spots/new">Neuer Spot</a>
+        <div class="actions">
+            {#if canCreate}
+                <a class="cta" href="/spots/new">Neuer Spot</a>
+            {/if}
+            {#if user}
+                <span class="user-pill">
+                    {user.email} · {user.role}
+                </span>
+                <a class="ghost" href="/logout">Logout</a>
+            {:else}
+                <a class="ghost" href="/login">Login</a>
+            {/if}
+        </div>
     </div>
 </header>
 
@@ -133,6 +147,13 @@
         box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
     }
 
+    .actions {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
     .cta {
         background: var(--accent);
         color: #f8fbff;
@@ -152,6 +173,29 @@
         background: #0c5c99;
         transform: translateY(-1px);
         box-shadow: 0 14px 40px rgba(12, 92, 153, 0.26);
+    }
+
+    .ghost {
+        border: 1px solid var(--border);
+        padding: 0.5rem 0.9rem;
+        border-radius: 999px;
+        text-decoration: none;
+        color: #1f2937;
+        font-weight: 600;
+        background: #fff;
+    }
+
+    .ghost:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+    }
+
+    .user-pill {
+        padding: 0.35rem 0.75rem;
+        border-radius: 999px;
+        background: #f2f4f8;
+        color: #1f2937;
+        font-weight: 600;
     }
 
     @media (max-width: 720px) {

@@ -3,6 +3,7 @@
     import { browser } from "$app/environment";
     import Header from "$lib/components/header.svelte";
     import Footer from "$lib/components/footer.svelte";
+    import { page } from "$app/stores";
 
     export let data;
 
@@ -66,6 +67,9 @@
             </div>
         `;
     }
+
+    $: user = $page.data?.user || null;
+    $: canCreate = user && (user.role === "user" || user.role === "admin");
 
     onMount(async () => {
         if (!browser) return;
@@ -137,14 +141,14 @@
                     <p class="eyebrow">Spot setzen</p>
                     <h1>Karte & Spots</h1>
                     <p class="subtitle">
-                        Klicke auf die Karte, um einen eigenen Spot zu setzen.
-                        Dezente Farben, klare Typografie, optimale Sicht auf die
-                        Küstenlinie.
+                        Klick in die Karte setzt einen Spot. Alle gespeicherten Spots werden als Marker angezeigt.
                     </p>
                 </div>
                 <div class="cta">
                     <a class="ghost-link" href="/spots">Zur Liste</a>
-                    <a class="btn-primary" href="/spots/new">Neuer Spot</a>
+                    {#if canCreate}
+                        <a class="btn-primary" href="/spots/new">Neuer Spot</a>
+                    {/if}
                 </div>
             </header>
 
