@@ -6,7 +6,33 @@ export async function load() {
 
     const spots = await db
         .collection("spots")
-        .find({})
+        .find(
+            {},
+            {
+                // Nur die wirklich benötigten Felder laden, um Base64-Blob-Transfers klein zu halten
+                projection: {
+                    name: 1,
+                    region: 1,
+                    description: 1,
+                    imageUrl: 1,
+                    imageData: 1,
+                    imageDataList: { $slice: 1 }, // nur erstes Bild als Preview
+                    spotType: 1,
+                    depthMin: 1,
+                    depthMax: 1,
+                    bottomType: 1,
+                    holdingQuality: 1,
+                    shelterWindDirections: 1,
+                    swellInfo: 1,
+                    facilities: 1,
+                    season: 1,
+                    rating: 1,
+                    notesSkipper: 1,
+                    lat: 1,
+                    lng: 1
+                }
+            }
+        )
         .sort({ createdAt: -1 })
         .toArray();
 

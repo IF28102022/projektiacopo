@@ -6,59 +6,37 @@
     const imageList = Array.isArray(spot?.imageDataList)
         ? spot.imageDataList.filter(Boolean)
         : [];
-    $: images = imageList.length
-        ? imageList
-        : (spot?.imageData ? [spot.imageData] : []).filter(Boolean);
-    $: fallbackImage = spot?.imageUrl || spot?.imageData || null;
-    let activeIndex = 0;
-    $: activeImage = images[activeIndex] || fallbackImage;
-
-    function nextImage() {
-        if (!images.length) return;
-        activeIndex = (activeIndex + 1) % images.length;
-    }
-
-    function prevImage() {
-        if (!images.length) return;
-        activeIndex = (activeIndex - 1 + images.length) % images.length;
-    }
+    $: coverImage =
+        (imageList[0] || spot?.imageData || spot?.imageUrl || "").trim() || null;
+    $: hasCoords = spot?.lat !== undefined && spot?.lng !== undefined;
 </script>
 
 <article class="card">
     <a class="card-link" href={`/spots/${spot.id}`}>
-        <div
-            class="card-bg"
-            style={activeImage
-                ? `background-image: linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.25) 70%), url(${activeImage})`
-                : ""}
-        >
-            {#if images.length > 1}
-                <button
-                    class="nav prev"
-                    type="button"
-                    on:click|preventDefault={prevImage}
-                    aria-label="Vorheriges Bild"
-                >
-                    ‹
-                </button>
-                <button
-                    class="nav next"
-                    type="button"
-                    on:click|preventDefault={nextImage}
-                    aria-label="Nächstes Bild"
-                >
-                    ›
-                </button>
-                <div class="dots">
-                    {#each images as img, idx}
-                        <span class:selected={idx === activeIndex}></span>
-                    {/each}
-                </div>
+        <div class="thumb" style={coverImage ? `background-image: url(${coverImage})` : ""}>
+            {#if !coverImage}
+                <div class="thumb-placeholder">🗺️</div>
             {/if}
-            <div class="info">
+        </div>
+        <div class="body">
+            <div class="title-row">
                 <h3>{spot.name}</h3>
-                {#if spot.region}
-                    <p class="muted region">📍 {spot.region}</p>
+                {#if spot.spotType}
+                    <span class="pill">{spot.spotType}</span>
+                {/if}
+            </div>
+            <p class="muted region">
+                📍 {spot.region || "Unbekannte Region"}{hasCoords ? ` · ${spot.lat}, ${spot.lng}` : ""}
+            </p>
+            <div class="meta">
+                {#if spot.depthMin || spot.depthMax}
+                    <span>{spot.depthMin ?? "?"}–{spot.depthMax ?? "?"} m</span>
+                {/if}
+                {#if spot.holdingQuality}
+                    <span>{spot.holdingQuality}</span>
+                {/if}
+                {#if spot.swellInfo}
+                    <span>{spot.swellInfo}</span>
                 {/if}
             </div>
         </div>
@@ -75,19 +53,20 @@
 <style>
     .card {
         position: relative;
-        border-radius: 1.2rem;
-        overflow: hidden;
-        box-shadow: 0 18px 50px rgba(12, 50, 94, 0.12);
+        border-radius: 0.9rem;
+        border: 1px solid #e4e8ee;
+        background: #ffffff;
+        box-shadow: 0 12px 36px rgba(0, 41, 112, 0.06);
         transition:
-            transform 0.16s ease,
-            box-shadow 0.16s ease;
-        min-height: 260px;
-        background: #e9eef6;
+            transform 0.14s ease,
+            box-shadow 0.14s ease;
+        min-height: 140px;
+        overflow: hidden;
     }
 
     .card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 26px 80px rgba(12, 50, 94, 0.16);
+        transform: translateY(-2px);
+        box-shadow: 0 16px 44px rgba(0, 41, 112, 0.1);
     }
 
     .card-link {
@@ -95,88 +74,77 @@
         text-decoration: none;
         display: block;
         height: 100%;
+        padding: 0.75rem 0.9rem 0.9rem;
+        display: grid;
+        grid-template-columns: 120px 1fr;
+        gap: 0.9rem;
     }
 
-    .card-bg {
-        height: 100%;
-        background: linear-gradient(
-            180deg,
-            rgba(0, 0, 0, 0.04),
-            rgba(0, 0, 0, 0.2)
-        );
+    .thumb {
+        border-radius: 0.75rem;
+        background: linear-gradient(135deg, #f3f6fb, #e9eef7);
         background-size: cover;
         background-position: center;
-        position: relative;
+        min-height: 110px;
+        display: grid;
+        place-items: center;
+        border: 1px solid #e6ebf2;
     }
 
-    .info {
-        position: absolute;
-        left: 1rem;
-        right: 1rem;
-        bottom: 1rem;
-        color: #f5f7fb;
-        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
+    .thumb-placeholder {
+        font-size: 1.6rem;
+        color: #7a8aa0;
+    }
+
+    .body {
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
     }
 
     h3 {
-        margin: 0 0 0.15rem;
-        font-size: 1.25rem;
-        color: #f8fbff;
+        margin: 0;
+        font-size: 1.1rem;
+        letter-spacing: -0.01em;
+    }
+
+    .title-row {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
     }
 
     .region {
         font-size: 0.95rem;
         margin: 0;
-        color: #e6ebf5;
     }
 
     .muted {
-        color: #d9e1ee;
+        color: #6a7a8f;
     }
 
-    .nav {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        background: rgba(255, 255, 255, 0.85);
-        border: 1px solid rgba(0, 0, 0, 0.08);
-        color: #0f172a;
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        display: grid;
-        place-items: center;
-        cursor: pointer;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
-    }
-
-    .nav.prev {
-        left: 10px;
-    }
-
-    .nav.next {
-        right: 10px;
-    }
-
-    .dots {
-        position: absolute;
-        left: 50%;
-        bottom: 0.65rem;
-        transform: translateX(-50%);
+    .meta {
         display: flex;
+        flex-wrap: wrap;
         gap: 0.35rem;
+        font-size: 0.93rem;
+        color: #5b6a7a;
     }
 
-    .dots span {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.5);
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    .meta span {
+        background: #f4f7fc;
+        border-radius: 999px;
+        padding: 0.25rem 0.6rem;
+        border: 1px solid #e2e7ef;
     }
 
-    .dots span.selected {
-        background: #fff;
+    .pill {
+        background: #e8f0ff;
+        color: #0f1e36;
+        border-radius: 999px;
+        padding: 0.2rem 0.65rem;
+        font-size: 0.85rem;
+        border: 1px solid #d7e4ff;
     }
 
     .delete-form {
@@ -187,15 +155,15 @@
     }
 
     .delete-btn {
-        background: #c53030;
-        color: white;
+        background: #ffffff;
+        color: #c53030;
         border: 0;
-        padding: 0.5rem 0.95rem;
-        border-radius: 0.6rem;
+        padding: 0.4rem 0.85rem;
+        border-radius: 0.55rem;
         font-size: 0.8rem;
-        font-weight: 600;
+        font-weight: 700;
         cursor: pointer;
-        box-shadow: 0 12px 30px rgba(197, 48, 48, 0.25);
+        box-shadow: 0 8px 24px rgba(197, 48, 48, 0.12);
         border: 1px solid rgba(197, 48, 48, 0.35);
         transition:
             transform 0.12s ease,
@@ -204,7 +172,7 @@
     }
 
     .delete-btn:hover {
-        background: #a32020;
+        background: #ffecec;
         transform: translateY(-1px);
     }
 </style>
