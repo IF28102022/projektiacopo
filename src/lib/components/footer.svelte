@@ -16,6 +16,7 @@
             <p class="heading">Produkt</p>
             <a href="/spots">Spots</a>
             <a href="/map">Karte</a>
+            <a href="/tour-planning">Tourplanung</a>
             <a href="/spots/new">Spot anlegen</a>
         </div>
 
