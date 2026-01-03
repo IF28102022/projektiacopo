@@ -3,11 +3,19 @@
 
     export let spots = [];
     export let action = "?/delete";
+    export let favoriteAction = "?/favorite";
+    export let canFavorite = false;
 </script>
 
 <div class="grid">
     {#each spots as spot}
-        <SpotCard {spot} {action} showDelete={spot.canDelete} />
+        <SpotCard
+            {spot}
+            {action}
+            {favoriteAction}
+            showDelete={spot.canDelete}
+            {canFavorite}
+        />
     {/each}
 </div>
 

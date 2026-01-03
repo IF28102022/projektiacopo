@@ -47,7 +47,12 @@
                         {/if}
                     </div>
                 {:else}
-                    <SpotList spots={data.spots} action="?/delete" />
+                    <SpotList
+                        spots={data.spots}
+                        action="?/delete"
+                        favoriteAction="?/favorite"
+                        canFavorite={data.canFavorite}
+                    />
                 {/if}
             </div>
         </div>

@@ -1,6 +1,8 @@
 <script>
     export let spot;
     export let action = "?/delete";
+    export let favoriteAction = "?/favorite";
+    export let canFavorite = false;
     export let showDelete = true;
 
     const imageList = Array.isArray(spot?.imageDataList)
@@ -11,6 +13,21 @@
 </script>
 
 <article class="card">
+    {#if canFavorite}
+        <form method="POST" action={favoriteAction} class="favorite-form">
+            <input type="hidden" name="id" value={spot.id} />
+            <button
+                type="submit"
+                class:favorited={spot.isFavorite}
+                aria-pressed={spot.isFavorite}
+                aria-label={spot.isFavorite ? "Favorit entfernen" : "Als Favorit markieren"}
+                title={spot.isFavorite ? "Favorit entfernen" : "Als Favorit markieren"}
+            >
+                {spot.isFavorite ? "★" : "☆"}
+            </button>
+        </form>
+    {/if}
+
     <a class="card-link" href={`/spots/${spot.id}`}>
         <div class="thumb" style={coverImage ? `background-image: url(${coverImage})` : ""}>
             {#if !coverImage}
@@ -78,6 +95,45 @@
         margin: 0;
         font-size: 1.05rem;
         letter-spacing: -0.01em;
+    }
+
+    .favorite-form {
+        position: absolute;
+        top: 0.65rem;
+        right: 0.65rem;
+        z-index: 2;
+        margin: 0;
+    }
+
+    .favorite-form button {
+        background: #ffffff;
+        border: 1px solid #d7e4ff;
+        color: #7a8aa0;
+        border-radius: 50%;
+        width: 38px;
+        height: 38px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        box-shadow: 0 10px 28px rgba(0, 41, 112, 0.1);
+        transition:
+            transform 0.12s ease,
+            box-shadow 0.12s ease,
+            color 0.12s ease,
+            background 0.12s ease;
+    }
+
+    .favorite-form button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 32px rgba(0, 41, 112, 0.14);
+        color: #0f6fb8;
+        background: #f2f7ff;
+    }
+
+    .favorite-form button.favorited {
+        color: #f59e0b;
+        border-color: #fde9c3;
+        background: #fffaf0;
+        box-shadow: 0 12px 30px rgba(245, 158, 11, 0.2);
     }
 
     .delete-form {

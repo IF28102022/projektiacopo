@@ -34,7 +34,8 @@ export async function load({ locals }) {
                     notesSkipper: 1,
                     lat: 1,
                     lng: 1,
-                    ownerId: 1
+                    ownerId: 1,
+                    favorites: 1
                 }
             }
         )
@@ -45,11 +46,20 @@ export async function load({ locals }) {
         userRole: role,
         userId,
         canCreate: role === "admin" || role === "user",
+        canFavorite: role === "admin" || role === "user",
         spots: spots.map((s) => {
             const ownerId = s.ownerId ? s.ownerId.toString() : null;
             const canDelete =
                 role === "admin" ||
                 (role === "user" && ownerId && userId && ownerId === userId);
+            const favorites = Array.isArray(s.favorites) ? s.favorites : [];
+            const isFavorite =
+                !!userId &&
+                favorites.some((fav) =>
+                    (fav && typeof fav.toString === "function"
+                        ? fav.toString()
+                        : String(fav)) === userId
+                );
             return {
                 id: s._id.toString(),
                 name: s.name,
@@ -71,7 +81,8 @@ export async function load({ locals }) {
                 notesSkipper: s.notesSkipper,
                 lat: s.lat,
                 lng: s.lng,
-                canDelete
+                canDelete,
+                isFavorite
             };
         })
     };
@@ -101,5 +112,47 @@ export const actions = {
         await db.collection("spots").deleteOne({ _id: new ObjectId(id) });
 
         return { success: true };
+    },
+    favorite: async ({ request, locals }) => {
+        const user = locals.user;
+        if (!user) return fail(403, { error: "Nicht eingeloggt" });
+        const userId = user.id;
+        if (!userId) return fail(400, { error: "Kein User gefunden" });
+        if (user.role !== "user" && user.role !== "admin") {
+            return fail(403, { error: "Keine Berechtigung" });
+        }
+
+        const form = await request.formData();
+        const id = form.get("id");
+        if (!id) return fail(400, { error: "Keine ID übergeben" });
+
+        const db = await getDb();
+        const spot = await db
+            .collection("spots")
+            .findOne({ _id: new ObjectId(id) }, { projection: { favorites: 1 } });
+
+        if (!spot) return fail(404, { error: "Spot nicht gefunden" });
+
+        const favorites = Array.isArray(spot.favorites) ? spot.favorites : [];
+        const userObjectId = new ObjectId(userId);
+        const hasFavorite = favorites.some(
+            (fav) =>
+                (fav && typeof fav.toString === "function"
+                    ? fav.toString()
+                    : String(fav)) === userId
+        );
+
+        if (hasFavorite) {
+            await db
+                .collection("spots")
+                .updateOne({ _id: new ObjectId(id) }, { $pull: { favorites: userObjectId } });
+            return { favorited: false };
+        }
+
+        await db
+            .collection("spots")
+            .updateOne({ _id: new ObjectId(id) }, { $addToSet: { favorites: userObjectId } });
+
+        return { favorited: true };
     }
 };

@@ -101,7 +101,8 @@ export const actions = {
             lat,
             lng,
             createdAt: new Date(),
-            ownerId: new ObjectId(locals.user.id)
+            ownerId: new ObjectId(locals.user.id),
+            favorites: []
         });
 
         throw redirect(303, "/spots");
