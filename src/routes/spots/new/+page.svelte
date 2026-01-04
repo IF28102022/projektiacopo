@@ -83,9 +83,9 @@
         const L = (await import("leaflet")).default;
 
         map = L.map("select-map", {
-            center: [42, 15],
-            zoom: 5,
-            minZoom: 3,
+            center: [46.5, 10],
+            zoom: 4,
+            minZoom: 2,
             maxZoom: 12,
         });
 

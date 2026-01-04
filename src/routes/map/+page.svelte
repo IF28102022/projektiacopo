@@ -77,8 +77,8 @@
         const L = (await import("leaflet")).default;
 
         map = L.map("map", {
-            center: [48, 8],
-            zoom: 5,
+            center: [46.5, 10],
+            zoom: 4,
         });
 
         // --- OpenStreetMap Basis-Karte ---
@@ -110,8 +110,10 @@
             markersInView.push([lat, lng]);
         }
 
-        if (markersInView.length) {
+        if (markersInView.length > 1) {
             map.fitBounds(markersInView, { padding: [40, 40] });
+        } else if (markersInView.length === 1) {
+            map.setView(markersInView[0], 5);
         }
 
         // Click → Marker

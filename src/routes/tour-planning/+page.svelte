@@ -46,8 +46,8 @@
         const L = (await import("leaflet")).default;
 
         map = L.map("tour-map", {
-            center: [48, 8],
-            zoom: 5,
+            center: [46.5, 10],
+            zoom: 4,
         });
 
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -65,14 +65,14 @@
             const lng = Number(spot.lng);
             if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
 
-            L.marker([lat, lng])
-                .addTo(map)
-                .bindPopup(buildPopup(spot));
+            L.marker([lat, lng]).addTo(map).bindPopup(buildPopup(spot));
             markersInView.push([lat, lng]);
         }
 
-        if (markersInView.length) {
+        if (markersInView.length > 1) {
             map.fitBounds(markersInView, { padding: [40, 40] });
+        } else if (markersInView.length === 1) {
+            map.setView(markersInView[0], 5);
         }
 
         map.on("click", (e) => {
@@ -82,7 +82,9 @@
 
             currentMarker = L.marker([lat, lng])
                 .addTo(map)
-                .bindPopup(`Spot gesetzt<br>${lat.toFixed(4)}, ${lng.toFixed(4)}`)
+                .bindPopup(
+                    `Spot gesetzt<br>${lat.toFixed(4)}, ${lng.toFixed(4)}`,
+                )
                 .openPopup();
         });
 
@@ -114,9 +116,14 @@
                 <p class="start-eyebrow">Tourplanung</p>
                 <h1>Starte deinen Törn-Plan.</h1>
                 <p class="start-subtitle">
-                    Button klicken – danach siehst du Karte und alle Spots zur Routenplanung.
+                    Button klicken – danach siehst du Karte und alle Spots zur
+                    Routenplanung.
                 </p>
-                <button class="start-btn" type="button" on:click={startPlanning}>
+                <button
+                    class="start-btn"
+                    type="button"
+                    on:click={startPlanning}
+                >
                     Tour planen
                 </button>
             </div>
@@ -130,13 +137,16 @@
                             <span class="dot accent"></span>
                             <p class="panel-title">Karte</p>
                         </div>
-                        <p class="panel-meta">Marker & Klick für neue Position</p>
+                        <p class="panel-meta">
+                            Marker & Klick für neue Position
+                        </p>
                     </div>
                     <div class="map-wrapper">
                         <div id="tour-map"></div>
                     </div>
                     <p class="panel-foot">
-                        Spots aus der Datenbank sind als Marker gesetzt. Klick in die Karte setzt einen Marker zum Planen.
+                        Spots aus der Datenbank sind als Marker gesetzt. Klick
+                        in die Karte setzt einen Marker zum Planen.
                     </p>
                 </div>
 
@@ -144,18 +154,26 @@
                     <div class="panel-head">
                         <div>
                             <p class="panel-title">Spots</p>
-                            <p class="panel-meta">Alle Spots als Karten-Liste</p>
+                            <p class="panel-meta">
+                                Alle Spots als Karten-Liste
+                            </p>
                         </div>
-                        <a class="ghost-link" href="/spots">Zur Spot-Übersicht</a>
+                        <a class="ghost-link" href="/spots"
+                            >Zur Spot-Übersicht</a
+                        >
                     </div>
 
                     {#if !data?.spots?.length}
                         <div class="empty">
                             <div>
                                 <p class="empty-title">Keine Spots vorhanden</p>
-                                <p class="empty-text">Lege Spots an, um sie hier zu sehen.</p>
+                                <p class="empty-text">
+                                    Lege Spots an, um sie hier zu sehen.
+                                </p>
                             </div>
-                            <a href="/spots/new" class="btn-primary ghost-btn">Spot anlegen</a>
+                            <a href="/spots/new" class="btn-primary ghost-btn"
+                                >Spot anlegen</a
+                            >
                         </div>
                     {:else}
                         <SpotList
@@ -212,7 +230,12 @@
         min-height: calc(100vh - 80px);
         display: grid;
         place-items: center;
-        background: linear-gradient(135deg, #f7f4ec 0%, #ffffff 45%, #f0f5ff 100%);
+        background: linear-gradient(
+            135deg,
+            #f7f4ec 0%,
+            #ffffff 45%,
+            #f0f5ff 100%
+        );
         padding: 2rem 1.5rem;
     }
 
