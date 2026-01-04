@@ -2,6 +2,7 @@
     import Header from "$lib/components/header.svelte";
     import Footer from "$lib/components/footer.svelte";
     import SpotList from "$lib/components/SpotList.svelte";
+    import RouteBuilder from "$lib/components/tour/RouteBuilder.svelte";
     import { browser } from "$app/environment";
     import { tick, onDestroy } from "svelte";
 
@@ -9,8 +10,12 @@
 
     let started = false;
     let map;
+    let leaflet;
     let currentMarker = null;
     let mapInitialized = false;
+    let routeLayer = null;
+    let routeMarkers = [];
+    let routeInfo = null;
 
     const typeIcons = {
         Ankerplatz: "⚓",
@@ -44,6 +49,7 @@
         if (!browser || mapInitialized) return;
 
         const L = (await import("leaflet")).default;
+        leaflet = L;
 
         map = L.map("tour-map", {
             center: [46.5, 10],
@@ -99,7 +105,55 @@
         anchor?.scrollIntoView({ behavior: "smooth" });
     }
 
+    function clearRoute() {
+        if (routeLayer) {
+            routeLayer.remove();
+            routeLayer = null;
+        }
+        routeMarkers.forEach((m) => m.remove?.());
+        routeMarkers = [];
+        routeInfo = null;
+    }
+
+    async function handleRouteComputed(event) {
+        const { geometry, spots, distance, duration } = event.detail;
+        if (!mapInitialized) await initMap();
+        if (!leaflet) leaflet = (await import("leaflet")).default;
+
+        clearRoute();
+        routeInfo = { distance, duration, count: spots?.length || 0 };
+
+        const latLngs =
+            geometry?.coordinates?.map(([lng, lat]) => [Number(lat), Number(lng)]) || [];
+
+        if (latLngs.length) {
+            routeLayer = leaflet.polyline(latLngs, {
+                color: "#0f6fb8",
+                weight: 4,
+                opacity: 0.85,
+            }).addTo(map);
+            map.fitBounds(leaflet.latLngBounds(latLngs), { padding: [40, 40] });
+        }
+
+        if (Array.isArray(spots)) {
+            routeMarkers = spots
+                .map((spot, idx) => {
+                    if (!Number.isFinite(spot.lat) || !Number.isFinite(spot.lng)) return null;
+                    const icon = leaflet.divIcon({
+                        className: "route-marker",
+                        html: `<span>${idx + 1}</span>`,
+                        iconSize: [28, 28],
+                    });
+                    const marker = leaflet.marker([spot.lat, spot.lng], { icon }).addTo(map);
+                    marker.bindPopup(`${idx + 1}. ${spot.name || "Spot"}`);
+                    return marker;
+                })
+                .filter(Boolean);
+        }
+    }
+
     onDestroy(() => {
+        clearRoute();
         if (map) {
             map.remove();
             map = null;
@@ -148,6 +202,13 @@
                         Spots aus der Datenbank sind als Marker gesetzt. Klick
                         in die Karte setzt einen Marker zum Planen.
                     </p>
+                    {#if routeInfo}
+                        <p class="panel-foot stats">
+                            Route: {(routeInfo.distance / 1000).toFixed(1)} km
+                            · {(routeInfo.duration / 60).toFixed(0)} min
+                            · {routeInfo.count} Spots
+                        </p>
+                    {/if}
                 </div>
 
                 <div class="panel list-panel">
@@ -184,6 +245,14 @@
                         />
                     {/if}
                 </div>
+            </div>
+
+            <div class="container builder-container">
+                <RouteBuilder
+                    spots={data.spots}
+                    on:routeComputed={handleRouteComputed}
+                    on:routeCleared={clearRoute}
+                />
             </div>
         </section>
     {/if}
@@ -392,6 +461,11 @@
         font-size: 0.95rem;
     }
 
+    .panel-foot.stats {
+        font-weight: 700;
+        color: #0f172a;
+    }
+
     .list-panel .ghost-link {
         color: var(--muted);
         text-decoration: none;
@@ -456,6 +530,23 @@
         color: var(--accent);
         border: 1px solid var(--accent);
         box-shadow: none;
+    }
+
+    .builder-container {
+        margin-top: 1rem;
+    }
+
+    :global(.route-marker) {
+        background: #0f6fb8;
+        color: #fff;
+        border-radius: 50%;
+        width: 28px;
+        height: 28px;
+        display: grid;
+        place-items: center;
+        border: 2px solid #fff;
+        font-weight: 800;
+        box-shadow: 0 8px 22px rgba(15, 111, 184, 0.28);
     }
 
     :global(.leaflet-control-attribution) {

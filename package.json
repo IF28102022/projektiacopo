@@ -19,6 +19,7 @@
 	},
 	"dependencies": {
 		"leaflet": "^1.9.4",
-		"mongodb": "^7.0.0"
+		"mongodb": "^7.0.0",
+		"svelte-dnd-action": "^0.9.69"
 	}
 }

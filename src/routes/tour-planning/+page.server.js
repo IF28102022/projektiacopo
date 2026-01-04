@@ -1,6 +1,10 @@
 import { getDb } from "$lib/server/db";
 
-export async function load() {
+export async function load({ locals }) {
+    const user = locals.user || null;
+    const userId = user?.id || null;
+    const role = user?.role || "guest";
+
     const db = await getDb();
 
     const spots = await db
@@ -21,6 +25,7 @@ export async function load() {
                     depthMin: 1,
                     depthMax: 1,
                     facilities: 1,
+                    favorites: 1,
                     createdAt: 1
                 }
             }
@@ -28,8 +33,16 @@ export async function load() {
         .sort({ createdAt: -1 })
         .toArray();
 
-    return {
-        spots: spots.map((spot) => ({
+    const mapped = spots.map((spot) => {
+        const favs = Array.isArray(spot.favorites) ? spot.favorites : [];
+        const isFavorite =
+            !!userId &&
+            favs.some((fav) =>
+                (fav && typeof fav.toString === "function" ? fav.toString() : String(fav)) ===
+                userId
+            );
+
+        return {
             id: spot._id.toString(),
             name: spot.name,
             spotType: spot.spotType,
@@ -42,7 +55,17 @@ export async function load() {
             lng: spot.lng,
             depthMin: spot.depthMin,
             depthMax: spot.depthMax,
-            facilities: spot.facilities || []
-        }))
+            facilities: spot.facilities || [],
+            isFavorite
+        };
+    });
+
+    const favorites = mapped.filter((s) => s.isFavorite);
+    const spotsForPlanning = favorites.length ? favorites : mapped;
+
+    return {
+        role,
+        userId,
+        spots: spotsForPlanning
     };
 }
