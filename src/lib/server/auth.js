@@ -1,5 +1,5 @@
 import { randomBytes, scryptSync, timingSafeEqual, createHmac } from "crypto";
-import { AUTH_SECRET, ADMIN_EMAIL, ADMIN_PASSWORD } from "$env/static/private";
+import { env } from "$env/dynamic/private";
 import { ObjectId } from "mongodb";
 import { getDb } from "$lib/server/db";
 
@@ -7,10 +7,11 @@ const SESSION_COOKIE = "session";
 const SESSION_MAX_AGE = 60 * 60 * 24 * 30; // 30 Tage
 
 function getSecret() {
-    if (!AUTH_SECRET) {
+    const secret = env.AUTH_SECRET;
+    if (!secret) {
         throw new Error("AUTH_SECRET ist nicht gesetzt");
     }
-    return AUTH_SECRET;
+    return secret;
 }
 
 export function hashPassword(password) {
@@ -94,21 +95,23 @@ let adminSeeded = false;
 export async function ensureAdminSeed() {
     if (adminSeeded) return;
     adminSeeded = true;
-    if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
+    const adminEmail = env.ADMIN_EMAIL;
+    const adminPassword = env.ADMIN_PASSWORD;
+    if (!adminEmail || !adminPassword) {
         console.warn("ADMIN_EMAIL/ADMIN_PASSWORD nicht gesetzt – kein Admin-Seed erstellt.");
         return;
     }
     const db = await getDb();
-    const existing = await db.collection("users").findOne({ email: ADMIN_EMAIL.toLowerCase() });
+    const existing = await db.collection("users").findOne({ email: adminEmail.toLowerCase() });
     if (existing) return;
-    const passwordHash = hashPassword(ADMIN_PASSWORD);
+    const passwordHash = hashPassword(adminPassword);
     await db.collection("users").insertOne({
-        email: ADMIN_EMAIL.toLowerCase(),
+        email: adminEmail.toLowerCase(),
         passwordHash,
         role: "admin",
         createdAt: new Date()
     });
-    console.log("Admin-User angelegt:", ADMIN_EMAIL);
+    console.log("Admin-User angelegt:", adminEmail);
 }
 
 export function toObjectId(value) {
