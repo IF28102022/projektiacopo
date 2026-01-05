@@ -5,9 +5,7 @@
         { href: "/", label: "Home" },
         { href: "/spots", label: "Spots" },
         { href: "/map", label: "Karte" },
-        { href: "/tour-planning", label: "Tourplanung" },
-        { href: "/ai", label: "KI" },
-        { href: "/login", label: "Login" }
+        { href: "/tour-planning", label: "Tourplanung" }
     ];
 
     $: user = $page.data?.user || null;

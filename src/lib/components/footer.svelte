@@ -23,8 +23,8 @@
         <div class="stack">
             <p class="heading">Support</p>
             <a href="mailto:hallo@segelspots.app">Kontakt</a>
-            <a href="/ai">Updates</a>
             <a href="/spots/new">Feedback</a>
+            <span class="muted">Updates (folgt)</span>
         </div>
 
         <div class="stack">
@@ -40,7 +40,7 @@
         <div class="meta-links">
             <span class="muted">Beta-Release</span>
             <a href="mailto:hallo@segelspots.app">Support</a>
-            <a href="/ai">Changelog</a>
+            <span class="muted">Changelog (folgt)</span>
         </div>
     </div>
 </footer>
