@@ -3,6 +3,7 @@
     import { browser } from "$app/environment";
     import Header from "$lib/components/header.svelte";
     import Footer from "$lib/components/footer.svelte";
+    import Hero from "$lib/components/Hero.svelte";
     import { page } from "$app/stores";
 
     export let data;
@@ -136,6 +137,17 @@
 <Header />
 
 <main class="page">
+    <Hero
+        eyebrow="Karte"
+        title="Finde den nächsten Kurs"
+        subtitle="Alle Spots auf einen Blick. Setze neue Marker, prüfe Tiefen und plane den nächsten Schlag."
+        ctaText="Zur Spot-Liste →"
+        ctaHref="/spots"
+        backgroundImageUrl="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80"
+        align="left"
+        overlayStrength={0.6}
+    />
+
     <section class="section">
         <div class="container">
             <header class="header">
@@ -205,6 +217,9 @@
     /* PAGE */
     .page {
         min-height: 100vh;
+        background: linear-gradient(180deg, rgba(248, 247, 243, 0.92), rgba(243, 246, 255, 0.9)),
+            url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80")
+                center/cover no-repeat fixed;
     }
 
     .container {
@@ -216,6 +231,8 @@
     /* SECTION */
     .section {
         padding: 2.8rem 0 3.2rem;
+        background: rgba(255, 255, 255, 0.78);
+        backdrop-filter: blur(6px);
     }
 
     .section h1 {
@@ -294,9 +311,9 @@
 
     .panel {
         background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
-        border-radius: 1.2rem;
-        border: 1px solid rgba(15, 111, 184, 0.08);
-        box-shadow: 0 18px 50px rgba(12, 50, 94, 0.08);
+        border-radius: 1.25rem;
+        border: 1px solid rgba(15, 111, 184, 0.1);
+        box-shadow: 0 24px 60px rgba(12, 50, 94, 0.08);
         overflow: hidden;
     }
 

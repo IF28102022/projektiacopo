@@ -166,6 +166,7 @@
 <main class="page">
     {#if !started}
         <section class="start-screen">
+            <div class="start-overlay"></div>
             <div class="start-card">
                 <p class="start-eyebrow">Tourplanung</p>
                 <h1>Starte deinen Törn-Plan.</h1>
@@ -277,7 +278,9 @@
     :global(body) {
         margin: 0;
         font-family: "Manrope", "Inter", system-ui, sans-serif;
-        background: linear-gradient(180deg, #f8f7f3 0%, #f3f6ff 100%);
+        background: linear-gradient(180deg, rgba(248, 247, 243, 0.92), rgba(243, 246, 255, 0.9)),
+            url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80")
+                center/cover no-repeat fixed;
         color: var(--text);
         line-height: 1.6;
         -webkit-font-smoothing: antialiased;
@@ -293,30 +296,31 @@
         min-height: 100vh;
         display: flex;
         flex-direction: column;
+        background: linear-gradient(180deg, rgba(248, 247, 243, 0.92), rgba(243, 246, 255, 0.9)),
+            url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80")
+                center/cover no-repeat fixed;
     }
 
     .start-screen {
+        position: relative;
         min-height: calc(100vh - 80px);
         display: grid;
         place-items: center;
-        background: linear-gradient(
-            135deg,
-            #f7f4ec 0%,
-            #ffffff 45%,
-            #f0f5ff 100%
-        );
         padding: 2rem 1.5rem;
+        overflow: hidden;
     }
 
     .start-card {
         max-width: 620px;
         width: min(620px, 100%);
-        background: #ffffff;
-        border: 1px solid rgba(15, 111, 184, 0.08);
-        box-shadow: 0 24px 80px rgba(12, 50, 94, 0.12);
+        background: rgba(255, 255, 255, 0.86);
+        border: 1px solid rgba(15, 111, 184, 0.12);
+        box-shadow: 0 24px 80px rgba(12, 50, 94, 0.16);
         border-radius: 1.4rem;
         padding: 2rem 2.4rem;
         text-align: center;
+        position: relative;
+        z-index: 2;
     }
 
     .start-eyebrow {
@@ -377,9 +381,18 @@
         transform: translateY(0);
     }
 
+    .start-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(10, 18, 28, 0.2), rgba(10, 18, 28, 0.4));
+        z-index: 1;
+        backdrop-filter: blur(2px);
+    }
+
     .planner {
         padding: 2.5rem 0 2.8rem;
-        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(8px);
     }
 
     .container {

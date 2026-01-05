@@ -2,27 +2,43 @@
     import Header from "$lib/components/header.svelte";
     import Footer from "$lib/components/footer.svelte";
     import SpotList from "$lib/components/SpotList.svelte";
+    import Hero from "$lib/components/Hero.svelte";
 
     export let data;
 
     const total = data.spots.length;
+    const heroImage =
+        "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1600&q=80";
 </script>
 
 <Header />
 
 <main class="page">
+    <Hero
+        eyebrow="SailSpots"
+        title="Curated Spots for Golden Hour Moorings"
+        subtitle="Sanfte Sonnenuntergänge, ruhige Buchten und sichere Häfen – entdeckt, bewertet und bereit für deinen nächsten Törn."
+        ctaText="Spots entdecken →"
+        ctaHref="/map"
+        backgroundImageUrl={heroImage}
+        align="left"
+        overlayStrength={0.55}
+    />
+
     <section class="section">
         <div class="container">
-            <div class="toolbar">
+            <div class="intro">
                 <div>
                     <p class="eyebrow">Spots</p>
-                    <h1>Segel-Spots</h1>
-                    <p class="subtitle">Alle Spots als schnelle Übersicht.</p>
+                    <h2>Alle Orte, eine ruhige Übersicht</h2>
+                    <p class="subtitle">
+                        Finde deinen nächsten Ankerplatz in Sekunden. Filtern, merken, auf der Karte öffnen.
+                    </p>
                 </div>
                 <div class="toolbar-actions">
                     <span class="badge">{total} gespeichert</span>
                     {#if data.canCreate}
-                        <a href="/spots/new" class="btn-primary">+ Neuer Spot</a>
+                        <a href="/spots/new" class="ghost-link">+ Neuer Spot</a>
                     {/if}
                 </div>
             </div>
@@ -43,7 +59,7 @@
                             <p class="empty-text">Lege den ersten Spot an.</p>
                         </div>
                         {#if data.canCreate}
-                            <a href="/spots/new" class="btn-primary ghost-btn">Jetzt starten</a>
+                            <a href="/spots/new" class="ghost-link">Jetzt starten</a>
                         {/if}
                     </div>
                 {:else}
@@ -65,14 +81,14 @@
     @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap");
 
     :global(:root) {
-        --bg: #f6f9fc;
+        --bg: #f7f4ee;
         --card: #ffffff;
-        --text: #0f1e36;
-        --muted: #5b6a7a;
-        --border: #e4e8ee;
-        --accent: #0061ff;
-        --accent-soft: #e8f0ff;
-        --shadow: 0 18px 60px rgba(0, 41, 112, 0.08);
+        --text: #111820;
+        --muted: #4a5563;
+        --border: #e7e4dd;
+        --accent: #0f6fb8;
+        --accent-soft: #e6f0fa;
+        --shadow: 0 18px 60px rgba(12, 40, 70, 0.08);
         --danger: #c53030;
     }
 
@@ -93,6 +109,7 @@
 
     .page {
         min-height: 100vh;
+        background: var(--bg);
     }
 
     .container {
@@ -102,14 +119,15 @@
     }
 
     .section {
-        padding: 2.5rem 0 3rem;
+        padding: 2.5rem 0 3.4rem;
+        background: linear-gradient(180deg, #f7f4ee 0%, #f4f1ea 100%);
     }
 
-    .toolbar {
+    .intro {
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        margin-bottom: 1.2rem;
+        margin-bottom: 1.4rem;
         gap: 1rem;
         flex-wrap: wrap;
     }
@@ -118,16 +136,18 @@
         display: inline-flex;
         align-items: center;
         gap: 0.45rem;
-        background: var(--accent-soft);
-        color: var(--accent);
-        padding: 0.4rem 0.8rem;
+        background: #f0ebe0;
+        color: #5b4636;
+        padding: 0.35rem 0.8rem;
         border-radius: 999px;
         font-weight: 700;
         font-size: 0.85rem;
-        margin-bottom: 0.25rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 0.2rem;
     }
 
-    h1 {
+    h2 {
         margin: 0;
         font-size: 2.1rem;
         letter-spacing: -0.02em;
@@ -140,42 +160,24 @@
         max-width: 640px;
     }
 
-    .btn-primary {
-        background: var(--accent);
-        color: #f8fbff;
+    .ghost-link {
+        color: #1f2937;
         text-decoration: none;
-        padding: 0.6rem 1.3rem;
-        border-radius: 999px;
-        font-weight: 700;
-        box-shadow: 0 14px 45px rgba(15, 111, 184, 0.24);
-        border: 1px solid transparent;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-        white-space: nowrap;
-    }
-
-    .btn-primary:hover {
-        background: #0c5c99;
-        transform: translateY(-1px);
-    }
-
-    .ghost-btn {
+        font-weight: 600;
+        padding: 0.5rem 0.95rem;
+        border-radius: 0.65rem;
+        border: 1px solid var(--border);
         background: #ffffff;
-        color: var(--accent);
-        border: 1px solid var(--accent);
-        box-shadow: none;
+        transition:
+            color 0.12s ease,
+            border-color 0.12s ease,
+            background 0.12s ease;
     }
 
-    .ghost-btn:hover {
-        background: var(--accent-soft);
-    }
-
-    .toolbar-actions {
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-        flex-wrap: wrap;
+    .ghost-link:hover {
+        color: #0f1f35;
+        border-color: #d5cfc3;
+        background: #f9f7f2;
     }
 
     .badge {
@@ -187,11 +189,18 @@
         border: 1px solid #d7e4ff;
     }
 
+    .toolbar-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        flex-wrap: wrap;
+    }
+
     .panel {
         background: var(--card);
         border: 1px solid var(--border);
         border-radius: 1rem;
-        box-shadow: 0 12px 45px rgba(0, 41, 112, 0.08);
+        box-shadow: 0 12px 45px rgba(12, 40, 70, 0.06);
         padding: 1.1rem;
     }
 
@@ -217,22 +226,6 @@
         font-size: 0.95rem;
     }
 
-    .ghost-link {
-        color: var(--muted);
-        text-decoration: none;
-        font-weight: 600;
-        padding: 0.45rem 0.9rem;
-        border-radius: 0.65rem;
-        border: 1px solid var(--border);
-        background: #f8fafd;
-    }
-
-    .ghost-link:hover {
-        color: var(--accent);
-        border-color: var(--accent);
-        background: var(--accent-soft);
-    }
-
     .empty {
         display: flex;
         align-items: center;
@@ -240,7 +233,7 @@
         gap: 1rem;
         flex-wrap: wrap;
         padding: 1rem 1.25rem;
-        background: #f9fbff;
+        background: #f9f7f2;
         border: 1px dashed var(--border);
         border-radius: 0.9rem;
     }

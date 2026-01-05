@@ -7,27 +7,12 @@
 </svelte:head>
 
 <script>
+    import Header from "$lib/components/header.svelte";
     import Footer from "$lib/components/footer.svelte";
-
-    const links = [
-        { href: "/", label: "Home" },
-        { href: "/spots", label: "Spots" },
-        { href: "/map", label: "Map" },
-        { href: "/ai", label: "AI" },
-        { href: "/tour-planning", label: "Tourplanning" },
-        { href: "/login", label: "Login" }
-    ];
 </script>
 
 <main class="page">
-    <nav class="nav">
-        <div class="brand">SailSpots</div>
-        <div class="links">
-            {#each links as link}
-                <a href={link.href}>{link.label}</a>
-            {/each}
-        </div>
-    </nav>
+    <Header />
 
     <section class="hero">
         <div class="hero-image" aria-hidden="true"></div>
@@ -72,45 +57,13 @@
         color: #0f1f1f;
     }
 
-    .nav {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 10;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1.2rem 1.6rem;
-        mix-blend-mode: difference;
-        color: #f7f6f4;
-        font-weight: 600;
-        letter-spacing: 0.02em;
-    }
-
-    .nav a {
-        color: inherit;
-        text-decoration: none;
-        margin-left: 1rem;
-        font-weight: 600;
-    }
-
-    .nav a:hover {
-        text-decoration: underline;
-    }
-
-    .brand {
-        font-size: 1rem;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-    }
-
     .hero {
         position: relative;
         min-height: 90vh;
         display: grid;
         place-items: center;
         overflow: hidden;
+        padding-top: 80px;
     }
 
     .hero-image {
@@ -204,11 +157,9 @@
     }
 
     @media (max-width: 720px) {
-        .nav {
-            padding: 1rem 1.25rem;
-        }
-        .nav .links {
-            display: none;
+        .hero {
+            min-height: 80vh;
+            padding-top: 70px;
         }
         .hero-content {
             text-align: center;
