@@ -48,11 +48,9 @@
 
 <style>
     .footer {
-        margin-top: 2rem;
-        background: rgba(255, 255, 255, 0.82);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border-top: 1px solid rgba(15, 23, 42, 0.06);
+        margin-top: 0;
+        background: #f6f6f4;
+        border-top: 1px solid rgba(15, 23, 42, 0.08);
     }
 
     .container {
