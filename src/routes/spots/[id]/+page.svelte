@@ -205,7 +205,7 @@
     :global(body) {
         margin: 0;
         font-family: "Manrope", "Inter", system-ui, sans-serif;
-        background: linear-gradient(180deg, #f8f7f3 0%, #f3f6ff 100%);
+        background: #0f1f1f;
         color: var(--text);
         line-height: 1.6;
         -webkit-font-smoothing: antialiased;
@@ -213,6 +213,7 @@
 
     .page {
         min-height: 100vh;
+        background: url("/Spots.jpeg") center/cover no-repeat fixed;
     }
 
     .container {
@@ -223,19 +224,21 @@
 
     .section {
         padding: 2.8rem 0 3.2rem;
+        background: transparent;
     }
 
     .back {
-        color: var(--accent);
+        color: #f7f6f4;
         text-decoration: none;
         font-weight: 700;
         display: inline-flex;
         margin-bottom: 1rem;
+        text-shadow: 0 10px 26px rgba(0, 0, 0, 0.35);
     }
 
     .hero {
-        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
-        border: 1px solid rgba(15, 111, 184, 0.08);
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(255, 255, 255, 0.5);
         border-radius: 1.2rem;
         box-shadow: 0 18px 50px rgba(12, 50, 94, 0.08);
         padding: 1.6rem;
@@ -307,7 +310,7 @@
     .image {
         border-radius: 1rem;
         overflow: hidden;
-        border: 1px solid var(--border);
+        border: 1px solid rgba(255, 255, 255, 0.5);
         box-shadow: var(--shadow);
     }
 
@@ -377,7 +380,7 @@
     }
 
     .cards {
-        background: linear-gradient(180deg, #ffffff 0%, #f8f8fb 100%);
+        background: transparent;
     }
 
     .grid {
@@ -387,8 +390,8 @@
     }
 
     .card {
-        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
-        border: 1px solid rgba(15, 111, 184, 0.08);
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(255, 255, 255, 0.5);
         border-radius: 1rem;
         padding: 1rem 1.2rem;
         box-shadow: 0 18px 50px rgba(12, 50, 94, 0.08);

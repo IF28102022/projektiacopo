@@ -490,7 +490,7 @@
     :global(body) {
         margin: 0;
         font-family: "Manrope", "Inter", system-ui, sans-serif;
-        background: var(--bg);
+        background: #0f1f1f;
         color: var(--text);
         line-height: 1.6;
         -webkit-font-smoothing: antialiased;
@@ -498,6 +498,7 @@
 
     .page {
         min-height: 100vh;
+        background: url("/Spots.jpeg") center/cover no-repeat fixed;
     }
 
     .container {
@@ -508,6 +509,7 @@
 
     .section {
         padding: 2.5rem 0 3rem;
+        background: transparent;
     }
 
     .page-head {
@@ -516,18 +518,22 @@
         align-items: flex-start;
         gap: 1.5rem;
         margin-bottom: 1.25rem;
+        color: #f7f6f4;
     }
 
     h1 {
         margin: 0.2rem 0;
         font-size: 2.1rem;
         letter-spacing: -0.01em;
+        color: #f7f6f4;
+        text-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
     }
 
     .subtitle {
         margin: 0.2rem 0 0;
-        color: var(--muted);
+        color: rgba(247, 246, 244, 0.82);
         max-width: 640px;
+        text-shadow: 0 10px 26px rgba(0, 0, 0, 0.35);
     }
 
     .layout {
@@ -544,10 +550,10 @@
     }
 
     .form {
-        background: var(--card);
+        background: rgba(255, 255, 255, 0.92);
         border-radius: 1rem;
         padding: 1.25rem 1.35rem;
-        border: 1px solid var(--border);
+        border: 1px solid rgba(255, 255, 255, 0.5);
         box-shadow: var(--shadow);
         display: flex;
         flex-direction: column;
@@ -754,9 +760,9 @@
     }
 
     .map-wrapper {
-        background: var(--card);
+        background: rgba(255, 255, 255, 0.92);
         border-radius: 1rem;
-        border: 1px solid var(--border);
+        border: 1px solid rgba(255, 255, 255, 0.5);
         box-shadow: var(--shadow);
         overflow: hidden;
         display: flex;
@@ -810,19 +816,25 @@
         font-size: 0.78rem;
     }
 
+    .page-head .eyebrow {
+        background: rgba(255, 255, 255, 0.18);
+        color: #f7f6f4;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
     .ghost-link {
-        color: var(--accent);
+        color: #f7f6f4;
         text-decoration: none;
         font-weight: 700;
         padding: 0.55rem 0.95rem;
         border-radius: 999px;
-        border: 1px solid var(--border);
-        background: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.45);
+        background: rgba(255, 255, 255, 0.1);
     }
 
     .ghost-link:hover {
-        border-color: var(--accent-2);
-        color: var(--accent-2);
+        border-color: rgba(255, 255, 255, 0.75);
+        color: #ffffff;
     }
 
     .dropzone {
