@@ -74,14 +74,14 @@
     :global(body) {
         margin: 0;
         font-family: "Manrope", "Inter", system-ui, sans-serif;
-        background: url("/home.png") center/cover no-repeat;
+        background: url("/Home.jpeg") center/cover no-repeat;
         color: #0f1f1f;
         -webkit-font-smoothing: antialiased;
     }
 
     .page {
         min-height: 100vh;
-        background: url("/home.png") center/cover no-repeat;
+        background: url("/Home.jpeg") center/cover no-repeat;
         color: #0f1f1f;
     }
 
@@ -99,22 +99,7 @@
         inset: 0;
         display: none;
     }
-
-    .overlay {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-                180deg,
-                rgba(10, 18, 28, 0.2) 0%,
-                rgba(10, 18, 28, 0.35) 70%
-            ),
-            linear-gradient(
-                90deg,
-                rgba(255, 255, 255, 0.12) 0%,
-                rgba(10, 18, 28, 0.28) 100%
-            );
-    }
-
+    
     .hero-content {
         position: relative;
         z-index: 1;

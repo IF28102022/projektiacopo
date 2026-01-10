@@ -2,7 +2,6 @@
     import { page } from "$app/stores";
 
     const links = [
-        { href: "/", label: "Home" },
         { href: "/spots", label: "Spots" },
         { href: "/map", label: "Karte" },
         { href: "/routen", label: "Routen" },
@@ -15,10 +14,10 @@
 
 <header class="topbar">
     <div class="container">
-        <div class="brand">
+        <a class="brand" href="/" aria-label="SailSpots Home">
             <img class="logo" src="/Logo.png" alt="SailSpots Logo" />
             <span class="brand-text">SailSpots</span>
-        </div>
+        </a>
 
         <nav class="nav">
             {#each links as link}
@@ -86,6 +85,11 @@
         text-transform: uppercase;
         color: #0f1f1f;
         font-size: 0.95rem;
+        text-decoration: none;
+    }
+
+    .brand:hover {
+        opacity: 0.9;
     }
 
     .logo {
