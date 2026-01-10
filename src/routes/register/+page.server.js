@@ -1,5 +1,5 @@
 import { fail, redirect } from "@sveltejs/kit";
-import { findUserByEmail, verifyPassword, setSessionCookie } from "$lib/server/auth";
+import { createUser, findUserByEmail, setSessionCookie } from "$lib/server/auth";
 
 export const load = async ({ locals }) => {
     if (locals.user) throw redirect(303, "/spots");
@@ -16,15 +16,16 @@ export const actions = {
             return fail(400, { error: "E-Mail und Passwort angeben." });
         }
 
-        const user = await findUserByEmail(email);
-        if (!user) {
-            return fail(400, { error: "Kein Konto gefunden. Bitte registrieren." });
+        if (password.length < 6) {
+            return fail(400, { error: "Passwort muss mindestens 6 Zeichen haben." });
         }
 
-        if (!verifyPassword(password, user.passwordHash)) {
-            return fail(400, { error: "Login fehlgeschlagen." });
+        const existing = await findUserByEmail(email);
+        if (existing) {
+            return fail(400, { error: "E-Mail ist bereits registriert. Bitte einloggen." });
         }
 
+        const user = await createUser({ email, password, role: "user" });
         setSessionCookie(cookies, {
             id: user._id.toString(),
             email: user.email,

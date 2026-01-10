@@ -11,9 +11,9 @@
         <div class="container">
             <div class="panel">
                 <div>
-                    <p class="eyebrow">Login</p>
-                    <h1>Anmelden</h1>
-                    <p class="muted">Spots anlegen und eigene Spots löschen.</p>
+                    <p class="eyebrow">Registrieren</p>
+                    <h1>Konto erstellen</h1>
+                    <p class="muted">Erstelle ein Konto, um Spots zu speichern.</p>
                 </div>
                 <form method="POST" class="form">
                     {#if form?.error}
@@ -25,12 +25,12 @@
                     </label>
                     <label>
                         Passwort
-                        <input name="password" type="password" required />
+                        <input name="password" type="password" required minlength="6" />
                     </label>
-                    <button type="submit" class="btn-primary">Login</button>
+                    <button type="submit" class="btn-primary">Registrieren</button>
                 </form>
-                <p class="register-hint">
-                    Noch kein Konto? <a href="/register">Registrieren</a>
+                <p class="login-hint">
+                    Schon registriert? <a href="/login">Zum Login</a>
                 </p>
             </div>
         </div>
@@ -128,19 +128,19 @@
         font-weight: 700;
     }
 
-    .register-hint {
+    .login-hint {
         margin: 0;
         color: var(--muted);
         font-weight: 600;
     }
 
-    .register-hint a {
+    .login-hint a {
         color: var(--accent);
         text-decoration: none;
         font-weight: 700;
     }
 
-    .register-hint a:hover {
+    .login-hint a:hover {
         text-decoration: underline;
     }
 </style>
