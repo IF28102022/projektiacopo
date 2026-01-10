@@ -23,11 +23,6 @@
             label: "Routen ansehen",
             desc: "Deine geplanten Etappen gesammelt und strukturiert nachschlagen.",
         },
-        {
-            href: "/login",
-            label: "Einloggen",
-            desc: "Anmelden, um Spots zu speichern, Favoriten zu setzen und Routen zu bauen.",
-        },
     ];
 </script>
 
@@ -52,7 +47,6 @@
                 Carefully curated sailing spots across Europe. Quiet anchorages,
                 harbours, and hidden bays to explore at your own pace.
             </p>
-            <a class="cta" href="/map">Explore the map →</a>
         </div>
     </section>
 
@@ -99,7 +93,7 @@
         inset: 0;
         display: none;
     }
-    
+
     .hero-content {
         position: relative;
         z-index: 1;
@@ -107,7 +101,7 @@
         max-width: 720px;
         padding: 0 1.8rem;
         color: #f7f6f4;
-        transform: translateY(6vh);
+        transform: translateY(-6vh);
     }
 
     .eyebrow {
@@ -155,7 +149,8 @@
     }
 
     .links-section {
-        padding: 3rem 1.6rem 3.8rem;
+        padding: 1.6rem 1.6rem 3.4rem;
+        margin-top: -1.4rem;
         background: transparent;
     }
 
@@ -203,7 +198,7 @@
         }
         .hero-content {
             text-align: center;
-            transform: translateY(4vh);
+            transform: translateY(-4vh);
         }
         .hero-content h1 {
             font-size: clamp(2.6rem, 7vw, 3.4rem);
@@ -214,7 +209,8 @@
         }
 
         .links-section {
-            padding: 2.6rem 1.25rem 3.2rem;
+            padding: 1.6rem 1.25rem 3rem;
+            margin-top: -1rem;
         }
     }
 </style>
