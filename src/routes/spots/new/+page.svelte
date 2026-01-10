@@ -19,11 +19,9 @@
     let swellInfo = "";
     let facilities = [];
     let season = "";
-    let rating = 3;
+    let rating = "3";
 
-    $: ratingValue = Number(rating);
-    $: ratingPercent = Math.min(100, Math.max(0, (ratingValue / 5) * 100));
-    $: ratingDisplay = ratingValue.toFixed(1).replace(/\.0$/, "");
+    $: ratingNumber = Number(rating || 0);
     let notesSkipper = "";
 
     let images = [];
@@ -317,20 +315,23 @@
                             <label class="rating">
                                 <div class="rating-head">
                                     <span>Bewertung</span>
-                                    <span class="rating-value">{ratingDisplay}/5</span>
+                                    <span class="rating-value">
+                                        {ratingNumber ? `${ratingNumber}/5` : "—"}
+                                    </span>
                                 </div>
-                                <div class="rating-row">
-                                    <div class="range-wrap">
-                                        <input
-                                            type="range"
-                                            name="rating"
-                                            min="0"
-                                            max="5"
-                                            step="0.5"
-                                            bind:value={rating}
-                                            style={`--fill:${ratingPercent}%;`}
-                                        />
-                                    </div>
+                                <div class="star-row" role="radiogroup" aria-label="Bewertung">
+                                    {#each [1, 2, 3, 4, 5] as value}
+                                        <label class="star" class:active={ratingNumber >= value}>
+                                            <input
+                                                type="radio"
+                                                name="rating"
+                                                value={value}
+                                                bind:group={rating}
+                                            />
+                                            <span aria-hidden="true">★</span>
+                                            <span class="sr-only">{value} Sterne</span>
+                                        </label>
+                                    {/each}
                                 </div>
                             </label>
                         </div>
@@ -650,13 +651,6 @@
         margin: 0;
     }
 
-    .rating-row {
-        display: flex;
-        align-items: center;
-        gap: 0.65rem;
-        margin-top: 0.2rem;
-    }
-
     .rating-head {
         display: flex;
         align-items: center;
@@ -665,67 +659,56 @@
         margin-bottom: 0.25rem;
     }
 
-    .range-wrap {
-        position: relative;
-        width: 100%;
-    }
-
-    input[type="range"] {
-        width: 100%;
-        appearance: none;
-        height: 6px;
-        border-radius: 999px;
-        background: linear-gradient(
-            90deg,
-            #3b82f6 var(--fill, 50%),
-            #d9e3f8 var(--fill, 50%)
-        );
-        outline: none;
-        transition: background 0.2s ease;
-        position: relative;
-        z-index: 1;
-    }
-
-    input[type="range"]::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        width: 22px;
-        height: 22px;
-        border-radius: 50%;
-        background: transparent;
-        border: none;
-        box-shadow: none !important;
-        cursor: pointer;
-        margin-top: -8px;
-    }
-
-    input[type="range"]::-moz-range-thumb {
-        -moz-appearance: none;
-        width: 22px;
-        height: 22px;
-        border-radius: 50%;
-        background: transparent;
-        background-color: transparent;
-        border: none;
-        box-shadow: none !important;
-        cursor: pointer;
-    }
-
-    input[type="range"]::-moz-range-track {
-        height: 6px;
-        border-radius: 999px;
-        background: linear-gradient(
-            90deg,
-            #3b82f6 var(--fill, 50%),
-            #d9e3f8 var(--fill, 50%)
-        );
-    }
-
     .rating-value {
         min-width: 40px;
         text-align: right;
         color: var(--muted);
         font-weight: 600;
         font-size: 0.9rem;
+    }
+
+    .star-row {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .star {
+        position: relative;
+        cursor: pointer;
+        font-size: 1.4rem;
+        line-height: 1;
+        color: #d1d5db;
+        display: inline-flex;
+        align-items: center;
+        transition: color 0.12s ease, transform 0.12s ease;
+    }
+
+    .star:hover {
+        color: #fbbf24;
+        transform: translateY(-1px);
+    }
+
+    .star.active {
+        color: #f59e0b;
+    }
+
+    .star input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
     }
 
     .coords {
