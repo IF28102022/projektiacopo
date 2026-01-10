@@ -5,6 +5,7 @@
         { href: "/", label: "Home" },
         { href: "/spots", label: "Spots" },
         { href: "/map", label: "Karte" },
+        { href: "/routen", label: "Routen" },
         { href: "/tour-planning", label: "Tourplanung" }
     ];
 
