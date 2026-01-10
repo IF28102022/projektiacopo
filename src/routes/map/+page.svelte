@@ -143,7 +143,7 @@
         subtitle="Alle Spots auf einen Blick. Setze neue Marker, prüfe Tiefen und plane den nächsten Schlag."
         ctaText="Zur Spot-Liste →"
         ctaHref="/spots"
-        backgroundImageUrl="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80"
+        backgroundImageUrl="/Karte.jpeg"
         align="left"
         overlayStrength={0.6}
     />
@@ -217,9 +217,7 @@
     /* PAGE */
     .page {
         min-height: 100vh;
-        background: linear-gradient(180deg, rgba(248, 247, 243, 0.92), rgba(243, 246, 255, 0.9)),
-            url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80")
-                center/cover no-repeat fixed;
+        background: url("/Karte.jpeg") center/cover no-repeat fixed;
     }
 
     .container {
