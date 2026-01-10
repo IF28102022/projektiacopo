@@ -109,7 +109,6 @@
         padding: 0.35rem 0.75rem;
         border-radius: 999px;
         background: rgba(255, 255, 255, 0.12);
-        backdrop-filter: blur(8px);
         letter-spacing: 0.08em;
         text-transform: uppercase;
         font-weight: 700;

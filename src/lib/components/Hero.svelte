@@ -59,8 +59,16 @@
     .overlay {
         position: absolute;
         inset: 0;
-        background: linear-gradient(180deg, rgba(10, 18, 28, 0.25) 0%, rgba(10, 18, 28, 0.6) 75%),
-            linear-gradient(90deg, rgba(15, 25, 35, 0.2) 0%, rgba(10, 18, 28, 0.3) 100%);
+        background: linear-gradient(
+                180deg,
+                rgba(10, 18, 28, 0.25) 0%,
+                rgba(10, 18, 28, 0.6) 75%
+            ),
+            linear-gradient(
+                90deg,
+                rgba(15, 25, 35, 0.2) 0%,
+                rgba(10, 18, 28, 0.3) 100%
+            );
     }
 
     .content {
@@ -83,8 +91,6 @@
         display: inline-block;
         padding: 0.35rem 0.75rem;
         border-radius: 999px;
-        background: rgba(255, 255, 255, 0.14);
-        backdrop-filter: blur(6px);
         letter-spacing: 0.08em;
         text-transform: uppercase;
         font-weight: 700;

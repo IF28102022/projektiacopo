@@ -2,12 +2,11 @@
     import { onMount } from "svelte";
     import Header from "$lib/components/header.svelte";
     import Footer from "$lib/components/footer.svelte";
-    import Hero from "$lib/components/Hero.svelte";
     import { tourPlan } from "$lib/stores/tourPlan";
 
     export let data;
 
-    const heroImage = "routes.jpeg";
+    const heroImage = "/routes.jpeg";
 
     onMount(() => {
         tourPlan.init(data.spots);
@@ -29,17 +28,6 @@
 <Header />
 
 <main class="page">
-    <Hero
-        eyebrow="Routen"
-        title="Deine geplanten Etappen"
-        subtitle="Alle Routen, die du im Tour Builder zusammengestellt hast, übersichtlich an einem Ort."
-        ctaText="Tourplanung öffnen →"
-        ctaHref="/tour-planning"
-        backgroundImageUrl={heroImage}
-        align="left"
-        overlayStrength={0.6}
-    />
-
     <section class="section">
         <div class="container">
             {#if !hasRoute}
@@ -99,7 +87,7 @@
     :global(body) {
         margin: 0;
         font-family: "Manrope", "Inter", system-ui, sans-serif;
-        background: #f8f7f3;
+        background: #0f1f1f;
         color: #0f172a;
         -webkit-font-smoothing: antialiased;
     }
@@ -112,12 +100,13 @@
 
     .page {
         min-height: 100vh;
-        background: #f8f7f3;
+        background: url("/routes.jpeg") center/cover no-repeat fixed;
+        color: #f7f6f4;
     }
 
     .section {
         padding: 2.8rem 0 3.5rem;
-        background: linear-gradient(180deg, #f8f7f3 0%, #f3f6ff 100%);
+        background: transparent;
     }
 
     .container {
@@ -133,14 +122,15 @@
     }
 
     .stage-card {
-        background: #ffffff;
+        background: rgba(255, 255, 255, 0.92);
         border-radius: 1.1rem;
-        border: 1px solid rgba(15, 111, 184, 0.08);
-        box-shadow: 0 18px 45px rgba(12, 40, 70, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        box-shadow: 0 18px 45px rgba(12, 40, 70, 0.18);
         padding: 1.2rem 1.25rem;
         display: flex;
         flex-direction: column;
         gap: 0.8rem;
+        color: #111820;
     }
 
     .stage-head {
@@ -154,6 +144,7 @@
         margin: 0;
         font-weight: 800;
         letter-spacing: 0.01em;
+        color: #0f172a;
     }
 
     .stage-count {
@@ -211,10 +202,11 @@
         gap: 1rem;
         flex-wrap: wrap;
         padding: 1.2rem 1.4rem;
-        background: #ffffff;
+        background: rgba(255, 255, 255, 0.92);
         border-radius: 1rem;
         border: 1px dashed #e2e8f0;
-        box-shadow: 0 12px 30px rgba(12, 40, 70, 0.06);
+        box-shadow: 0 12px 30px rgba(12, 40, 70, 0.14);
+        color: #111820;
     }
 
     .empty-title {
