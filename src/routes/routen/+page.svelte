@@ -7,7 +7,7 @@
 
     export let data;
 
-    const heroImage = "/91BE7483-3814-4708-B830-2EF981A4FC87_1_102_o.jpeg";
+    const heroImage = "routes.jpeg";
 
     onMount(() => {
         tourPlan.init(data.spots);
@@ -47,10 +47,13 @@
                     <div>
                         <p class="empty-title">Noch keine Routen gespeichert</p>
                         <p class="empty-text">
-                            Erstelle in der Tourplanung eine Route, um sie hier zu sehen.
+                            Erstelle in der Tourplanung eine Route, um sie hier
+                            zu sehen.
                         </p>
                     </div>
-                    <a class="ghost-link" href="/tour-planning">Zur Tourplanung</a>
+                    <a class="ghost-link" href="/tour-planning"
+                        >Zur Tourplanung</a
+                    >
                 </div>
             {:else}
                 <div class="stage-grid">
@@ -66,11 +69,16 @@
                                 <div class="stage-list">
                                     {#each stage.spots as spot, index}
                                         <div class="spot-row">
-                                            <span class="spot-index">{index + 1}</span>
+                                            <span class="spot-index"
+                                                >{index + 1}</span
+                                            >
                                             <div>
-                                                <p class="spot-name">{spot.name}</p>
+                                                <p class="spot-name">
+                                                    {spot.name}
+                                                </p>
                                                 <p class="spot-meta">
-                                                    {spot.region || "—"} · {spot.spotType || "Spot"}
+                                                    {spot.region || "—"} · {spot.spotType ||
+                                                        "Spot"}
                                                 </p>
                                             </div>
                                         </div>

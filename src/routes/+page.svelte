@@ -1,3 +1,36 @@
+<script>
+    import Header from "$lib/components/header.svelte";
+    import Footer from "$lib/components/footer.svelte";
+
+    const quickLinks = [
+        {
+            href: "/spots",
+            label: "Spots entdecken",
+            desc: "Alle gespeicherten Buchten, Marinas und Ankerplätze als ruhige Übersicht.",
+        },
+        {
+            href: "/map",
+            label: "Karte öffnen",
+            desc: "Spots auf der Karte prüfen, Marker setzen und Positionen vergleichen.",
+        },
+        {
+            href: "/tour-planning",
+            label: "Tour planen",
+            desc: "Etappen zusammenstellen, Reihenfolge festlegen und Route berechnen.",
+        },
+        {
+            href: "/routen",
+            label: "Routen ansehen",
+            desc: "Deine geplanten Etappen gesammelt und strukturiert nachschlagen.",
+        },
+        {
+            href: "/login",
+            label: "Einloggen",
+            desc: "Anmelden, um Spots zu speichern, Favoriten zu setzen und Routen zu bauen.",
+        },
+    ];
+</script>
+
 <svelte:head>
     <link
         rel="stylesheet"
@@ -5,11 +38,6 @@
     />
     <title>SailSpots · Discover Places Worth Dropping Anchor</title>
 </svelte:head>
-
-<script>
-    import Header from "$lib/components/header.svelte";
-    import Footer from "$lib/components/footer.svelte";
-</script>
 
 <main class="page">
     <Header />
@@ -21,24 +49,24 @@
             <p class="eyebrow">SailSpots</p>
             <h1>Discover Places Worth Dropping Anchor</h1>
             <p class="sub">
-                Carefully curated sailing spots across Europe. Quiet anchorages, harbours, and hidden bays
-                to explore at your own pace.
+                Carefully curated sailing spots across Europe. Quiet anchorages,
+                harbours, and hidden bays to explore at your own pace.
             </p>
             <a class="cta" href="/map">Explore the map →</a>
         </div>
     </section>
 
-    <section class="intro">
-        <div class="intro-inner">
-            <p>
-                SailSpots ist eine kuratierte Sammlung ausgewählter Segelorte. Wir glauben an leise Entdeckungen,
-                ruhige Abende vor Anker und eine klare, elegante Navigation durch Ihre Reise.
-            </p>
-            <p>
-                Keine Eile, keine grellen Farben – nur Orte, die es wert sind, entdeckt zu werden.
-            </p>
+    <section class="links-section">
+        <div class="links-container">
+            {#each quickLinks as link}
+                <div class="link-row">
+                    <a class="link-title" href={link.href}>{link.label} →</a>
+                    <p class="link-desc">{link.desc}</p>
+                </div>
+            {/each}
         </div>
     </section>
+
     <Footer />
 </main>
 
@@ -46,14 +74,14 @@
     :global(body) {
         margin: 0;
         font-family: "Manrope", "Inter", system-ui, sans-serif;
-        background: #f8f6f2;
+        background: url("/home.png") center/cover no-repeat;
         color: #0f1f1f;
         -webkit-font-smoothing: antialiased;
     }
 
     .page {
         min-height: 100vh;
-        background: #f8f6f2;
+        background: url("/home.png") center/cover no-repeat;
         color: #0f1f1f;
     }
 
@@ -69,17 +97,22 @@
     .hero-image {
         position: absolute;
         inset: 0;
-        background: url("https://cdn.shopify.com/s/files/1/0287/2724/6893/files/custom_resized_bf168553-fbfa-451c-bcba-b064fd9c84d4.png?v=1693477199")
-            center/cover no-repeat;
-        transform: scale(1.03);
-        filter: saturate(0.9);
+        display: none;
     }
 
     .overlay {
         position: absolute;
         inset: 0;
-        background: linear-gradient(180deg, rgba(10, 18, 28, 0.25) 0%, rgba(10, 18, 28, 0.55) 70%),
-            linear-gradient(90deg, rgba(255, 255, 255, 0.18) 0%, rgba(10, 18, 28, 0.4) 100%);
+        background: linear-gradient(
+                180deg,
+                rgba(10, 18, 28, 0.2) 0%,
+                rgba(10, 18, 28, 0.35) 70%
+            ),
+            linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0.12) 0%,
+                rgba(10, 18, 28, 0.28) 100%
+            );
     }
 
     .hero-content {
@@ -136,24 +169,46 @@
         border-color: #f7f6f4;
     }
 
-    .intro {
-        padding: 4rem 1.5rem 5rem;
-        background: linear-gradient(180deg, #f8f6f2 0%, #f4f1ea 100%);
-        display: flex;
-        justify-content: center;
+    .links-section {
+        padding: 3rem 1.6rem 3.8rem;
+        background: transparent;
     }
 
-    .intro-inner {
-        max-width: 960px;
+    .links-container {
+        width: min(860px, 100%);
+        margin: 0 auto;
+        display: grid;
+        gap: 0;
         text-align: center;
-        font-size: 1.05rem;
-        line-height: 1.8;
-        color: #1f2427;
-        letter-spacing: 0.01em;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    .intro-inner p {
-        margin: 0 0 1rem;
+    .link-row {
+        padding: 1.25rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        display: grid;
+        gap: 0.45rem;
+        justify-items: center;
+    }
+
+    .link-title {
+        color: rgba(255, 255, 255, 0.96);
+        text-decoration: none;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+        padding-bottom: 0.15rem;
+    }
+
+    .link-title:hover {
+        border-color: rgba(255, 255, 255, 0.65);
+    }
+
+    .link-desc {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.72);
+        font-size: 0.98rem;
+        max-width: 640px;
     }
 
     @media (max-width: 720px) {
@@ -171,6 +226,10 @@
         .sub {
             margin-left: auto;
             margin-right: auto;
+        }
+
+        .links-section {
+            padding: 2.6rem 1.25rem 3.2rem;
         }
     }
 </style>
