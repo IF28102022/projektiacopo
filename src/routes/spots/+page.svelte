@@ -2,29 +2,15 @@
     import Header from "$lib/components/header.svelte";
     import Footer from "$lib/components/footer.svelte";
     import SpotList from "$lib/components/SpotList.svelte";
-    import Hero from "$lib/components/Hero.svelte";
 
     export let data;
 
     const total = data.spots.length;
-    const heroImage =
-        "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1600&q=80";
 </script>
 
 <Header />
 
 <main class="page">
-    <Hero
-        eyebrow="SailSpots"
-        title="Curated Spots for Golden Hour Moorings"
-        subtitle="Sanfte Sonnenuntergänge, ruhige Buchten und sichere Häfen – entdeckt, bewertet und bereit für deinen nächsten Törn."
-        ctaText="Spots entdecken →"
-        ctaHref="/map"
-        backgroundImageUrl={heroImage}
-        align="left"
-        overlayStrength={0.55}
-    />
-
     <section class="section">
         <div class="container">
             <div class="intro">
@@ -101,7 +87,7 @@
     :global(body) {
         margin: 0;
         font-family: "Manrope", "Inter", system-ui, sans-serif;
-        background: var(--bg);
+        background: #0f1f1f;
         color: var(--text);
         line-height: 1.6;
         -webkit-font-smoothing: antialiased;
@@ -109,7 +95,8 @@
 
     .page {
         min-height: 100vh;
-        background: var(--bg);
+        background: url("/Spots.jpeg") center/cover no-repeat fixed;
+        color: #f7f6f4;
     }
 
     .container {
@@ -119,8 +106,8 @@
     }
 
     .section {
-        padding: 2.5rem 0 3.4rem;
-        background: linear-gradient(180deg, #f7f4ee 0%, #f4f1ea 100%);
+        padding: 2.8rem 0 3.6rem;
+        background: transparent;
     }
 
     .intro {
@@ -136,8 +123,8 @@
         display: inline-flex;
         align-items: center;
         gap: 0.45rem;
-        background: #f0ebe0;
-        color: #5b4636;
+        background: rgba(255, 255, 255, 0.18);
+        color: #f7f6f4;
         padding: 0.35rem 0.8rem;
         border-radius: 999px;
         font-weight: 700;
@@ -149,44 +136,49 @@
 
     h2 {
         margin: 0;
-        font-size: 2.1rem;
+        font-size: 2.2rem;
         letter-spacing: -0.02em;
+        color: #f7f6f4;
+        text-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
     }
 
     .subtitle {
-        color: var(--muted);
+        color: rgba(247, 246, 244, 0.82);
         font-size: 1rem;
         margin-top: 0.35rem;
         max-width: 640px;
+        text-shadow: 0 10px 26px rgba(0, 0, 0, 0.35);
     }
 
     .ghost-link {
-        color: #1f2937;
+        color: #f7f6f4;
         text-decoration: none;
         font-weight: 600;
         padding: 0.5rem 0.95rem;
         border-radius: 0.65rem;
-        border: 1px solid var(--border);
-        background: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        background: rgba(255, 255, 255, 0.08);
         transition:
             color 0.12s ease,
             border-color 0.12s ease,
-            background 0.12s ease;
+            background 0.12s ease,
+            opacity 0.12s ease;
     }
 
     .ghost-link:hover {
-        color: #0f1f35;
-        border-color: #d5cfc3;
-        background: #f9f7f2;
+        border-color: rgba(255, 255, 255, 0.6);
+        background: rgba(255, 255, 255, 0.16);
+        opacity: 0.95;
     }
 
     .badge {
-        background: var(--accent-soft);
-        color: var(--accent);
+        background: rgba(255, 255, 255, 0.2);
+        color: #f7f6f4;
         padding: 0.45rem 0.8rem;
         border-radius: 999px;
         font-weight: 700;
-        border: 1px solid #d7e4ff;
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        backdrop-filter: blur(6px);
     }
 
     .toolbar-actions {
@@ -197,11 +189,12 @@
     }
 
     .panel {
-        background: var(--card);
-        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(255, 255, 255, 0.5);
         border-radius: 1rem;
-        box-shadow: 0 12px 45px rgba(12, 40, 70, 0.06);
+        box-shadow: 0 18px 50px rgba(12, 40, 70, 0.18);
         padding: 1.1rem;
+        color: #111820;
     }
 
     .panel-head {
@@ -218,11 +211,12 @@
         margin: 0;
         font-weight: 700;
         letter-spacing: 0.01em;
+        color: #0f172a;
     }
 
     .panel-meta {
         margin: 0.1rem 0 0;
-        color: var(--muted);
+        color: #5f6b7a;
         font-size: 0.95rem;
     }
 
@@ -233,8 +227,8 @@
         gap: 1rem;
         flex-wrap: wrap;
         padding: 1rem 1.25rem;
-        background: #f9f7f2;
-        border: 1px dashed var(--border);
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px dashed #e2e8f0;
         border-radius: 0.9rem;
     }
 
@@ -245,7 +239,7 @@
 
     .empty-text {
         margin: 0.15rem 0 0;
-        color: var(--muted);
+        color: #5f6b7a;
     }
 </style>
     
