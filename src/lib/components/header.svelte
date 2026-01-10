@@ -15,7 +15,10 @@
 
 <header class="topbar">
     <div class="container">
-        <div class="brand">SailSpots</div>
+        <div class="brand">
+            <img class="logo" src="/Logo.png" alt="SailSpots Logo" />
+            <span class="brand-text">SailSpots</span>
+        </div>
 
         <nav class="nav">
             {#each links as link}
@@ -83,6 +86,13 @@
         text-transform: uppercase;
         color: #0f1f1f;
         font-size: 0.95rem;
+    }
+
+    .logo {
+        width: 42px;
+        height: 42px;
+        object-fit: contain;
+        display: block;
     }
 
     .nav {

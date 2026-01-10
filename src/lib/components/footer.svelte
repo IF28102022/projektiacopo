@@ -5,7 +5,7 @@
 <footer class="footer">
     <div class="container">
         <div class="brand">
-            <span class="emoji" aria-hidden="true">⛵️</span>
+            <img class="logo" src="/Logo.png" alt="SailSpots Logo" />
             <div>
                 <p class="brand-name">Segelspots</p>
                 <p class="brand-sub">Spots speichern und abrufen.</p>
@@ -49,8 +49,10 @@
 <style>
     .footer {
         margin-top: 2rem;
-        background: linear-gradient(180deg, #f9fbff 0%, #f7f4ec 100%);
-        border-top: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.82);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-top: 1px solid rgba(15, 23, 42, 0.06);
     }
 
     .container {
@@ -69,20 +71,27 @@
         align-items: center;
     }
 
-    .emoji {
-        font-size: 1.2rem;
+    .logo {
+        width: 46px;
+        height: 46px;
+        object-fit: contain;
+        display: block;
     }
 
     .brand-name {
         margin: 0;
         font-weight: 700;
-        letter-spacing: 0.02em;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-size: 0.95rem;
+        color: #0f1f1f;
     }
 
     .brand-sub {
         margin: 0.1rem 0 0;
-        color: var(--muted);
-        font-size: 0.92rem;
+        color: #5f6b7a;
+        font-size: 0.9rem;
+        letter-spacing: 0.01em;
     }
 
     .stack {
@@ -95,33 +104,38 @@
     .heading {
         margin: 0 0 0.15rem;
         font-weight: 700;
-        font-size: 0.95rem;
-        letter-spacing: 0.01em;
+        font-size: 0.85rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #0f1f1f;
     }
 
     .stack a {
-        color: var(--muted);
+        color: #1d2b38;
         text-decoration: none;
         font-weight: 600;
         padding: 0.35rem 0;
-        transition: color 0.12s ease;
+        transition: color 0.12s ease, opacity 0.12s ease;
+        letter-spacing: 0.01em;
     }
 
     .stack a:hover {
-        color: var(--accent);
+        color: #0f1f1f;
+        opacity: 0.85;
     }
 
     .muted {
         margin: 0;
-        color: var(--muted);
-        font-size: 0.92rem;
+        color: #6b7280;
+        font-size: 0.9rem;
+        letter-spacing: 0.01em;
     }
 
     .footer-base {
         width: min(1180px, 100%);
         margin: 0 auto;
         padding: 0.75rem 1.25rem 1.4rem;
-        border-top: 1px solid var(--border);
+        border-top: 1px solid rgba(15, 23, 42, 0.06);
         display: flex;
         gap: 0.75rem;
         flex-wrap: wrap;
@@ -131,9 +145,10 @@
 
     .footer-base p {
         margin: 0;
-        color: var(--muted);
-        font-size: 0.92rem;
+        color: #6b7280;
+        font-size: 0.9rem;
         font-weight: 600;
+        letter-spacing: 0.01em;
     }
 
     .meta-links {
@@ -144,13 +159,15 @@
     }
 
     .meta-links a {
-        color: var(--muted);
+        color: #1d2b38;
         font-weight: 600;
         text-decoration: none;
-        transition: color 0.12s ease;
+        transition: color 0.12s ease, opacity 0.12s ease;
+        letter-spacing: 0.01em;
     }
 
     .meta-links a:hover {
-        color: var(--accent);
+        color: #0f1f1f;
+        opacity: 0.85;
     }
 </style>
