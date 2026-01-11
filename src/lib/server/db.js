@@ -1,6 +1,6 @@
 // src/lib/server/db.js
 import { MongoClient } from "mongodb";
-import { MONGODB_URI, MONGODB_DBNAME } from "$env/static/private";
+import { MONGODB_URI, MONGODB_DBNAME } from "$env/dynamic/private";
 
 const uri = MONGODB_URI;
 const dbName = MONGODB_DBNAME || "segelspots";
