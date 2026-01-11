@@ -124,7 +124,7 @@
         background: linear-gradient(135deg, #f3f6fb, #e9eef7);
         background-size: cover;
         background-position: center;
-        min-height: 180px;
+        min-height: 120px;
         display: grid;
         place-items: center;
     }
@@ -135,12 +135,12 @@
     }
 
     .footer {
-        padding: 0.9rem 1rem 1rem;
+        padding: 0.65rem 0.85rem 0.75rem;
     }
 
     h3 {
         margin: 0;
-        font-size: 1.05rem;
+        font-size: 0.95rem;
         letter-spacing: -0.01em;
     }
 
@@ -157,9 +157,9 @@
         border: 1px solid #d7e4ff;
         color: #7a8aa0;
         border-radius: 50%;
-        width: 38px;
-        height: 38px;
-        font-size: 1.1rem;
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
         cursor: pointer;
         box-shadow: 0 10px 28px rgba(0, 41, 112, 0.1);
         transition:
@@ -209,9 +209,9 @@
         background: #ffffff;
         color: #c53030;
         border: 0;
-        padding: 0.4rem 0.85rem;
+        padding: 0.35rem 0.7rem;
         border-radius: 0.55rem;
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         font-weight: 700;
         cursor: pointer;
         box-shadow: 0 8px 24px rgba(197, 48, 48, 0.12);

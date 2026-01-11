@@ -5,9 +5,15 @@
 
     export let data;
 
-    const total = data.spots.length;
-    const visibility = data.visibility || "public";
-    const canViewPrivate = data.canViewPrivate;
+    let total = 0;
+    let visibility = "public";
+    let canViewPrivate = false;
+
+    $: {
+        total = data.spots.length;
+        visibility = data.visibility || "public";
+        canViewPrivate = data.canViewPrivate;
+    }
 </script>
 
 <Header />
