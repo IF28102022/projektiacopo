@@ -425,8 +425,7 @@
             </p>
             {#if routeSummary}
                 <p class="muted">
-                    Distance: {(routeSummary.distance / 1000).toFixed(1)} km · Duration:
-                    {(routeSummary.duration / 60).toFixed(0)} min
+                    Distance: {(routeSummary.distance / 1000).toFixed(1)} km
                 </p>
                 <p class="muted">
                     {routeSummary.spots.length} spots · {routeSummary.waypoints} waypoints

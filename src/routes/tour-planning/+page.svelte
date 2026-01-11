@@ -350,7 +350,6 @@
                     {#if routeInfo}
                         <p class="panel-foot stats">
                             Route: {(routeInfo.distance / 1000).toFixed(1)} km
-                            · {(routeInfo.duration / 60).toFixed(0)} min
                             · {routeInfo.count} spots
                             · {routeInfo.waypoints} waypoints
                         </p>
