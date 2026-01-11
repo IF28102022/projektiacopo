@@ -54,7 +54,7 @@ Segler:innen sind bereit, ihre Lieblingsspots zu teilen, wenn die Plattform einf
 
 **Tour planen:** Favorisierte Spots können ausgewählt und in eine gewünschte Reihenfolge gebracht werden, um eine Segeltour zu planen.
 
-**Route berechnen:** Die App berechnet automatisch die Route zwischen den ausgewählten Spots mit Distanz und geschätzter Fahrzeit.
+**Route berechnen:** Die App berechnet automatisch die Route zwischen den ausgewählten Spots mit Distanz.
 
 **Route visualisieren:** Die berechnete Route wird als Linie auf der Karte dargestellt mit allen Zwischenpunkten, Gesamtdistanz und Zeitangabe.
 
@@ -80,7 +80,7 @@ Spot erstellen → auf Karte anzeigen → als Favorit markieren → in Tour-Plan
 
 **Favoriten-System:** Öffentliche Spots anderer Nutzer:innen können als Favoriten gespeichert werden.
 
-**Benutzerverwaltung:** Registrierung, Login und persönliches Profil mit Profilbild.
+**Benutzerverwaltung:** Registrierung, Login und persönliches Profil.
 
 **Feed & Community:** Übersicht über eigene und öffentliche Aktivitäten anderer Nutzer:innen in einem Feed.
 
