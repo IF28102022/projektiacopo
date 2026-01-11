@@ -2,16 +2,47 @@ import { getDb } from "$lib/server/db";
 import { ObjectId } from "mongodb";
 import { fail, redirect } from "@sveltejs/kit";
 
-export async function load({ locals }) {
+export async function load({ locals, url }) {
     const user = locals.user || null;
     const role = user?.role || "guest";
     const userId = user?.id || null;
     const db = await getDb();
 
+    const visibilityParam = url.searchParams.get("visibility");
+    const visibility = visibilityParam === "private" ? "private" : "public";
+    const canViewPrivate = !!userId;
+
+    let filter = {};
+    if (visibility === "private") {
+        if (!userId) {
+            return {
+                userRole: role,
+                userId,
+                canCreate: role === "admin" || role === "user",
+                canFavorite: role === "admin" || role === "user",
+                canViewPrivate,
+                visibility,
+                spots: []
+            };
+        }
+        if (role === "admin") {
+            filter = { visibility: "private" };
+        } else {
+            filter = { visibility: "private", ownerId: new ObjectId(userId) };
+        }
+    } else {
+        filter = {
+            $or: [
+                { visibility: "public" },
+                { visibility: { $exists: false } }
+            ]
+        };
+    }
+
     const spots = await db
         .collection("spots")
         .find(
-            {},
+            filter,
             {
                 // Nur die wirklich benötigten Felder laden, um Base64-Blob-Transfers klein zu halten
                 projection: {
@@ -35,6 +66,7 @@ export async function load({ locals }) {
                     lat: 1,
                     lng: 1,
                     ownerId: 1,
+                    visibility: 1,
                     favorites: 1
                 }
             }
@@ -47,6 +79,8 @@ export async function load({ locals }) {
         userId,
         canCreate: role === "admin" || role === "user",
         canFavorite: role === "admin" || role === "user",
+        canViewPrivate,
+        visibility,
         spots: spots.map((s) => {
             const ownerId = s.ownerId ? s.ownerId.toString() : null;
             const canDelete =
@@ -81,6 +115,7 @@ export async function load({ locals }) {
                 notesSkipper: s.notesSkipper,
                 lat: s.lat,
                 lng: s.lng,
+                visibility: s.visibility || "public",
                 canDelete,
                 isFavorite
             };

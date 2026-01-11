@@ -6,6 +6,8 @@
     export let data;
 
     const total = data.spots.length;
+    const visibility = data.visibility || "public";
+    const canViewPrivate = data.canViewPrivate;
 </script>
 
 <Header />
@@ -13,15 +15,31 @@
 <main class="page">
     <section class="section">
         <div class="container">
-            <div class="intro">
-                <div>
-                    <p class="eyebrow">Spots</p>
-                    <h2>Alle Orte, eine ruhige Übersicht</h2>
+                <div class="intro">
+                    <div>
+                        <p class="eyebrow">Spots</p>
+                        <h2>Alle Orte, eine ruhige Übersicht</h2>
                     <p class="subtitle">
                         Finde deinen nächsten Ankerplatz in Sekunden. Filtern, merken, auf der Karte öffnen.
                     </p>
                 </div>
                 <div class="toolbar-actions">
+                    <div class="visibility-toggle">
+                        <a
+                            href="/spots?visibility=public"
+                            class:selected={visibility === "public"}
+                        >
+                            Öffentlich
+                        </a>
+                        {#if canViewPrivate}
+                            <a
+                                href="/spots?visibility=private"
+                                class:selected={visibility === "private"}
+                            >
+                                Privat
+                            </a>
+                        {/if}
+                    </div>
                     <span class="badge">{total} gespeichert</span>
                     {#if data.canCreate}
                         <a href="/spots/new" class="ghost-link">+ Neuer Spot</a>
@@ -41,7 +59,11 @@
                 {#if data.spots.length === 0}
                     <div class="empty">
                         <div>
-                            <p class="empty-title">Noch keine Spots gespeichert</p>
+                            <p class="empty-title">
+                                {visibility === "private"
+                                    ? "Noch keine privaten Spots"
+                                    : "Noch keine Spots gespeichert"}
+                            </p>
                             <p class="empty-text">Lege den ersten Spot an.</p>
                         </div>
                         {#if data.canCreate}
@@ -186,6 +208,40 @@
         align-items: center;
         gap: 0.8rem;
         flex-wrap: wrap;
+    }
+
+    .visibility-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.35rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .visibility-toggle a {
+        text-decoration: none;
+        color: rgba(255, 255, 255, 0.82);
+        font-weight: 700;
+        padding: 0.35rem 0.75rem;
+        border-radius: 999px;
+        border: 1px solid transparent;
+        transition:
+            color 0.12s ease,
+            border-color 0.12s ease,
+            background 0.12s ease;
+    }
+
+    .visibility-toggle a:hover {
+        color: #ffffff;
+        border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .visibility-toggle a.selected {
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.6);
     }
 
     .panel {

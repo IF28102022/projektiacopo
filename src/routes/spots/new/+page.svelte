@@ -20,6 +20,7 @@
     let facilities = [];
     let season = "";
     let rating = "3";
+    let visibility = "public";
 
     $: ratingNumber = Number(rating || 0);
     let notesSkipper = "";
@@ -212,6 +213,35 @@
                                 placeholder="Kurzbeschreibung des Spots"
                             ></textarea>
                         </label>
+                    </div>
+
+                    <div class="group">
+                        <div class="group-head">
+                            <h3>Sichtbarkeit</h3>
+                            <p>Lege fest, wer deinen Spot sehen darf.</p>
+                        </div>
+                        <div class="visibility-row">
+                            <label class="visibility-option" class:active={visibility === "public"}>
+                                <input
+                                    type="radio"
+                                    name="visibility"
+                                    value="public"
+                                    bind:group={visibility}
+                                />
+                                <span class="vis-title">Öffentlich</span>
+                                <span class="vis-desc">Für alle sichtbar</span>
+                            </label>
+                            <label class="visibility-option" class:active={visibility === "private"}>
+                                <input
+                                    type="radio"
+                                    name="visibility"
+                                    value="private"
+                                    bind:group={visibility}
+                                />
+                                <span class="vis-title">Privat</span>
+                                <span class="vis-desc">Nur für dich</span>
+                            </label>
+                        </div>
                     </div>
 
                     <div class="group">
@@ -740,6 +770,47 @@
         opacity: 0.6;
         cursor: not-allowed;
         box-shadow: none;
+    }
+
+    .visibility-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 0.8rem;
+    }
+
+    .visibility-option {
+        position: relative;
+        border-radius: 0.9rem;
+        border: 1px solid var(--border);
+        background: #ffffff;
+        padding: 0.8rem 0.9rem;
+        display: grid;
+        gap: 0.2rem;
+        cursor: pointer;
+        color: var(--text);
+        transition: border-color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
+    }
+
+    .visibility-option.active {
+        border-color: var(--accent-2);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+        transform: translateY(-1px);
+    }
+
+    .visibility-option input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .vis-title {
+        font-weight: 700;
+        font-size: 1rem;
+    }
+
+    .vis-desc {
+        color: var(--muted);
+        font-size: 0.9rem;
     }
 
     .map-wrapper {

@@ -28,6 +28,8 @@ export const actions = {
         const shelterWindDirections = String(form.get("shelterWindDirections") || "").trim();
         const swellInfo = String(form.get("swellInfo") || "").trim();
         const season = String(form.get("season") || "").trim();
+        const visibilityRaw = String(form.get("visibility") || "public").trim().toLowerCase();
+        const visibility = visibilityRaw === "private" ? "private" : "public";
         const ratingRaw = form.get("rating");
         const rating = ratingRaw === null || ratingRaw === "" ? null : Number(ratingRaw);
         const notesSkipper = String(form.get("notesSkipper") || "").trim();
@@ -94,6 +96,7 @@ export const actions = {
             swellInfo,
             facilities,
             season,
+            visibility,
             rating: Number.isNaN(rating) ? null : rating,
             notesSkipper,
             imageData,   // erstes Bild (Fallback)

@@ -67,6 +67,11 @@
                         {#if spot.spotType}
                             <span class="pill pill-soft">{spot.spotType}</span>
                         {/if}
+                        {#if spot.visibility}
+                            <span class="pill pill-visibility">
+                                {spot.visibility === "private" ? "Privat" : "Öffentlich"}
+                            </span>
+                        {/if}
                         {#if spot.season}
                             <span class="pill pill-soft">Saison: {spot.season}</span>
                         {/if}
@@ -299,6 +304,11 @@
 
     .pill-soft {
         background: #eef4ff;
+        color: #0f6fb8;
+    }
+
+    .pill-visibility {
+        background: #e8f3ff;
         color: #0f6fb8;
     }
 
