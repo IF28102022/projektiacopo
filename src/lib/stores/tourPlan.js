@@ -11,6 +11,7 @@ function defaultPlan() {
     return {
         poolSpotIds: [],
         stages: [{ id: uuid(), title: "Tour 1", spotIds: [] }],
+        tourNotes: "",
         waypoints: []
     };
 }
@@ -59,6 +60,9 @@ function sanitizePlan(plan, spotIds) {
             order: Number(wp.order || 0)
         }));
 
+    const tourNotes =
+        typeof plan.tourNotes === "string" ? plan.tourNotes.slice(0, 1000) : "";
+
     const primaryStage =
         cleanedStages[0] || { id: uuid(), title: "Tour 1", spotIds: [] };
     const extraSpotIds = cleanedStages.slice(1).flatMap((stage) => stage.spotIds);
@@ -75,7 +79,7 @@ function sanitizePlan(plan, spotIds) {
         },
     ];
 
-    return { poolSpotIds, stages, waypoints: cleanedWaypoints };
+    return { poolSpotIds, stages, tourNotes, waypoints: cleanedWaypoints };
 }
 
 function loadPlan(spotIds) {
@@ -119,6 +123,7 @@ function createTourPlan() {
                     {
                         poolSpotIds: ids,
                         stages: [{ id: uuid(), title: "Tour 1", spotIds: [] }],
+                        tourNotes: "",
                         waypoints: []
                     },
                     ids,

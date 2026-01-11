@@ -4,7 +4,7 @@
     const links = [
         { href: "/spots", label: "Spots" },
         { href: "/map", label: "Map" },
-        { href: "/routen", label: "Routes" },
+        { href: "/routen", label: "Route" },
         { href: "/tour-planning", label: "Tour Planning" }
     ];
 

@@ -45,6 +45,7 @@
         stage.spotIds.map((id) => spotMap.get(id)).filter(Boolean),
     );
     $: waypoints = plan?.waypoints || [];
+    $: tourNotes = plan?.tourNotes || "";
     $: routePoints = buildRoutePoints(orderedSpots, waypoints);
     $: hasRoute = orderedSpots.length > 0;
 
@@ -246,6 +247,9 @@
                         <p class="subtitle">
                             The route connects your tour including waypoints.
                         </p>
+                        {#if tourNotes?.trim()}
+                            <p class="notes">{tourNotes}</p>
+                        {/if}
                     </div>
                     <div class="map-summary">
                         <span>{orderedSpots.length} Spots</span>
@@ -403,6 +407,14 @@
         color: #4b5563;
         max-width: 560px;
         line-height: 1.6;
+    }
+
+    .notes {
+        margin: 0.6rem 0 0;
+        color: #0f172a;
+        font-weight: 600;
+        max-width: 640px;
+        line-height: 1.5;
     }
 
     .map-summary {

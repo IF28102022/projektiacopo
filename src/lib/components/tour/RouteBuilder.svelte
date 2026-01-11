@@ -17,6 +17,7 @@
     let loading = false;
     let error = "";
     let routeSummary = null;
+    let tourNotes = "";
 
     onMount(() => {
         tourPlan.init(spots);
@@ -47,6 +48,7 @@
         Hafen: "Harbor",
     };
     $: plan = $tourPlan || { poolSpotIds: [], stages: [] };
+    $: tourNotes = plan?.tourNotes ?? "";
     $: poolItems = plan.poolSpotIds
         .map((id) => spotMap.get(id))
         .filter(Boolean)
@@ -138,11 +140,20 @@
         tourPlan.set({
             poolSpotIds: ids,
             stages: [{ id: newStageId, title: "Tour 1", spotIds: [] }],
+            tourNotes: "",
             waypoints: []
         });
         activeStageId = newStageId;
         routeSummary = null;
         dispatch("routeCleared");
+    }
+
+    function updateTourNotes(value) {
+        tourNotes = value;
+        tourPlan.update((current) => ({
+            ...current,
+            tourNotes: value
+        }));
     }
 
     async function computeRouteFromSpots(spotsToRoute, { keepLoading = false } = {}) {
@@ -329,6 +340,18 @@
                 <p class="panel-title">Tour</p>
                 <p class="panel-meta">1 tour</p>
             </div>
+            <div class="tour-notes">
+                <label>
+                    <span>Tour notes / days</span>
+                    <textarea
+                        rows="3"
+                        placeholder="e.g. 7 days, light winds, crew of 4…"
+                        bind:value={tourNotes}
+                        on:input={(event) => updateTourNotes(event.target.value)}
+                    ></textarea>
+                </label>
+                <p class="notes-hint">Optional — add duration or extra info for this tour.</p>
+            </div>
             <div class="stages-grid">
                 {#each stageItems as stage (stage.id)}
                     <div class="stage" class:active={stage.id === activeStageId}>
@@ -504,6 +527,38 @@
     .panel-meta {
         margin: 0;
         color: var(--muted);
+    }
+
+    .tour-notes {
+        padding: 0.85rem 1rem 0.2rem;
+        border-bottom: 1px solid #e5e7eb;
+        background: #ffffff;
+    }
+
+    .tour-notes label {
+        display: flex;
+        flex-direction: column;
+        gap: 0.45rem;
+        font-weight: 700;
+        font-size: 0.85rem;
+        color: var(--muted);
+    }
+
+    .tour-notes textarea {
+        border: 1px solid #dbe4f5;
+        border-radius: 0.75rem;
+        padding: 0.65rem 0.75rem;
+        font-size: 0.95rem;
+        font-family: "Manrope", system-ui, sans-serif;
+        color: #0f172a;
+        background: #ffffff;
+        resize: vertical;
+    }
+
+    .notes-hint {
+        margin: 0.45rem 0 0;
+        color: var(--muted);
+        font-size: 0.85rem;
     }
 
     .stage-select {
