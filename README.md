@@ -101,7 +101,7 @@ Die Durchführung erfolgt phasenbasiert; dokumentieren Sie die wichtigsten Ergeb
 
 ### 4.2 Sketch
 
-![Sketch-Varianten – Feed & Routen](static/images/CRAZY8.png)
+![Sketch-Varianten – Feed & Routen](static/CRAZY8.png)
 
 **Variantenüberblick:**
 - Variante A: List-first (Spots als sortierbare Liste, Karte als Sekundär-View)
