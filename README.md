@@ -103,17 +103,50 @@ Die Durchführung erfolgt phasenbasiert; dokumentieren Sie die wichtigsten Ergeb
 
 ![Sketch-Varianten – Feed & Routen](static/CRAZY8.png)
 
-**Variantenüberblick:**
-- Variante A: List-first (Spots als sortierbare Liste, Karte als Sekundär-View)
-- Variante B: Map-first (Interaktive Karte als Hauptfocus, Liste als Details)
-- Variante C: Hybrid (geteilter Screen: Karte links, Tour-Planung rechts)
+Es wurden 8 verschiedene Skizzen für die Hauptfunktionen erstellt, um verschiedene Darstellungsarten für Karte, Route und Navigation zu testen:
 
-**Unterschiede:**
-- Variante A: Einfach zu bedienen, aber Karte fehlt der Raum
-- Variante B: Intuitiv, visuell ansprechend, fokussiert auf Exploration
-- Variante C: Ideal für Tour-Planung, aber complex für Anfänger
+**Skizze 1: Map mit Basis-Route**
+- Große Karte mit einfacher Linie zwischen Start- und Zielpunkt
+- Minimalistisch, fokussiert auf geografische Übersicht
+- Problem: Zu wenig Kontext für Zwischenstopps
 
-**Gewählte Variante:** B (Map-first) – beste Balance zwischen Klarheit, Raum für Karte und intuitiver Bedienung.
+**Skizze 2: Map mit Etappen-Markern**
+- Karte mit Route-Linie und mehreren Markern für Zwischenpunkte
+- Zeigt klar alle Stops entlang der Route
+- Besser für mehrtägige Touren geeignet
+
+**Skizze 3: Map mit Zusatz-Informationen**
+- Karte mit Route plus Legende (Start Zeit, Station, Wind, Strömung, Vorschlag)
+- Umfangreichste Darstellung mit vielen Daten
+- Risiko: Zu viel Information auf einem Screen
+
+**Skizze 4: Einfache Routen-Liste**
+- Nummerierte Liste mit 6 Punkten (1-6)
+- Reihung zeigt Tour-Ablauf
+- Nachteil: Keine visuelle Karte, schwer vorstellbar
+
+**Skizze 5: Route mit Karten-Vorschau**
+- "Starte Route" Button oben + kleine Kartenvorschau unten
+- Text: "Schöne Route:" als Titel
+- Balance zwischen Action und Kontext
+
+**Skizze 6: Route mit Etappen-Details**
+- Drei benannte Etappen (1. Delfin Spot, 2. Ruhiger Bucht, 3. Insel Freunde)
+- Karte mit Route darunter + "KARTE" Button
+- Klare Benennung macht Tour greifbar
+
+**Skizze 7: Route mit Zeitinformationen**
+- Zeitlinie oben (Start Zeit, Zeit)
+- Navigation-Info: "Nächster Ort" + Distanzangabe
+- Karte mit Route + "Ende" Button
+- Fokus auf aktuellen Status während der Tour
+
+**Skizze 8: Vorschlag-Ansicht**
+- Alternative Route-Darstellung mit Wind/Strömung-Vorschlägen
+- Testete Idee für automatische Optimierung
+- Verworfener Ansatz: Zu komplex für erste Version
+
+**Gewählte Variante:** Kombination aus Skizze 6 + 2 (Benannte Etappen mit klarer Karten-Darstellung und Markern) – beste Balance zwischen Übersichtlichkeit, geografischem Kontext und verständlicher Navigation.
 
 ### 4.3 Decide
 
@@ -240,36 +273,37 @@ Die Durchführung erfolgt phasenbasiert; dokumentieren Sie die wichtigsten Ergeb
 2. Können Nutzer:innen schnell einen Spot erfassen?
 3. Sind die Karten-Interaktionen verständlich?
 
-**Vorgehen:** Moderiert (Zoom), mit Think-Aloud-Protokoll
+**Vorgehen:** Moderiertes Usability-Testing mit Think-Aloud-Protokoll, durchgeführt in der Klasse während der Unterrichtszeit
 
-**Stichprobe:** 3 Segler:innen (1-2 Jahre Segelerfahrung, unterschiedliche Tech-Affinität)
+**Stichprobe:** 2 Studenten aus meiner Klasse (unterschiedliche Tech-Affinität, keine Segelerfahrung notwendig)
 
 **Aufgaben/Szenarien:**
-1. "Erstelle einen neuen Spot an deinem liebsten Ankerplatz. Nutze Karte oder Formular."
-2. "Plane eine Tour über 3 Spots und berechne die Route."
-3. "Schau dir die öffentlichen Spots anderer an. Kann dir die Karte dabei helfen?"
+1. "Erstelle einen neuen Spot an einem beliebigen Ort. Nutze Karte oder Formular."
+2. "Plane eine Tour über mindestens 2 Spots und berechne die Route."
+3. "Schau dir die Spots auf der Karte an und navigiere zur Detailansicht."
 
 **Kennzahlen & Beobachtungen:**
 - Erfolgsquote: 100% (alle Aufgaben gelöst)
-- Durchschn. Zeit Aufgabe 1: 2:30 Min (erwartet: 3 Min)
-- Durchschn. Zeit Aufgabe 2: 4:15 Min (erwartet: 5 Min)
+- Durchschn. Zeit Aufgabe 1: ~2 Min
+- Durchschn. Zeit Aufgabe 2: ~4 Min
 - **Findings:**
-  - Einige Nutzer:innen vermissten einen "Weitere Infos"-Button auf der Karte (zu viele Schritte bis Detail-View)
-  - Reihenfolge der Spots im Tour-Builder war anfangs nicht klar (fehlender Hinweis: "Drag to reorder")
-  - Alle Nutzer:innen mochten die Hero-Seite und das ruhige Design
+  - Beide Tester fanden die Navigation intuitiv und die Karte übersichtlich
+  - Ein Tester vermisste eine deutlichere Rückmeldung beim Hinzufügen eines Spots zur Tour
+  - Der Tour-Builder war anfangs nicht selbsterklärend (Reihenfolge der Spots unklar)
+  - Das minimalistische Design wurde positiv bewertet
 
 **Zusammenfassung der Resultate:**
-Das Konzept map-first funktioniert gut. Segler:innen verstehen schnell, wie Spots erfasst und Touren geplant werden. Kleine Navigations-Probleme sind leicht zu beheben.
+Das Konzept funktioniert gut und ist auch ohne Segelerfahrung verständlich. Die Karten-Interaktionen und Spot-Erstellung sind intuitiv. Verbesserungsbedarf besteht bei der Feedback-Kommunikation und bei Hinweistexten im Tour-Builder.
 
 **Abgeleitete Verbesserungen (priorisiert):**
-1. **Hinweis-Text im Tour-Builder:** "Spots mit Maus ziehen zum Sortieren" (sichtbarer machen)
-2. **Quick-Info auf Marker:** Beim Hover: Name + Region anzeigen (ohne Extra-Klick)
-3. **Bestätigungstoast:** "Spot hinzugefügt" nach "Zu Tour hinzufügen" (Feedback)
+1. **Hinweis-Text im Tour-Builder:** "Spots mit Maus ziehen zum Sortieren" (deutlicher machen)
+2. **Bestätigungstoast:** "Spot zur Tour hinzugefügt" nach Aktion (direktes Feedback)
+3. **Visual Feedback:** Aktive Tour-Spots farblich hervorheben
 
 **Umgesetzte Anpassungen:**
 - ✅ Hinweis-Text im Tour-Builder eingefügt
-- ✅ Hover-Info auf Marker implementiert
 - ✅ Bestätigungstoast nach Spot-Aktion hinzugefügt
+- ⏳ Visual Feedback für aktive Tour-Spots (geplant)
 
 ---
 
