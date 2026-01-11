@@ -9,6 +9,7 @@
     export let data;
 
     let started = false;
+    let autoStarted = false;
     let map;
     let leaflet;
     let currentMarker = null;
@@ -41,11 +42,19 @@
         stage.spotIds.map((id) => spotMap.get(id)).filter(Boolean),
     );
     $: waypoints = plan?.waypoints || [];
+    $: hasSavedRoute =
+        orderedSpots.length > 0 ||
+        waypoints.length > 0 ||
+        (plan?.tourNotes || "").trim().length > 0;
     $: if (!waypointAfterId || !orderedSpots.some((spot) => spot.id === waypointAfterId)) {
         waypointAfterId = orderedSpots[orderedSpots.length - 1]?.id || null;
     }
     $: if (mapInitialized) {
         updateWaypointMarkers();
+    }
+    $: if (browser && !started && hasSavedRoute && !autoStarted) {
+        autoStarted = true;
+        startPlanning({ scroll: false });
     }
 
     function formatDepth(spot) {
@@ -126,12 +135,14 @@
         updateWaypointMarkers();
     }
 
-    async function startPlanning() {
+    async function startPlanning({ scroll = true } = {}) {
         started = true;
         await tick();
         await initMap();
-        const anchor = document.getElementById("plan");
-        anchor?.scrollIntoView({ behavior: "smooth" });
+        if (scroll) {
+            const anchor = document.getElementById("plan");
+            anchor?.scrollIntoView({ behavior: "smooth" });
+        }
     }
 
     function clearRoute() {
