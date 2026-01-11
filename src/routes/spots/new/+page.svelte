@@ -55,17 +55,17 @@
 
     const facilityLabels = {
         restaurant: "Restaurant",
-        mooring: "Mooringbojen",
-        calm: "Ruhig",
-        protected: "Geschützt",
-        water: "Wasser",
-        waste: "Müllentsorgung",
-        power: "Strom",
+        mooring: "Mooring buoys",
+        calm: "Calm",
+        protected: "Sheltered",
+        water: "Water",
+        waste: "Waste disposal",
+        power: "Power",
         diesel: "Diesel",
-        supermarket: "Supermarkt",
-        service: "Werft/Service",
-        wifi: "WLAN",
-        showers: "Duschen",
+        supermarket: "Supermarket",
+        service: "Yard/Service",
+        wifi: "Wi‑Fi",
+        showers: "Showers",
     };
 
     $: visibleFacilities = facilitySets[spotType] || facilitySets.Bucht;
@@ -100,7 +100,7 @@
 
             marker = L.marker([lat, lng])
                 .addTo(map)
-                .bindPopup("Spot gewählt")
+                .bindPopup("Spot selected")
                 .openPopup();
         });
     });
@@ -164,18 +164,18 @@
         <div class="container">
             <div class="page-head">
                 <div>
-                    <p class="eyebrow">Nautischer Spot</p>
-                    <h1>Neuer Spot</h1>
-                    <p class="subtitle">Felder ausfüllen, Koordinaten setzen, speichern.</p>
+                    <p class="eyebrow">Nautical spot</p>
+                    <h1>New spot</h1>
+                    <p class="subtitle">Fill in fields, set coordinates, save.</p>
                 </div>
-                <a class="ghost-link" href="/spots">Zurück zur Liste</a>
+                <a class="ghost-link" href="/spots">Back to list</a>
             </div>
 
             <div class="layout">
                 <form method="POST" class="form">
                     <div class="group">
                         <div class="group-head">
-                            <h3>Allgemein</h3>
+                            <h3>General</h3>
                         </div>
                         <div class="field-grid">
                             <label>
@@ -184,14 +184,14 @@
                                     name="name"
                                     required
                                     bind:value={name}
-                                    placeholder="Bucht, Ankerplatz oder Marina"
+                                    placeholder="Cove, anchorage, or marina"
                                 />
                             </label>
                             <label>
-                                Spot-Typ *
+                                Spot type *
                                 <select name="spotType" bind:value={spotType} required>
-                                    <option value="Bucht">Bucht</option>
-                                    <option value="Ankerplatz">Ankerplatz</option>
+                                    <option value="Bucht">Cove</option>
+                                    <option value="Ankerplatz">Anchorage</option>
                                     <option value="Marina">Marina</option>
                                 </select>
                             </label>
@@ -200,25 +200,25 @@
                                 <input
                                     name="region"
                                     bind:value={region}
-                                    placeholder="z. B. Südliche Adria"
+                                    placeholder="e.g. Southern Adriatic"
                                 />
                             </label>
                         </div>
                         <label>
-                            Beschreibung
+                            Description
                             <textarea
                                 name="description"
                                 rows="3"
                                 bind:value={description}
-                                placeholder="Kurzbeschreibung des Spots"
+                                placeholder="Short description of the spot"
                             ></textarea>
                         </label>
                     </div>
 
                     <div class="group">
                         <div class="group-head">
-                            <h3>Sichtbarkeit</h3>
-                            <p>Lege fest, wer deinen Spot sehen darf.</p>
+                            <h3>Visibility</h3>
+                            <p>Choose who can see your spot.</p>
                         </div>
                         <div class="visibility-row">
                             <label class="visibility-option" class:active={visibility === "public"}>
@@ -228,8 +228,8 @@
                                     value="public"
                                     bind:group={visibility}
                                 />
-                                <span class="vis-title">Öffentlich</span>
-                                <span class="vis-desc">Für alle sichtbar</span>
+                                <span class="vis-title">Public</span>
+                                <span class="vis-desc">Visible to everyone</span>
                             </label>
                             <label class="visibility-option" class:active={visibility === "private"}>
                                 <input
@@ -238,73 +238,73 @@
                                     value="private"
                                     bind:group={visibility}
                                 />
-                                <span class="vis-title">Privat</span>
-                                <span class="vis-desc">Nur für dich</span>
+                                <span class="vis-title">Private</span>
+                                <span class="vis-desc">Only for you</span>
                             </label>
                         </div>
                     </div>
 
                     <div class="group">
                         <div class="group-head">
-                            <h3>Nautik</h3>
+                            <h3>Nautical</h3>
                         </div>
                         <div class="field-grid">
                             <label>
-                                Tiefe min (m)
+                                Depth min (m)
                                 <input
                                     type="number"
                                     name="depthMin"
                                     min="0"
                                     step="0.1"
                                     bind:value={depthMin}
-                                    placeholder="z. B. 4"
+                                    placeholder="e.g. 4"
                                 />
                             </label>
                             <label>
-                                Tiefe max (m)
+                                Depth max (m)
                                 <input
                                     type="number"
                                     name="depthMax"
                                     min="0"
                                     step="0.1"
                                     bind:value={depthMax}
-                                    placeholder="z. B. 12"
+                                    placeholder="e.g. 12"
                                 />
                             </label>
                             <label>
-                                Boden
+                                Bottom
                                 <select name="bottomType" bind:value={bottomType}>
-                                    <option value="">Bitte wählen</option>
+                                    <option value="">Select</option>
                                     <option value="Sand">Sand</option>
-                                    <option value="Seegras">Seegras</option>
-                                    <option value="Fels">Fels</option>
-                                    <option value="Schlamm">Schlamm</option>
-                                    <option value="Gemischt">Gemischt</option>
+                                    <option value="Seegras">Seagrass</option>
+                                    <option value="Fels">Rock</option>
+                                    <option value="Schlamm">Mud</option>
+                                    <option value="Gemischt">Mixed</option>
                                 </select>
                             </label>
                             <label>
-                                Haltequalität
+                                Holding quality
                                 <select name="holdingQuality" bind:value={holdingQuality}>
-                                    <option value="">Bitte wählen</option>
-                                    <option value="gut">gut</option>
-                                    <option value="mittel">mittel</option>
-                                    <option value="schlecht">schlecht</option>
+                                    <option value="">Select</option>
+                                    <option value="gut">good</option>
+                                    <option value="mittel">fair</option>
+                                    <option value="schlecht">poor</option>
                                 </select>
                             </label>
                             <label>
-                                Schutz (Windrichtungen)
+                                Shelter (wind directions)
                                 <input
                                     name="shelterWindDirections"
                                     bind:value={shelterWindDirections}
-                                    placeholder="z. B. gut bei N–E, offen bei SW"
+                                    placeholder="e.g. good in N–E, open in SW"
                                 />
                             </label>
                             <label>
-                                Schwell
+                                Swell
                                 <input
                                     name="swellInfo"
                                     bind:value={swellInfo}
-                                    placeholder="ruhig, Schwell bei Südwind ..."
+                                    placeholder="calm, swell with southern winds …"
                                 />
                             </label>
                         </div>
@@ -312,7 +312,7 @@
 
                     <div class="group">
                         <div class="group-head">
-                            <h3>Ausstattung</h3>
+                            <h3>Facilities</h3>
                         </div>
                         <div class="facility-grid">
                             {#each visibleFacilities as facility}
@@ -331,25 +331,25 @@
 
                     <div class="group">
                         <div class="group-head">
-                            <h3>Saison & Rating</h3>
+                            <h3>Season & rating</h3>
                         </div>
                         <div class="field-grid">
                             <label>
-                                Saison
+                                Season
                                 <input
                                     name="season"
                                     bind:value={season}
-                                    placeholder="z. B. Juni–September"
+                                    placeholder="e.g. June–September"
                                 />
                             </label>
                             <label class="rating">
                                 <div class="rating-head">
-                                    <span>Bewertung</span>
+                                    <span>Rating</span>
                                     <span class="rating-value">
                                         {ratingNumber ? `${ratingNumber}/5` : "—"}
                                     </span>
                                 </div>
-                                <div class="star-row" role="radiogroup" aria-label="Bewertung">
+                                <div class="star-row" role="radiogroup" aria-label="Rating">
                                     {#each [1, 2, 3, 4, 5] as value}
                                         <label class="star" class:active={ratingNumber >= value}>
                                             <input
@@ -359,26 +359,26 @@
                                                 bind:group={rating}
                                             />
                                             <span aria-hidden="true">★</span>
-                                            <span class="sr-only">{value} Sterne</span>
+                                            <span class="sr-only">{value} stars</span>
                                         </label>
                                     {/each}
                                 </div>
                             </label>
                         </div>
                         <label>
-                            Notizen für Skipper
+                            Skipper notes
                             <textarea
                                 name="notesSkipper"
                                 rows="3"
                                 bind:value={notesSkipper}
-                                placeholder="Ansteuerung, Besonderheiten, Funk, Gebühren ..."
+                                placeholder="Approach, notes, radio, fees …"
                             ></textarea>
                         </label>
                     </div>
 
                     <div class="group">
                         <div class="group-head">
-                            <h3>Bild</h3>
+                            <h3>Image</h3>
                             <p>Optional</p>
                         </div>
                         <input type="hidden" name="imageData" value={firstImage} />
@@ -391,7 +391,7 @@
                             on:drop={onDrop}
                             role="button"
                             tabindex="0"
-                            aria-label="Bild hochladen durch Ziehen oder Klicken"
+                            aria-label="Upload image by dragging or clicking"
                         >
                             <input
                                 class="file-input"
@@ -411,7 +411,7 @@
                                                     type="button"
                                                     class="nav prev"
                                                     on:click|preventDefault={prevImage}
-                                                    aria-label="Vorheriges Bild"
+                                                    aria-label="Previous image"
                                                 >
                                                     ‹
                                                 </button>
@@ -419,7 +419,7 @@
                                                     type="button"
                                                     class="nav next"
                                                     on:click|preventDefault={nextImage}
-                                                    aria-label="Nächstes Bild"
+                                                    aria-label="Next image"
                                                 >
                                                     ›
                                                 </button>
@@ -431,7 +431,7 @@
                                                     <button
                                                         type="button"
                                                         class:selected={idx === activeImageIndex}
-                                                        aria-label={`Bild ${idx + 1} anzeigen`}
+                                                        aria-label={`Show image ${idx + 1}`}
                                                         on:click|preventDefault={() =>
                                                             (activeImageIndex = idx)}
                                                     ></button>
@@ -445,7 +445,7 @@
                                 </div>
                             {:else}
                                 <p class="drop-text">
-                                    Bilder hierher ziehen oder klicken, um mehrere Bilder auszuwählen.
+                                    Drag images here or click to select multiple images.
                                 </p>
                             {/if}
                         </div>
@@ -459,7 +459,7 @@
                                 readonly
                                 required
                                 value={lat ?? ""}
-                                placeholder="Karte klicken"
+                                placeholder="Click the map"
                             />
                         </label>
 
@@ -470,22 +470,22 @@
                                 readonly
                                 required
                                 value={lng ?? ""}
-                                placeholder="Karte klicken"
+                                placeholder="Click the map"
                             />
                         </label>
                     </div>
 
                     <button class="btn-primary" type="submit" disabled={lat === null}>
-                        Spot speichern
+                        Save spot
                     </button>
                 </form>
 
                 <div class="map-wrapper">
                     <div class="map-head">
                         <div>
-                            <p class="eyebrow small">Karte</p>
-                            <h3>Position setzen</h3>
-                            <p class="hint">Karte klicken, Marker wird platziert.</p>
+                            <p class="eyebrow small">Map</p>
+                            <h3>Set location</h3>
+                            <p class="hint">Click the map to place a marker.</p>
                         </div>
                     </div>
                     <div id="select-map"></div>

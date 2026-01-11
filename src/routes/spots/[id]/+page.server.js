@@ -4,14 +4,14 @@ import { getDb } from "$lib/server/db";
 
 export async function load({ params, locals }) {
     const { id } = params;
-    if (!id) throw error(404, "Spot nicht gefunden");
+    if (!id) throw error(404, "Spot not found");
 
     const db = await getDb();
     const doc = await db
         .collection("spots")
         .findOne({ _id: new ObjectId(id) });
 
-    if (!doc) throw error(404, "Spot nicht gefunden");
+    if (!doc) throw error(404, "Spot not found");
 
     const visibility = doc.visibility || "public";
     if (visibility === "private") {
@@ -21,7 +21,7 @@ export async function load({ params, locals }) {
         const isOwner = user && ownerId && ownerId === user.id;
         const isAdmin = role === "admin";
         if (!isAdmin && !isOwner) {
-            throw error(404, "Spot nicht gefunden");
+            throw error(404, "Spot not found");
         }
     }
 

@@ -7,41 +7,41 @@
         <div class="brand">
             <img class="logo" src="/Logo.png" alt="SailSpots Logo" />
             <div>
-                <p class="brand-name">Segelspots</p>
-                <p class="brand-sub">Spots speichern und abrufen.</p>
+                <p class="brand-name">SailSpots</p>
+                <p class="brand-sub">Save and revisit spots.</p>
             </div>
         </div>
 
         <div class="stack">
-            <p class="heading">Produkt</p>
+            <p class="heading">Product</p>
             <a href="/spots">Spots</a>
-            <a href="/map">Karte</a>
-            <a href="/routen">Routen</a>
-            <a href="/tour-planning">Tourplanung</a>
-            <a href="/spots/new">Spot anlegen</a>
+            <a href="/map">Map</a>
+            <a href="/routen">Routes</a>
+            <a href="/tour-planning">Tour Planning</a>
+            <a href="/spots/new">Create spot</a>
         </div>
 
         <div class="stack">
             <p class="heading">Support</p>
-            <a href="mailto:hallo@segelspots.app">Kontakt</a>
+            <a href="mailto:hallo@segelspots.app">Contact</a>
             <a href="/spots/new">Feedback</a>
-            <span class="muted">Updates (folgt)</span>
+            <span class="muted">Updates (coming soon)</span>
         </div>
 
         <div class="stack">
-            <p class="heading">Rechtliches</p>
-            <span class="muted">Impressum (folgt)</span>
-            <span class="muted">Datenschutz (folgt)</span>
-            <span class="muted">Nutzungsbedingungen (folgen)</span>
+            <p class="heading">Legal</p>
+            <span class="muted">Imprint (coming soon)</span>
+            <span class="muted">Privacy (coming soon)</span>
+            <span class="muted">Terms (coming soon)</span>
         </div>
     </div>
 
     <div class="footer-base">
-        <p>© {year} Segelspots.</p>
+        <p>© {year} SailSpots.</p>
         <div class="meta-links">
-            <span class="muted">Beta-Release</span>
+            <span class="muted">Beta release</span>
             <a href="mailto:hallo@segelspots.app">Support</a>
-            <span class="muted">Changelog (folgt)</span>
+            <span class="muted">Changelog (coming soon)</span>
         </div>
     </div>
 </footer>

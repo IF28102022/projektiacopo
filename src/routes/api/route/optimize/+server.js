@@ -91,7 +91,7 @@ async function maybeCallOpenAI(openAiKey, spotIds) {
                     {
                         role: "system",
                         content:
-                            "Reordne die Spot-IDs für eine möglichst kurze Route. Antworte nur mit einer JSON-Liste der IDs.",
+                            "Reorder the spot IDs for the shortest possible route. Reply only with a JSON list of IDs.",
                     },
                     { role: "user", content: JSON.stringify({ ids: spotIds }) },
                 ],
@@ -106,7 +106,7 @@ async function maybeCallOpenAI(openAiKey, spotIds) {
         const cleaned = parsed.map(String);
         return cleaned;
     } catch (error) {
-        console.warn("OpenAI Optimierung übersprungen", error);
+        console.warn("OpenAI optimization skipped", error);
         return null;
     }
 }
@@ -117,14 +117,14 @@ export async function POST({ request }) {
     const mode = body?.mode || "perStage";
 
     if (!Array.isArray(stages)) {
-        return json({ error: "Stages fehlen" }, { status: 400 });
+        return json({ error: "Stages are missing" }, { status: 400 });
     }
 
     const openAiKey = process.env.OPENAI_API_KEY;
 
     const normalizeStage = (stage) => ({
         id: String(stage.id),
-        title: stage.title || "Etappe",
+        title: stage.title || "Tour",
         coordinates: (stage.coordinates || [])
             .filter((c) => Number.isFinite(c.lat) && Number.isFinite(c.lng))
             .map((c) => ({ lat: Number(c.lat), lng: Number(c.lng), spotId: String(c.spotId) })),

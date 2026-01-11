@@ -1,14 +1,19 @@
 <script>
-    import { dndzone } from "svelte-dnd-action";
     import { tourPlan } from "$lib/stores/tourPlan";
     import { createEventDispatcher, onMount } from "svelte";
 
     export let spots = [];
+    export let waypoints = [];
 
     const dispatch = createEventDispatcher();
 
     let spotMap = new Map();
-
+    let plan = { poolSpotIds: [], stages: [] };
+    let poolItems = [];
+    let stageItems = [];
+    let orderedSpots = [];
+    let activeStageId = null;
+    let canCompute = false;
     let loading = false;
     let error = "";
     let routeSummary = null;
@@ -30,10 +35,18 @@
     }
 
     const uuid = () =>
-        (crypto?.randomUUID?.() || `stage-${Math.random().toString(36).slice(2, 9)}`);
+        (globalThis.crypto?.randomUUID?.() ||
+            `stage-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`);
 
     $: spotMap = new Map(spots.map((s) => [s.id, s]));
-    $: plan = $tourPlan;
+    const spotTypeLabels = {
+        Bucht: "Cove",
+        Ankerplatz: "Anchorage",
+        Marina: "Marina",
+        Mooringfeld: "Mooring field",
+        Hafen: "Harbor",
+    };
+    $: plan = $tourPlan || { poolSpotIds: [], stages: [] };
     $: poolItems = plan.poolSpotIds
         .map((id) => spotMap.get(id))
         .filter(Boolean)
@@ -49,49 +62,65 @@
     $: orderedSpots = plan.stages.flatMap((stage) =>
         stage.spotIds.map((id) => spotMap.get(id)).filter(Boolean),
     );
+    $: if (!activeStageId || !plan.stages.some((stage) => stage.id === activeStageId)) {
+        activeStageId = plan.stages[0]?.id || null;
+    }
+    $: routePoints = buildRoutePoints(orderedSpots, waypoints);
     $: canCompute = orderedSpots.length >= 2 && !loading;
 
-    function handlePoolFinalize(event) {
-        const draggedId = event.detail?.info?.dragged?.id;
-        const ids = event.detail.items.map((item) => item.id);
-
+    function addToStage(spotId, stageId = activeStageId) {
+        if (!stageId) return;
         tourPlan.update((current) => {
-            const stages = draggedId
-                ? current.stages.map((stage) => ({
-                      ...stage,
-                      spotIds: stage.spotIds.filter((id) => id !== draggedId),
-                  }))
-                : current.stages;
-            return { ...current, poolSpotIds: ids, stages };
+            const stages = current.stages.map((stage) => {
+                const cleaned = stage.spotIds.filter((id) => id !== spotId);
+                if (stage.id === stageId && !cleaned.includes(spotId)) {
+                    return { ...stage, spotIds: [...cleaned, spotId] };
+                }
+                return { ...stage, spotIds: cleaned };
+            });
+            const poolSpotIds = current.poolSpotIds.filter((id) => id !== spotId);
+            return { ...current, stages, poolSpotIds };
         });
     }
 
-    function handleStageFinalize(stageId, event) {
-        const draggedId = event.detail?.info?.dragged?.id;
-        const ids = event.detail.items.map((item) => item.id);
-
+    function removeFromStage(stageId, spotId) {
         tourPlan.update((current) => {
             const stages = current.stages.map((stage) => {
-                if (stage.id === stageId) return { ...stage, spotIds: ids };
-                return draggedId
-                    ? { ...stage, spotIds: stage.spotIds.filter((id) => id !== draggedId) }
-                    : stage;
+                if (stage.id !== stageId) return stage;
+                return { ...stage, spotIds: stage.spotIds.filter((id) => id !== spotId) };
             });
-            const pool = draggedId
-                ? current.poolSpotIds.filter((id) => id !== draggedId)
-                : current.poolSpotIds;
-            return { ...current, stages, poolSpotIds: pool };
+            const poolSpotIds = current.poolSpotIds.includes(spotId)
+                ? current.poolSpotIds
+                : [...current.poolSpotIds, spotId];
+            return { ...current, stages, poolSpotIds };
+        });
+    }
+
+    function moveWithinStage(stageId, spotId, direction) {
+        tourPlan.update((current) => {
+            const stages = current.stages.map((stage) => {
+                if (stage.id !== stageId) return stage;
+                const index = stage.spotIds.indexOf(spotId);
+                if (index === -1) return stage;
+                const nextIndex = direction === "up" ? index - 1 : index + 1;
+                if (nextIndex < 0 || nextIndex >= stage.spotIds.length) return stage;
+                const nextIds = [...stage.spotIds];
+                [nextIds[index], nextIds[nextIndex]] = [nextIds[nextIndex], nextIds[index]];
+                return { ...stage, spotIds: nextIds };
+            });
+            return { ...current, stages };
         });
     }
 
     function addStage() {
-        tourPlan.update((current) => ({
-            ...current,
-            stages: [
-                ...current.stages,
-                { id: uuid(), title: `Etappe ${current.stages.length + 1}`, spotIds: [] },
-            ],
-        }));
+        if (plan.stages.length >= 1) return;
+        const newStageId = uuid();
+        const nextStages = [
+            ...plan.stages,
+            { id: newStageId, title: `Tour ${plan.stages.length + 1}`, spotIds: [] },
+        ];
+        tourPlan.set({ ...plan, stages: nextStages });
+        activeStageId = newStageId;
     }
 
     function removeStage(id) {
@@ -104,45 +133,97 @@
     }
 
     function resetPlan() {
-        tourPlan.reset(spots);
+        const ids = Array.isArray(spots) ? spots.map((s) => s.id) : [];
+        const newStageId = uuid();
+        tourPlan.set({
+            poolSpotIds: ids,
+            stages: [{ id: newStageId, title: "Tour 1", spotIds: [] }],
+            waypoints: []
+        });
+        activeStageId = newStageId;
         routeSummary = null;
         dispatch("routeCleared");
     }
 
-    async function computeRoute() {
-        if (!canCompute) return;
-        loading = true;
+    async function computeRouteFromSpots(spotsToRoute, { keepLoading = false } = {}) {
+        if (!spotsToRoute || spotsToRoute.length < 2) {
+            routeSummary = null;
+            dispatch("routeCleared");
+            return;
+        }
+        if (!keepLoading) loading = true;
         error = "";
         routeSummary = null;
 
         try {
-            const coordinates = orderedSpots.map((spot) => ({
-                lat: Number(spot.lat),
-                lng: Number(spot.lng),
+            const points = Array.isArray(routePoints) && routePoints.length
+                ? routePoints
+                : spotsToRoute;
+            const coordinates = points.map((point) => ({
+                lat: Number(point.lat),
+                lng: Number(point.lng),
             }));
             const res = await fetch("/api/route/osrm", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ coordinates }),
+                body: JSON.stringify({ coordinates, mode: "direct", speedKnots: 6 }),
             });
-            if (!res.ok) throw new Error("OSRM nicht erreichbar");
+            if (!res.ok) throw new Error("OSRM not reachable");
             const data = await res.json();
             routeSummary = {
                 distance: data.distance,
                 duration: data.duration,
-                spots: orderedSpots,
+                spots: spotsToRoute,
+                waypoints: Array.isArray(waypoints) ? waypoints.length : 0,
             };
             dispatch("routeComputed", {
                 geometry: data.geometry,
-                spots: orderedSpots,
+                spots: spotsToRoute,
+                waypoints: Array.isArray(waypoints) ? waypoints : [],
                 distance: data.distance,
                 duration: data.duration,
             });
         } catch (err) {
-            error = err?.message || "Route konnte nicht berechnet werden.";
+            error = err?.message || "Route could not be calculated.";
         } finally {
-            loading = false;
+            if (!keepLoading) loading = false;
         }
+    }
+
+    function buildRoutePoints(spotsToRoute, waypointList = []) {
+        if (!Array.isArray(spotsToRoute) || spotsToRoute.length === 0) return [];
+        const grouped = new Map();
+        waypointList.forEach((wp) => {
+            if (!wp?.afterSpotId) return;
+            if (!grouped.has(wp.afterSpotId)) grouped.set(wp.afterSpotId, []);
+            grouped.get(wp.afterSpotId).push(wp);
+        });
+        return spotsToRoute.flatMap((spot) => {
+            const waypointsForSpot = grouped.get(spot.id) || [];
+            const sorted = [...waypointsForSpot].sort(
+                (a, b) => Number(a.order || 0) - Number(b.order || 0),
+            );
+            const waypointPoints = sorted.map((wp) => ({
+                id: wp.id,
+                lat: wp.lat,
+                lng: wp.lng,
+                kind: "waypoint",
+            }));
+            return [
+                {
+                    id: spot.id,
+                    lat: spot.lat,
+                    lng: spot.lng,
+                    kind: "spot",
+                },
+                ...waypointPoints,
+            ];
+        });
+    }
+
+    async function computeRoute() {
+        if (!canCompute) return;
+        await computeRouteFromSpots(orderedSpots);
     }
 
     async function optimize(mode = "global") {
@@ -155,7 +236,7 @@
                     id: stage.id,
                     title: stage.title,
                     coordinates: stage.spotIds
-                        .map((id) => get(spotMap).get(id))
+                        .map((id) => spotMap.get(id))
                         .filter(Boolean)
                         .map((spot) => ({
                             lat: Number(spot.lat),
@@ -170,7 +251,7 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload),
             });
-            if (!res.ok) throw new Error("Optimierung fehlgeschlagen");
+            if (!res.ok) throw new Error("Optimization failed");
             const data = await res.json();
             const nextStages = plan.stages.map((stage) => {
                 const updated = data.stages.find((s) => s.id === stage.id);
@@ -183,8 +264,12 @@
                     spots.some((s) => s.id === id),
                 ),
             }));
+            const nextOrderedSpots = nextStages.flatMap((stage) =>
+                stage.spotIds.map((id) => spotMap.get(id)).filter(Boolean),
+            );
+            await computeRouteFromSpots(nextOrderedSpots, { keepLoading: true });
         } catch (err) {
-            error = err?.message || "Optimierung konnte nicht ausgeführt werden.";
+            error = err?.message || "Optimization could not be run.";
         } finally {
             loading = false;
         }
@@ -194,40 +279,45 @@
 <section class="builder">
     <div class="builder-head">
         <div>
-            <p class="eyebrow">Route Builder</p>
-            <h2>Favoriten zu Etappen ziehen</h2>
-            <p class="muted">Spots per Drag & Drop in Etappen sortieren, dann Route berechnen.</p>
+            <p class="eyebrow">Tour Builder</p>
+            <h2>Add favorites to your tour</h2>
+            <p class="muted">Select spots, fill the tour, then calculate the route.</p>
         </div>
         <div class="actions">
-            <button class="ghost" type="button" on:click={addStage}>Etappe hinzufügen</button>
-            <button class="ghost danger" type="button" on:click={resetPlan}>Plan zurücksetzen</button>
+            <button class="ghost danger" type="button" on:click={resetPlan}>Reset plan</button>
         </div>
     </div>
 
     <div class="grid">
         <div class="panel">
             <div class="panel-head">
-                <p class="panel-title">Favoriten-Pool</p>
-                <p class="panel-meta">{poolItems.length} Spots</p>
+                <div>
+                    <p class="panel-title">Favorites pool</p>
+                    <p class="panel-meta">{poolItems.length} spots</p>
+                </div>
             </div>
-            <div
-                class="zone"
-                use:dndzone={{
-                    items: poolItems,
-                    flipDurationMs: 150,
-                    type: "spot",
-                }}
-                on:finalize={handlePoolFinalize}
-            >
+            <div class="zone">
                 {#if poolItems.length === 0}
-                    <p class="muted empty">Keine Spots im Pool.</p>
+                    <p class="muted empty">No spots in the pool.</p>
                 {:else}
-                    {#each poolItems as item}
-                        <div class="card">
-                            <p class="title">{item.title}</p>
-                            <p class="sub">
-                                {item.spot.region || "—"} · {item.spot.spotType || "Spot"}
-                            </p>
+                    {#each poolItems as item (item.id)}
+                        <div class="card pool-card">
+                            <div>
+                                <p class="title">{item.title}</p>
+                                <p class="sub">
+                                    {item.spot.region || "—"} · {spotTypeLabels[item.spot.spotType] ||
+                                        item.spot.spotType ||
+                                        "Spot"}
+                                </p>
+                            </div>
+                            <button
+                                class="tiny primary"
+                                type="button"
+                                on:click={() => addToStage(item.id)}
+                                disabled={!activeStageId}
+                            >
+                                Add
+                            </button>
                         </div>
                     {/each}
                 {/if}
@@ -236,47 +326,61 @@
 
         <div class="panel stages">
             <div class="panel-head">
-                <p class="panel-title">Etappen</p>
-                <p class="panel-meta">{stageItems.length} Spalten</p>
+                <p class="panel-title">Tour</p>
+                <p class="panel-meta">1 tour</p>
             </div>
             <div class="stages-grid">
-                {#each stageItems as stage, idx (stage.id)}
-                    <div class="stage">
+                {#each stageItems as stage (stage.id)}
+                    <div class="stage" class:active={stage.id === activeStageId}>
                         <div class="stage-head">
                             <p class="stage-title">{stage.title}</p>
                             <div class="stage-meta">
-                                <span>{stage.items.length} Spots</span>
-                                {#if stage.items.length === 0 && stageItems.length > 1}
-                                    <button
-                                        class="tiny danger"
-                                        type="button"
-                                        on:click={() => removeStage(stage.id)}
-                                        aria-label="Etappe entfernen"
-                                    >
-                                        Entfernen
-                                    </button>
-                                {/if}
+                                <span>{stage.items.length} spots</span>
                             </div>
                         </div>
 
-                        <div
-                            class="zone"
-                            use:dndzone={{
-                                items: stage.items,
-                                flipDurationMs: 150,
-                                type: "spot",
-                            }}
-                            on:finalize={(event) => handleStageFinalize(stage.id, event)}
-                        >
+                        <div class="zone">
                             {#if stage.items.length === 0}
-                                <p class="muted empty">Hierhin ziehen …</p>
+                                <p class="muted empty">No spots in this tour.</p>
                             {:else}
-                                {#each stage.items as item}
-                                    <div class="card">
-                                        <p class="title">{item.title}</p>
-                                        <p class="sub">
-                                            {item.spot.region || "—"} · {item.spot.spotType || "Spot"}
-                                        </p>
+                                {#each stage.items as item, index (item.id)}
+                                    <div class="card stage-card">
+                                        <div>
+                                            <p class="title">{item.title}</p>
+                                            <p class="sub">
+                                                {item.spot.region || "—"} · {spotTypeLabels[item.spot.spotType] ||
+                                                    item.spot.spotType ||
+                                                    "Spot"}
+                                            </p>
+                                        </div>
+                                        <div class="card-actions">
+                                            <button
+                                                class="icon-btn"
+                                                type="button"
+                                                aria-label="Move up"
+                                                on:click={() => moveWithinStage(stage.id, item.id, "up")}
+                                                disabled={index === 0}
+                                            >
+                                                ↑
+                                            </button>
+                                            <button
+                                                class="icon-btn"
+                                                type="button"
+                                                aria-label="Move down"
+                                                on:click={() => moveWithinStage(stage.id, item.id, "down")}
+                                                disabled={index === stage.items.length - 1}
+                                            >
+                                                ↓
+                                            </button>
+                                            <button
+                                                class="icon-btn danger"
+                                                type="button"
+                                                aria-label="Remove"
+                                                on:click={() => removeFromStage(stage.id, item.id)}
+                                            >
+                                                ✕
+                                            </button>
+                                        </div>
                                     </div>
                                 {/each}
                             {/if}
@@ -291,15 +395,18 @@
         <div class="left">
             <p class="muted">
                 {#if orderedSpots.length === 0}
-                    Keine Spots gewählt.
+                    No spots selected.
                 {:else}
-                    {orderedSpots.length} Spots in Route.
+                    {orderedSpots.length} spots in route.
                 {/if}
             </p>
             {#if routeSummary}
                 <p class="muted">
-                    Distanz: {(routeSummary.distance / 1000).toFixed(1)} km · Dauer:
+                    Distance: {(routeSummary.distance / 1000).toFixed(1)} km · Duration:
                     {(routeSummary.duration / 60).toFixed(0)} min
+                </p>
+                <p class="muted">
+                    {routeSummary.spots.length} spots · {routeSummary.waypoints} waypoints
                 </p>
             {/if}
             {#if error}
@@ -308,13 +415,13 @@
         </div>
         <div class="right">
             <button class="ghost" type="button" on:click={() => optimize("global")} disabled={loading}>
-                AI optimieren
+                Optimize with AI
             </button>
             <button class="primary" type="button" on:click={computeRoute} disabled={!canCompute}>
                 {#if loading}
-                    Berechne …
+                    Calculating…
                 {:else}
-                    Route berechnen
+                    Calculate route
                 {/if}
             </button>
         </div>
@@ -399,6 +506,24 @@
         color: var(--muted);
     }
 
+    .stage-select {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--muted);
+        font-size: 0.85rem;
+        font-weight: 700;
+    }
+
+    .stage-select select {
+        border-radius: 999px;
+        border: 1px solid #dbe4f5;
+        padding: 0.35rem 0.75rem;
+        font-weight: 600;
+        background: #ffffff;
+        color: #0f172a;
+    }
+
     .zone {
         padding: 0.9rem;
         display: flex;
@@ -413,6 +538,10 @@
         border-radius: 0.75rem;
         padding: 0.65rem 0.8rem;
         box-shadow: 0 8px 24px rgba(15, 111, 184, 0.06);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
     }
 
     .card .title {
@@ -424,6 +553,42 @@
         margin: 0.1rem 0 0;
         color: var(--muted);
         font-size: 0.93rem;
+    }
+
+    .pool-card button {
+        white-space: nowrap;
+    }
+
+    .stage-card {
+        align-items: flex-start;
+    }
+
+    .card-actions {
+        display: flex;
+        gap: 0.35rem;
+        align-items: center;
+    }
+
+    .icon-btn {
+        border: 1px solid #dbe4f5;
+        background: #ffffff;
+        color: #1d2b38;
+        border-radius: 999px;
+        width: 32px;
+        height: 32px;
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+        padding: 0;
+    }
+
+    .icon-btn:disabled {
+        opacity: 0.45;
+    }
+
+    .icon-btn.danger {
+        color: #c53030;
+        border-color: #f5d0d0;
     }
 
     .empty {
@@ -451,6 +616,11 @@
         overflow: hidden;
         display: flex;
         flex-direction: column;
+    }
+
+    .stage.active {
+        border-color: rgba(15, 111, 184, 0.4);
+        box-shadow: 0 12px 30px rgba(15, 111, 184, 0.08);
     }
 
     .stage-head {
@@ -536,6 +706,12 @@
     .tiny {
         font-size: 0.8rem;
         padding: 0.35rem 0.6rem;
+    }
+
+    .select {
+        background: #ffffff;
+        border: 1px solid #dbe4f5;
+        color: #1d2b38;
     }
 
     .error {

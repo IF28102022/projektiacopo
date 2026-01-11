@@ -13,16 +13,16 @@ export const actions = {
         const password = String(form.get("password") || "").trim();
 
         if (!email || !password) {
-            return fail(400, { error: "E-Mail und Passwort angeben." });
+            return fail(400, { error: "Please provide email and password." });
         }
 
         const user = await findUserByEmail(email);
         if (!user) {
-            return fail(400, { error: "Kein Konto gefunden. Bitte registrieren." });
+            return fail(400, { error: "No account found. Please register." });
         }
 
         if (!verifyPassword(password, user.passwordHash)) {
-            return fail(400, { error: "Login fehlgeschlagen." });
+            return fail(400, { error: "Sign in failed." });
         }
 
         setSessionCookie(cookies, {

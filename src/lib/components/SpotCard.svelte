@@ -1,4 +1,7 @@
 <script>
+    import { enhance } from "$app/forms";
+    import { onDestroy } from "svelte";
+
     export let spot;
     export let action = "?/delete";
     export let favoriteAction = "?/favorite";
@@ -10,21 +13,65 @@
         : [];
     $: coverImage =
         (imageList[0] || spot?.imageData || spot?.imageUrl || "").trim() || null;
+    $: isFavorite = Boolean(spot?.isFavorite);
+    let favoritePending = false;
+    let favoriteError = "";
+    let errorTimeout;
+
+    const handleFavorite = () => {
+        favoritePending = true;
+        favoriteError = "";
+        if (errorTimeout) {
+            clearTimeout(errorTimeout);
+            errorTimeout = null;
+        }
+        return async ({ result }) => {
+            favoritePending = false;
+            if (result?.type === "success" && typeof result.data?.favorited === "boolean") {
+                isFavorite = result.data.favorited;
+                favoriteError = "";
+                return;
+            }
+            if (result?.type === "failure" || result?.type === "error") {
+                favoriteError =
+                    result?.data?.error || "Favorite could not be saved.";
+                errorTimeout = setTimeout(() => {
+                    favoriteError = "";
+                    errorTimeout = null;
+                }, 3000);
+            }
+        };
+    };
+
+    onDestroy(() => {
+        if (errorTimeout) clearTimeout(errorTimeout);
+    });
 </script>
 
 <article class="card">
     {#if canFavorite}
-        <form method="POST" action={favoriteAction} class="favorite-form">
+        <form
+            method="POST"
+            action={favoriteAction}
+            class="favorite-form"
+            use:enhance={handleFavorite}
+        >
             <input type="hidden" name="id" value={spot.id} />
             <button
                 type="submit"
-                class:favorited={spot.isFavorite}
-                aria-pressed={spot.isFavorite}
-                aria-label={spot.isFavorite ? "Favorit entfernen" : "Als Favorit markieren"}
-                title={spot.isFavorite ? "Favorit entfernen" : "Als Favorit markieren"}
+                class:favorited={isFavorite}
+                aria-pressed={isFavorite}
+                aria-label={isFavorite ? "Remove favorite" : "Mark as favorite"}
+                title={isFavorite ? "Remove favorite" : "Mark as favorite"}
+                disabled={favoritePending}
             >
-                {spot.isFavorite ? "★" : "☆"}
+                {isFavorite ? "★" : "☆"}
             </button>
+            {#if favoriteError}
+                <span class="favorite-error" role="status" aria-live="polite">
+                    {favoriteError}
+                </span>
+            {/if}
         </form>
     {/if}
 
@@ -42,7 +89,7 @@
     {#if showDelete}
         <form method="POST" {action} class="delete-form">
             <input type="hidden" name="id" value={spot.id} />
-            <button type="submit" class="delete-btn">Löschen</button>
+            <button type="submit" class="delete-btn">Delete</button>
         </form>
     {/if}
 </article>
@@ -134,6 +181,21 @@
         border-color: #fde9c3;
         background: #fffaf0;
         box-shadow: 0 12px 30px rgba(245, 158, 11, 0.2);
+    }
+
+    .favorite-error {
+        position: absolute;
+        top: 3.1rem;
+        right: 0;
+        background: rgba(255, 255, 255, 0.95);
+        color: #b91c1c;
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.35rem 0.6rem;
+        border-radius: 0.6rem;
+        border: 1px solid rgba(185, 28, 28, 0.2);
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+        max-width: 190px;
     }
 
     .delete-form {

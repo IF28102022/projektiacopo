@@ -18,9 +18,9 @@
                 <div class="intro">
                     <div>
                         <p class="eyebrow">Spots</p>
-                        <h2>Alle Orte, eine ruhige Übersicht</h2>
+                    <h2>All places, a calm overview</h2>
                     <p class="subtitle">
-                        Finde deinen nächsten Ankerplatz in Sekunden. Filtern, merken, auf der Karte öffnen.
+                        Find your next anchorage in seconds. Filter, favorite, open on the map.
                     </p>
                 </div>
                 <div class="toolbar-actions">
@@ -29,20 +29,20 @@
                             href="/spots?visibility=public"
                             class:selected={visibility === "public"}
                         >
-                            Öffentlich
+                            Public
                         </a>
                         {#if canViewPrivate}
                             <a
                                 href="/spots?visibility=private"
                                 class:selected={visibility === "private"}
                             >
-                                Privat
+                                Private
                             </a>
                         {/if}
                     </div>
-                    <span class="badge">{total} gespeichert</span>
+                    <span class="badge">{total} saved</span>
                     {#if data.canCreate}
-                        <a href="/spots/new" class="ghost-link">+ Neuer Spot</a>
+                        <a href="/spots/new" class="ghost-link">+ New Spot</a>
                     {/if}
                 </div>
             </div>
@@ -50,10 +50,10 @@
             <div class="panel">
                 <div class="panel-head">
                     <div>
-                        <p class="panel-title">Spots & Karte</p>
-                        <p class="panel-meta">Liste und Karten-Link</p>
+                        <p class="panel-title">Spots & map</p>
+                        <p class="panel-meta">List and map link</p>
                     </div>
-                    <a class="ghost-link" href="/map">Karte öffnen</a>
+                    <a class="ghost-link" href="/map">Open map</a>
                 </div>
 
                 {#if data.spots.length === 0}
@@ -61,13 +61,13 @@
                         <div>
                             <p class="empty-title">
                                 {visibility === "private"
-                                    ? "Noch keine privaten Spots"
-                                    : "Noch keine Spots gespeichert"}
+                                    ? "No private spots yet"
+                                    : "No spots saved yet"}
                             </p>
-                            <p class="empty-text">Lege den ersten Spot an.</p>
+                            <p class="empty-text">Create your first spot.</p>
                         </div>
                         {#if data.canCreate}
-                            <a href="/spots/new" class="ghost-link">Jetzt starten</a>
+                            <a href="/spots/new" class="ghost-link">Get started</a>
                         {/if}
                     </div>
                 {:else}

@@ -3,9 +3,9 @@
 
     const links = [
         { href: "/spots", label: "Spots" },
-        { href: "/map", label: "Karte" },
-        { href: "/routen", label: "Routen" },
-        { href: "/tour-planning", label: "Tourplanung" }
+        { href: "/map", label: "Map" },
+        { href: "/routen", label: "Routes" },
+        { href: "/tour-planning", label: "Tour Planning" }
     ];
 
     $: user = $page.data?.user || null;
@@ -41,15 +41,15 @@
 
         <div class="actions">
             {#if canCreate}
-                <a class="ghost" href="/spots/new">Neuer Spot</a>
+                <a class="ghost" href="/spots/new">New Spot</a>
             {/if}
             {#if user}
                 <span class="user-pill">
                     {user.email} · {user.role}
                 </span>
-                <a class="ghost" href="/logout">Logout</a>
+                <a class="ghost" href="/logout">Sign out</a>
             {:else}
-                <a class="ghost" href="/login">Login</a>
+                <a class="ghost" href="/login">Sign in</a>
             {/if}
         </div>
     </div>

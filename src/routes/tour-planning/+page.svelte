@@ -1,8 +1,8 @@
 <script>
     import Header from "$lib/components/header.svelte";
     import Footer from "$lib/components/footer.svelte";
-    import SpotList from "$lib/components/SpotList.svelte";
     import RouteBuilder from "$lib/components/tour/RouteBuilder.svelte";
+    import { tourPlan } from "$lib/stores/tourPlan";
     import { browser } from "$app/environment";
     import { tick, onDestroy } from "svelte";
 
@@ -15,7 +15,10 @@
     let mapInitialized = false;
     let routeLayer = null;
     let routeMarkers = [];
+    let waypointMarkers = [];
     let routeInfo = null;
+    let waypointMode = false;
+    let waypointAfterId = null;
 
     const typeIcons = {
         Ankerplatz: "⚓",
@@ -24,10 +27,30 @@
         Mooringfeld: "🟡",
         Hafen: "🚢",
     };
+    const spotTypeLabels = {
+        Bucht: "Cove",
+        Ankerplatz: "Anchorage",
+        Marina: "Marina",
+        Mooringfeld: "Mooring field",
+        Hafen: "Harbor",
+    };
+
+    $: plan = $tourPlan;
+    $: spotMap = new Map((data?.spots ?? []).map((spot) => [spot.id, spot]));
+    $: orderedSpots = (plan?.stages || []).flatMap((stage) =>
+        stage.spotIds.map((id) => spotMap.get(id)).filter(Boolean),
+    );
+    $: waypoints = plan?.waypoints || [];
+    $: if (!waypointAfterId || !orderedSpots.some((spot) => spot.id === waypointAfterId)) {
+        waypointAfterId = orderedSpots[orderedSpots.length - 1]?.id || null;
+    }
+    $: if (mapInitialized) {
+        updateWaypointMarkers();
+    }
 
     function formatDepth(spot) {
         if (spot.depthMin || spot.depthMax) {
-            return `Tiefe ${spot.depthMin ?? "?"}–${spot.depthMax ?? "?"} m`;
+            return `Depth ${spot.depthMin ?? "?"}–${spot.depthMax ?? "?"} m`;
         }
         return "";
     }
@@ -38,7 +61,7 @@
 
         return `
             <div class="popup">
-                <div class="popup-title">${icon} <strong>${spot.name || "Spot"}</strong> ${spot.spotType ? "· " + spot.spotType : ""}</div>
+                <div class="popup-title">${icon} <strong>${spot.name || "Spot"}</strong> ${spot.spotType ? "· " + (spotTypeLabels[spot.spotType] || spot.spotType) : ""}</div>
                 ${depth ? `<div class="popup-meta">${depth}</div>` : ""}
                 <div class="popup-coords">${Number(spot.lat).toFixed(4)}, ${Number(spot.lng).toFixed(4)}</div>
             </div>
@@ -84,17 +107,23 @@
         map.on("click", (e) => {
             const { lat, lng } = e.latlng;
 
+            if (waypointMode) {
+                addWaypoint(lat, lng);
+                return;
+            }
+
             if (currentMarker) currentMarker.remove();
 
             currentMarker = L.marker([lat, lng])
                 .addTo(map)
                 .bindPopup(
-                    `Spot gesetzt<br>${lat.toFixed(4)}, ${lng.toFixed(4)}`,
+                    `Spot placed<br>${lat.toFixed(4)}, ${lng.toFixed(4)}`,
                 )
                 .openPopup();
         });
 
         mapInitialized = true;
+        updateWaypointMarkers();
     }
 
     async function startPlanning() {
@@ -115,13 +144,68 @@
         routeInfo = null;
     }
 
+    function addWaypoint(lat, lng) {
+        if (!waypointAfterId) return;
+        const id = `wp-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+        tourPlan.update((current) => {
+            const list = Array.isArray(current.waypoints) ? current.waypoints : [];
+            return {
+                ...current,
+                waypoints: [
+                    ...list,
+                    {
+                        id,
+                        lat: Number(lat),
+                        lng: Number(lng),
+                        afterSpotId: waypointAfterId,
+                        order: Date.now()
+                    }
+                ]
+            };
+        });
+    }
+
+    function removeWaypoint(id) {
+        tourPlan.update((current) => ({
+            ...current,
+            waypoints: (current.waypoints || []).filter((wp) => wp.id !== id)
+        }));
+    }
+
+    function clearWaypoints() {
+        tourPlan.update((current) => ({
+            ...current,
+            waypoints: []
+        }));
+    }
+
+    function updateWaypointMarkers() {
+        if (!mapInitialized || !leaflet) return;
+        waypointMarkers.forEach((m) => m.remove?.());
+        waypointMarkers = waypoints.map((wp, idx) => {
+            const icon = leaflet.divIcon({
+                className: "route-waypoint",
+                html: `<span>•</span>`,
+                iconSize: [18, 18]
+            });
+            const marker = leaflet.marker([wp.lat, wp.lng], { icon }).addTo(map);
+            marker.bindPopup(`Waypoint ${idx + 1}`);
+            return marker;
+        });
+    }
+
     async function handleRouteComputed(event) {
-        const { geometry, spots, distance, duration } = event.detail;
+        const { geometry, spots, distance, duration, waypoints: routeWaypoints } = event.detail;
         if (!mapInitialized) await initMap();
         if (!leaflet) leaflet = (await import("leaflet")).default;
 
         clearRoute();
-        routeInfo = { distance, duration, count: spots?.length || 0 };
+        routeInfo = {
+            distance,
+            duration,
+            count: spots?.length || 0,
+            waypoints: Array.isArray(routeWaypoints) ? routeWaypoints.length : 0
+        };
 
         const latLngs =
             geometry?.coordinates?.map(([lng, lat]) => [Number(lat), Number(lng)]) || [];
@@ -167,18 +251,18 @@
     {#if !started}
         <section class="start-screen">
             <div class="start-card">
-                <p class="start-eyebrow">Tourplanung</p>
-                <h1>Starte deinen Törn-Plan.</h1>
+                <p class="start-eyebrow">Tour planning</p>
+                <h1>Start your tour plan.</h1>
                 <p class="start-subtitle">
-                    Button klicken – danach siehst du Karte und alle Spots zur
-                    Routenplanung.
+                    Click the button — then you will see the map and all spots for
+                    route planning.
                 </p>
                 <button
                     class="start-btn"
                     type="button"
                     on:click={startPlanning}
                 >
-                    Tour planen
+                    Plan tour
                 </button>
             </div>
         </section>
@@ -189,67 +273,85 @@
                     <div class="panel-head">
                         <div class="row">
                             <span class="dot accent"></span>
-                            <p class="panel-title">Karte</p>
+                            <p class="panel-title">Map</p>
                         </div>
                         <p class="panel-meta">
-                            Marker & Klick für neue Position
+                            Markers & click for new position
                         </p>
+                    </div>
+                    <div class="map-tools">
+                        <div class="map-tools-row">
+                            <button
+                                class:active={waypointMode}
+                                class="ghost"
+                                type="button"
+                                disabled={orderedSpots.length === 0}
+                                on:click={() => (waypointMode = !waypointMode)}
+                            >
+                                {waypointMode ? "Waypoints: On" : "Add waypoints"}
+                            </button>
+                            <label class="map-select">
+                                <span>After spot</span>
+                                <select bind:value={waypointAfterId} disabled={orderedSpots.length === 0}>
+                                    {#each orderedSpots as spot}
+                                        <option value={spot.id}>{spot.name}</option>
+                                    {/each}
+                                </select>
+                            </label>
+                            <button
+                                class="ghost danger"
+                                type="button"
+                                disabled={waypoints.length === 0}
+                                on:click={clearWaypoints}
+                            >
+                                Clear waypoints
+                            </button>
+                        </div>
+                        {#if waypoints.length}
+                            <div class="waypoint-list">
+                                {#each waypoints as wp, idx (wp.id)}
+                                    <div class="waypoint-item">
+                                        <span>
+                                            WP {idx + 1} · after {spotMap.get(wp.afterSpotId)?.name ||
+                                            "Spot"}
+                                        </span>
+                                        <button
+                                            class="tiny danger"
+                                            type="button"
+                                            on:click={() => removeWaypoint(wp.id)}
+                                        >
+                                            Remove
+                                        </button>
+                                    </div>
+                                {/each}
+                            </div>
+                        {:else}
+                            <p class="muted waypoint-empty">No waypoints set.</p>
+                        {/if}
                     </div>
                     <div class="map-wrapper">
                         <div id="tour-map"></div>
                     </div>
                     <p class="panel-foot">
-                        Spots aus der Datenbank sind als Marker gesetzt. Klick
-                        in die Karte setzt einen Marker zum Planen.
+                        Spots from the database are set as markers. Clicking the map
+                        places a marker for planning.
                     </p>
                     {#if routeInfo}
                         <p class="panel-foot stats">
                             Route: {(routeInfo.distance / 1000).toFixed(1)} km
                             · {(routeInfo.duration / 60).toFixed(0)} min
-                            · {routeInfo.count} Spots
+                            · {routeInfo.count} spots
+                            · {routeInfo.waypoints} waypoints
                         </p>
                     {/if}
                 </div>
 
-                <div class="panel list-panel">
-                    <div class="panel-head">
-                        <div>
-                            <p class="panel-title">Spots</p>
-                            <p class="panel-meta">
-                                Alle Spots als Karten-Liste
-                            </p>
-                        </div>
-                        <a class="ghost-link" href="/spots"
-                            >Zur Spot-Übersicht</a
-                        >
-                    </div>
-
-                    {#if !data?.spots?.length}
-                        <div class="empty">
-                            <div>
-                                <p class="empty-title">Keine Spots vorhanden</p>
-                                <p class="empty-text">
-                                    Lege Spots an, um sie hier zu sehen.
-                                </p>
-                            </div>
-                            <a href="/spots/new" class="btn-primary ghost-btn"
-                                >Spot anlegen</a
-                            >
-                        </div>
-                    {:else}
-                        <SpotList
-                            spots={data.spots}
-                            action=""
-                            favoriteAction=""
-                            canFavorite={false}
-                        />
-                    {/if}
-                </div>
             </div>
 
             <div class="container builder-container">
                 <RouteBuilder
                     spots={data.spots}
+                    waypoints={waypoints}
                     on:routeComputed={handleRouteComputed}
                     on:routeCleared={clearRoute}
                 />
@@ -465,6 +567,66 @@
         color: #0f172a;
     }
 
+    .map-tools {
+        padding: 0.9rem 1.1rem 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+    }
+
+    .map-tools-row {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+    }
+
+    .map-select {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--muted);
+        font-weight: 700;
+        font-size: 0.85rem;
+    }
+
+    .map-select select {
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        padding: 0.35rem 0.75rem;
+        font-weight: 600;
+        background: #ffffff;
+    }
+
+    .map-tools .ghost.active {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: var(--accent-soft);
+    }
+
+    .waypoint-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+    }
+
+    .waypoint-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.6rem;
+        padding: 0.45rem 0.7rem;
+        border-radius: 0.65rem;
+        background: #f8fbff;
+        border: 1px solid #e5e7eb;
+        font-size: 0.9rem;
+        color: var(--muted);
+    }
+
+    .waypoint-empty {
+        font-size: 0.9rem;
+    }
+
     .list-panel .ghost-link {
         color: var(--muted);
         text-decoration: none;
@@ -546,6 +708,19 @@
         border: 2px solid #fff;
         font-weight: 800;
         box-shadow: 0 8px 22px rgba(15, 111, 184, 0.28);
+    }
+
+    :global(.route-waypoint) {
+        background: #ffffff;
+        color: #0f6fb8;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        display: grid;
+        place-items: center;
+        border: 2px solid #0f6fb8;
+        font-weight: 800;
+        box-shadow: 0 6px 16px rgba(15, 111, 184, 0.2);
     }
 
     :global(.leaflet-control-attribution) {

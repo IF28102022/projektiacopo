@@ -20,19 +20,38 @@
     };
 
     const facilityLabels = {
-        water: "Wasser",
+        water: "Water",
         diesel: "Diesel",
-        mooring: "Mooringbojen",
-        power: "Strom",
+        mooring: "Mooring buoys",
+        power: "Power",
         restaurant: "Restaurant",
-        supermarket: "Supermarkt",
-        service: "Werft/Service",
-        waste: "Müllentsorgung",
+        supermarket: "Supermarket",
+        service: "Yard/Service",
+        waste: "Waste disposal",
+    };
+    const spotTypeLabels = {
+        Bucht: "Cove",
+        Ankerplatz: "Anchorage",
+        Marina: "Marina",
+        Mooringfeld: "Mooring field",
+        Hafen: "Harbor",
+    };
+    const bottomTypeLabels = {
+        Sand: "Sand",
+        Seegras: "Seagrass",
+        Fels: "Rock",
+        Schlamm: "Mud",
+        Gemischt: "Mixed",
+    };
+    const holdingLabels = {
+        gut: "good",
+        mittel: "fair",
+        schlecht: "poor",
     };
 
     function formatDepth(spot) {
         if (spot.depthMin || spot.depthMax) {
-            return `Tiefe ${spot.depthMin ?? "?"}–${spot.depthMax ?? "?"} m`;
+            return `Depth ${spot.depthMin ?? "?"}–${spot.depthMax ?? "?"} m`;
         }
         return "";
     }
@@ -40,9 +59,11 @@
     function buildPopup(spot) {
         const icon = typeIcons[spot.spotType] || "📍";
         const depth = formatDepth(spot);
-        const bottom = spot.bottomType ? `${spot.bottomType} Boden` : "";
+        const bottom = spot.bottomType
+            ? `${bottomTypeLabels[spot.bottomType] || spot.bottomType} bottom`
+            : "";
         const holding = spot.holdingQuality
-            ? `Halten: ${spot.holdingQuality}`
+            ? `Holding: ${holdingLabels[spot.holdingQuality] || spot.holdingQuality}`
             : "";
         const shelter = spot.shelterWindDirections || "";
         const facilities = (spot.facilities || [])
@@ -51,17 +72,17 @@
 
         return `
             <div class="popup">
-                <div class="popup-title">${icon} <strong>${spot.name || "Spot"}</strong> ${spot.spotType ? "· " + spot.spotType : ""}</div>
+                <div class="popup-title">${icon} <strong>${spot.name || "Spot"}</strong> ${spot.spotType ? "· " + (spotTypeLabels[spot.spotType] || spot.spotType) : ""}</div>
                 <div class="popup-meta">
                     ${depth ? `<span>${depth}</span>` : ""}
                     ${bottom ? `<span>${bottom}</span>` : ""}
                     ${holding ? `<span>${holding}</span>` : ""}
                 </div>
-                ${shelter ? `<div class="popup-line">Schutz: ${shelter}</div>` : ""}
-                ${facilities ? `<div class="popup-line">Ausstattung: ${facilities}</div>` : ""}
+                ${shelter ? `<div class="popup-line">Shelter: ${shelter}</div>` : ""}
+                ${facilities ? `<div class="popup-line">Facilities: ${facilities}</div>` : ""}
                 ${
                     spot.swellInfo
-                        ? `<div class="popup-line">Schwell: ${spot.swellInfo}</div>`
+                        ? `<div class="popup-line">Swell: ${spot.swellInfo}</div>`
                         : ""
                 }
                 <div class="popup-coords">${Number(spot.lat).toFixed(4)}, ${Number(spot.lng).toFixed(4)}</div>
@@ -126,7 +147,7 @@
             currentMarker = L.marker([lat, lng])
                 .addTo(map)
                 .bindPopup(
-                    `Spot gesetzt<br>${lat.toFixed(4)}, ${lng.toFixed(4)}`,
+                    `Spot placed<br>${lat.toFixed(4)}, ${lng.toFixed(4)}`,
                 )
                 .openPopup();
         });
@@ -138,10 +159,10 @@
 
 <main class="page">
     <Hero
-        eyebrow="Karte"
-        title="Finde den nächsten Kurs"
-        subtitle="Alle Spots auf einen Blick. Setze neue Marker, prüfe Tiefen und plane den nächsten Schlag."
-        ctaText="Zur Spot-Liste →"
+        eyebrow="Map"
+        title="Find your next course"
+        subtitle="All spots at a glance. Place new markers, check depths, and plan the next leg."
+        ctaText="Open the spot list →"
         ctaHref="/spots"
         backgroundImageUrl="/Karte.jpeg"
         align="left"
@@ -152,16 +173,16 @@
         <div class="container">
             <header class="header">
                 <div>
-                    <p class="eyebrow">Spot setzen</p>
-                    <h1>Karte & Spots</h1>
+                    <p class="eyebrow">Place a spot</p>
+                    <h1>Map & spots</h1>
                     <p class="subtitle">
-                        Klick in die Karte setzt einen Spot. Alle gespeicherten Spots werden als Marker angezeigt.
+                        Click the map to place a spot. All saved spots are shown as markers.
                     </p>
                 </div>
                 <div class="cta">
-                    <a class="ghost-link" href="/spots">Zur Liste</a>
+                    <a class="ghost-link" href="/spots">To list</a>
                     {#if canCreate}
-                        <a class="btn-primary" href="/spots/new">Neuer Spot</a>
+                        <a class="btn-primary" href="/spots/new">New spot</a>
                     {/if}
                 </div>
             </header>
@@ -170,7 +191,7 @@
                 <div class="panel-head">
                     <div class="row">
                         <span class="dot accent"></span>
-                        <p class="panel-title">Aktive Karte</p>
+                        <p class="panel-title">Active map</p>
                     </div>
                     <p class="panel-meta">OpenStreetMap + OpenSeaMap Layer</p>
                 </div>

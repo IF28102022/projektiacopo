@@ -13,16 +13,16 @@ export const actions = {
         const password = String(form.get("password") || "").trim();
 
         if (!email || !password) {
-            return fail(400, { error: "E-Mail und Passwort angeben." });
+            return fail(400, { error: "Please provide email and password." });
         }
 
         if (password.length < 6) {
-            return fail(400, { error: "Passwort muss mindestens 6 Zeichen haben." });
+            return fail(400, { error: "Password must be at least 6 characters." });
         }
 
         const existing = await findUserByEmail(email);
         if (existing) {
-            return fail(400, { error: "E-Mail ist bereits registriert. Bitte einloggen." });
+            return fail(400, { error: "Email is already registered. Please sign in." });
         }
 
         const user = await createUser({ email, password, role: "user" });

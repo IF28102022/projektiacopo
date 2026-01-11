@@ -11,26 +11,26 @@
         <div class="container">
             <div class="panel">
                 <div>
-                    <p class="eyebrow">Login</p>
-                    <h1>Anmelden</h1>
-                    <p class="muted">Spots anlegen und eigene Spots löschen.</p>
+                    <p class="eyebrow">Sign in</p>
+                    <h1>Sign in</h1>
+                    <p class="muted">Create spots and manage your own spots.</p>
                 </div>
                 <form method="POST" class="form">
                     {#if form?.error}
                         <p class="error">{form.error}</p>
                     {/if}
                     <label>
-                        E-Mail
+                        Email
                         <input name="email" type="email" required />
                     </label>
                     <label>
-                        Passwort
+                        Password
                         <input name="password" type="password" required />
                     </label>
-                    <button type="submit" class="btn-primary">Login</button>
+                    <button type="submit" class="btn-primary">Sign in</button>
                 </form>
                 <p class="register-hint">
-                    Noch kein Konto? <a href="/register">Registrieren</a>
+                    No account yet? <a href="/register">Create one</a>
                 </p>
             </div>
         </div>

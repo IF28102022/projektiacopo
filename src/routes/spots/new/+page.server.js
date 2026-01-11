@@ -9,10 +9,10 @@ export async function load({ locals }) {
 
 export const actions = {
     default: async ({ request, locals }) => {
-        if (!locals.user) return fail(403, { error: "Nicht eingeloggt" });
+        if (!locals.user) return fail(403, { error: "Not signed in" });
         const role = locals.user.role || "guest";
         if (role !== "user" && role !== "admin") {
-            return fail(403, { error: "Keine Berechtigung" });
+            return fail(403, { error: "Not authorized" });
         }
         const form = await request.formData();
 
@@ -48,7 +48,7 @@ export const actions = {
                     imageDataList = parsed.filter(Boolean).map((item) => String(item));
                 }
             } catch (error) {
-                console.error("Konnte imageDataList nicht parsen", error);
+                console.error("Could not parse imageDataList", error);
             }
         }
         if (!imageDataList.length && imageDataSingle) {
@@ -59,7 +59,7 @@ export const actions = {
         const lng = Number(form.get("lng"));
 
         if (!name || Number.isNaN(lat) || Number.isNaN(lng)) {
-            return { error: "Name, Lat und Lng sind Pflichtfelder." };
+            return { error: "Name, latitude, and longitude are required." };
         }
 
         const facilitySets = {

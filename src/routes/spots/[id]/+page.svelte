@@ -6,18 +6,37 @@
 
     const spot = data.spot;
     const facilityLabels = {
-        water: "Wasser",
+        water: "Water",
         diesel: "Diesel",
-        mooring: "Mooringbojen",
-        power: "Strom",
+        mooring: "Mooring buoys",
+        power: "Power",
         restaurant: "Restaurant",
-        supermarket: "Supermarkt",
-        service: "Werft/Service",
-        waste: "Müllentsorgung",
-        wifi: "WLAN",
-        showers: "Duschen",
-        calm: "Ruhig",
-        protected: "Geschützt",
+        supermarket: "Supermarket",
+        service: "Yard/Service",
+        waste: "Waste disposal",
+        wifi: "Wi‑Fi",
+        showers: "Showers",
+        calm: "Calm",
+        protected: "Sheltered",
+    };
+    const spotTypeLabels = {
+        Bucht: "Cove",
+        Ankerplatz: "Anchorage",
+        Marina: "Marina",
+        Mooringfeld: "Mooring field",
+        Hafen: "Harbor",
+    };
+    const bottomTypeLabels = {
+        Sand: "Sand",
+        Seegras: "Seagrass",
+        Fels: "Rock",
+        Schlamm: "Mud",
+        Gemischt: "Mixed",
+    };
+    const holdingLabels = {
+        gut: "good",
+        mittel: "fair",
+        schlecht: "poor",
     };
     const images = (spot.imageDataList && spot.imageDataList.length
         ? spot.imageDataList
@@ -45,11 +64,11 @@
 <main class="page">
     <section class="section">
         <div class="container">
-            <a class="back" href="/spots">← Zurück zur Liste</a>
+            <a class="back" href="/spots">← Back to list</a>
 
             <div class="hero">
                 <div class="hero-text">
-                    <p class="eyebrow">{spot.region || "Unbekannte Region"}</p>
+                    <p class="eyebrow">{spot.region || "Unknown region"}</p>
                     <h1>{spot.name}</h1>
                     {#if spot.description}
                         <p class="subtitle">{spot.description}</p>
@@ -59,21 +78,23 @@
                         <span class="pill pill-muted">
                             {spot.createdAt
                                 ? new Date(spot.createdAt).toLocaleDateString()
-                                : "ohne Datum"}
+                                : "no date"}
                         </span>
                         {#if spot.rating !== null && spot.rating !== undefined}
                             <span class="pill rating-pill">★ {spot.rating}/5</span>
                         {/if}
                         {#if spot.spotType}
-                            <span class="pill pill-soft">{spot.spotType}</span>
+                            <span class="pill pill-soft">
+                                {spotTypeLabels[spot.spotType] || spot.spotType}
+                            </span>
                         {/if}
                         {#if spot.visibility}
                             <span class="pill pill-visibility">
-                                {spot.visibility === "private" ? "Privat" : "Öffentlich"}
+                                {spot.visibility === "private" ? "Private" : "Public"}
                             </span>
                         {/if}
                         {#if spot.season}
-                            <span class="pill pill-soft">Saison: {spot.season}</span>
+                            <span class="pill pill-soft">Season: {spot.season}</span>
                         {/if}
                     </div>
                 </div>
@@ -87,7 +108,7 @@
                                     class="nav prev"
                                     type="button"
                                     on:click={prevImage}
-                                    aria-label="Vorheriges Bild"
+                                    aria-label="Previous image"
                                 >
                                     ‹
                                 </button>
@@ -95,7 +116,7 @@
                                     class="nav next"
                                     type="button"
                                     on:click={nextImage}
-                                    aria-label="Nächstes Bild"
+                                    aria-label="Next image"
                                 >
                                     ›
                                 </button>
@@ -105,7 +126,7 @@
                                     <button
                                         class:selected={idx === activeImageIndex}
                                         type="button"
-                                        aria-label={`Bild ${idx + 1} anzeigen`}
+                                        aria-label={`Show image ${idx + 1}`}
                                         on:click={() => (activeImageIndex = idx)}
                                     ></button>
                                 {/each}
@@ -122,7 +143,7 @@
     <section class="section cards">
         <div class="container grid">
             <div class="card">
-                <p class="label">Koordinaten</p>
+                <p class="label">Coordinates</p>
                 <p class="value">{spot.lat}, {spot.lng}</p>
             </div>
             <div class="card">
@@ -130,47 +151,49 @@
                 <p class="value">{spot.region || "—"}</p>
             </div>
             <div class="card">
-                <p class="label">Beschreibung</p>
+                <p class="label">Description</p>
                 <p class="muted">
-                    {spot.description || "Noch keine Beschreibung hinterlegt."}
+                    {spot.description || "No description yet."}
                 </p>
             </div>
 
             <div class="card">
-                <p class="label">Skipper-Notizen</p>
+                <p class="label">Skipper notes</p>
                 <p class="muted">
-                    {spot.notesSkipper || "Keine speziellen Hinweise."}
+                    {spot.notesSkipper || "No special notes."}
                 </p>
             </div>
             <div class="card">
-                <p class="label">Tiefe & Boden</p>
+                <p class="label">Depth & bottom</p>
                 <p class="value">
                     {spot.depthMin ?? "?"}–{spot.depthMax ?? "?"} m
                 </p>
                 <p class="muted">
-                    {spot.bottomType ? `Boden: ${spot.bottomType}` : "Kein Bodentyp angegeben."}
+                    {spot.bottomType
+                        ? `Bottom: ${bottomTypeLabels[spot.bottomType] || spot.bottomType}`
+                        : "No bottom type provided."}
                 </p>
             </div>
             <div class="card">
-                <p class="label">Halten & Schutz</p>
+                <p class="label">Holding & shelter</p>
                 <p class="value">
-                    {spot.holdingQuality || "—"}
+                    {holdingLabels[spot.holdingQuality] || spot.holdingQuality || "—"}
                 </p>
                 <p class="muted">
                     {spot.shelterWindDirections
-                        ? `Schutz: ${spot.shelterWindDirections}`
-                        : "Keine Angaben zu Schutz."}
+                        ? `Shelter: ${spot.shelterWindDirections}`
+                        : "No shelter information."}
                 </p>
             </div>
 
             <div class="card span2">
-                <p class="label">Schwell</p>
+                <p class="label">Swell</p>
                 <p class="value">
                     {spot.swellInfo || "—"}
                 </p>
             </div>
             <div class="card span2">
-                <p class="label">Ausstattung</p>
+                <p class="label">Facilities</p>
                 {#if facilities.length}
                     <div class="chip-row">
                         {#each facilities as facility}
@@ -178,7 +201,7 @@
                         {/each}
                     </div>
                 {:else}
-                    <p class="muted">Keine Ausstattung hinterlegt.</p>
+                    <p class="muted">No facilities listed.</p>
                 {/if}
             </div>
         </div>

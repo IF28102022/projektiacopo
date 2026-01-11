@@ -5,23 +5,23 @@
     const quickLinks = [
         {
             href: "/spots",
-            label: "Spots entdecken",
-            desc: "Alle gespeicherten Buchten, Marinas und Ankerplätze als ruhige Übersicht.",
+            label: "Discover spots",
+            desc: "All saved coves, marinas, and anchorages in a calm overview.",
         },
         {
             href: "/map",
-            label: "Karte öffnen",
-            desc: "Spots auf der Karte prüfen, Marker setzen und Positionen vergleichen.",
+            label: "Open the map",
+            desc: "Review spots on the map, drop markers, and compare locations.",
         },
         {
             href: "/tour-planning",
-            label: "Tour planen",
-            desc: "Etappen zusammenstellen, Reihenfolge festlegen und Route berechnen.",
+            label: "Plan a tour",
+            desc: "Build a tour, set the order, and calculate the route.",
         },
         {
             href: "/routen",
-            label: "Routen ansehen",
-            desc: "Deine geplanten Etappen gesammelt und strukturiert nachschlagen.",
+            label: "View routes",
+            desc: "Review your planned tours in one organized place.",
         },
     ];
 </script>

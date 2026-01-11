@@ -126,23 +126,23 @@ export async function load({ locals, url }) {
 export const actions = {
     delete: async ({ request, locals }) => {
         const user = locals.user;
-        if (!user) return fail(403, { error: "Nicht eingeloggt" });
+        if (!user) return fail(403, { error: "Not signed in" });
 
         const form = await request.formData();
         const id = form.get("id");
-        if (!id) return { error: "Keine ID übergeben" };
+        if (!id) return { error: "No ID provided" };
 
         const db = await getDb();
         const spot = await db
             .collection("spots")
             .findOne({ _id: new ObjectId(id) }, { projection: { ownerId: 1 } });
 
-        if (!spot) return { error: "Spot nicht gefunden" };
+        if (!spot) return { error: "Spot not found" };
 
         const ownerId = spot.ownerId ? spot.ownerId.toString() : null;
         const isAdmin = user.role === "admin";
         const isOwner = user.role === "user" && ownerId && ownerId === user.id;
-        if (!isAdmin && !isOwner) return fail(403, { error: "Keine Berechtigung" });
+        if (!isAdmin && !isOwner) return fail(403, { error: "Not authorized" });
 
         await db.collection("spots").deleteOne({ _id: new ObjectId(id) });
 
@@ -150,23 +150,23 @@ export const actions = {
     },
     favorite: async ({ request, locals }) => {
         const user = locals.user;
-        if (!user) return fail(403, { error: "Nicht eingeloggt" });
+        if (!user) return fail(403, { error: "Not signed in" });
         const userId = user.id;
-        if (!userId) return fail(400, { error: "Kein User gefunden" });
+        if (!userId) return fail(400, { error: "No user found" });
         if (user.role !== "user" && user.role !== "admin") {
-            return fail(403, { error: "Keine Berechtigung" });
+            return fail(403, { error: "Not authorized" });
         }
 
         const form = await request.formData();
         const id = form.get("id");
-        if (!id) return fail(400, { error: "Keine ID übergeben" });
+        if (!id) return fail(400, { error: "No ID provided" });
 
         const db = await getDb();
         const spot = await db
             .collection("spots")
             .findOne({ _id: new ObjectId(id) }, { projection: { favorites: 1 } });
 
-        if (!spot) return fail(404, { error: "Spot nicht gefunden" });
+        if (!spot) return fail(404, { error: "Spot not found" });
 
         const favorites = Array.isArray(spot.favorites) ? spot.favorites : [];
         const userObjectId = new ObjectId(userId);
