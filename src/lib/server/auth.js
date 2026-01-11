@@ -6,6 +6,14 @@ import { getDb } from "$lib/server/db";
 const SESSION_COOKIE = "session";
 const SESSION_MAX_AGE = 60 * 60 * 24 * 30; // 30 Tage
 
+function normalizeEmail(value) {
+    return String(value || "").trim().toLowerCase();
+}
+
+function escapeRegExp(value) {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 function getSecret() {
     const secret = env.AUTH_SECRET;
     if (!secret) {
@@ -73,40 +81,48 @@ export function clearSessionCookie(cookies) {
 
 export async function findUserByEmail(email) {
     const db = await getDb();
-    return db.collection("users").findOne({ email: email.toLowerCase() });
+    const normalized = normalizeEmail(email);
+    if (!normalized) return null;
+    const users = db.collection("users");
+    const directMatch = await users.findOne({ email: normalized });
+    if (directMatch) return directMatch;
+    const escaped = escapeRegExp(normalized);
+    return users.findOne({ email: { $regex: `^${escaped}$`, $options: "i" } });
 }
 
 export async function createUser({ email, password, role = "user" }) {
     const db = await getDb();
-    const existing = await db.collection("users").findOne({ email: email.toLowerCase() });
+    const normalized = normalizeEmail(email);
+    if (!normalized) return null;
+    const existing = await findUserByEmail(normalized);
     if (existing) return existing;
     const passwordHash = hashPassword(password);
     const now = new Date();
     const { insertedId } = await db.collection("users").insertOne({
-        email: email.toLowerCase(),
+        email: normalized,
         passwordHash,
         role,
         createdAt: now
     });
-    return { _id: insertedId, email: email.toLowerCase(), role, createdAt: now };
+    return { _id: insertedId, email: normalized, role, createdAt: now };
 }
 
 let adminSeeded = false;
 export async function ensureAdminSeed() {
     if (adminSeeded) return;
     adminSeeded = true;
-    const adminEmail = env.ADMIN_EMAIL;
+    const adminEmail = normalizeEmail(env.ADMIN_EMAIL);
     const adminPassword = env.ADMIN_PASSWORD;
     if (!adminEmail || !adminPassword) {
         console.warn("ADMIN_EMAIL/ADMIN_PASSWORD nicht gesetzt – kein Admin-Seed erstellt.");
         return;
     }
     const db = await getDb();
-    const existing = await db.collection("users").findOne({ email: adminEmail.toLowerCase() });
+    const existing = await findUserByEmail(adminEmail);
     if (existing) return;
     const passwordHash = hashPassword(adminPassword);
     await db.collection("users").insertOne({
-        email: adminEmail.toLowerCase(),
+        email: adminEmail,
         passwordHash,
         role: "admin",
         createdAt: new Date()
