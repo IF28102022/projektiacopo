@@ -21,7 +21,7 @@ Segler:innen, die gerne auf Meeren und Seen unterwegs sind, sammeln ihre Lieblin
 
 ### Ziele
 
-Eine zentrale Web-Applikation schaffen, in der Segler:innen ihre Spots erfassen, auf der Karte visualisieren und mit anderen teilen können. Die Plattform soll Inspiration bieten, den Austausch fördern und Segeltörns über mehrere Ankerplätze hinweg planbar machen – mit Routenberechnung und Distanzen. Alles übersichtlich und mit geringem Aufwand.
+Eine zentrale Web-Applikation schaffen, in der Segler:innen ihre Spots erfasen, auf der Karte visualisieren und mit anderen teilen können. Die Plattform soll Inspiration bieten, den Austausch fördern und Segeltörns über mehrere Ankerplätze hinweg planbar machen – mit Routenberechnung und Distanzen. Alles übersichtlich und mit geringem Aufwand.
 
 ### Abgrenzung
 
@@ -41,7 +41,7 @@ Segler-Freunde (Familie, Freund:innen) als Early Adopters für Usability-Tests.
 
 ### Annahmen
 
-Segler:innen sind bereit, ihre Lieblingsspots zu teilen, wenn die Plattform einfach zu bedienen ist, visuell ansprechend darstellt und ihnen gleichzeitig selbst Inspiration für neue Ankerplätze bietet.
+Segler:innen sind bereit, ihre Lieblingspots zu teilen, wenn die Plattform einfach zu bedienen ist, visuell ansprechend darstellt und ihnen gleichzeitig selbst Inspiration für neue Ankerplätze bietet.
 
 ---
 
@@ -49,7 +49,7 @@ Segler:innen sind bereit, ihre Lieblingsspots zu teilen, wenn die Plattform einf
 
 ### Kernfunktionalität (Mindestumfang)
 
-**Spot anlegen:** Segler:innen können neue Ankerplätze mit Koordinaten, Name, Typ (Bucht, Marina, Ankerplatz), Beschreibung und Bildern erfassen.
+**Spot anlegen:** Segler:innen können neue Ankerplätze mit Koordinaten, Name, Typ (Bucht, Marina, Ankerplatz), Beschreibung und Bildern erfasen.
 
 **Spot ansehen:** Alle gespeicherten Spots werden in einer übersichtlichen Liste dargestellt. Jeder Spot kann in einer Detailansicht geöffnet werden mit allen Informationen und Bildern.
 
@@ -69,7 +69,7 @@ Spot erstellen → auf Karte anzeigen → als Favorit markieren → in Tour-Plan
 
 ### Akzeptanzkriterien
 
-- Ein neuer Spot kann vollständig erfasst werden und erscheint sofort in der Liste und auf der Karte
+- Ein neuer Spot kann vollständig erfast werden und erscheint sofort in der Liste und auf der Karte
 - Die Karte zeigt alle Spots korrekt als Marker an
 - Eine Tour kann aus mindestens 2 Spots erstellt werden
 - Die Route wird korrekt berechnet und visuell dargestellt
@@ -81,7 +81,7 @@ Spot erstellen → auf Karte anzeigen → als Favorit markieren → in Tour-Plan
 
 ## 4. Vorgehen & Artefakte
 
-Die Durchführung erfolgt phasenbasiert; dokumentieren Sie die wichtigsten Ergebnisse je Phase.
+Die Durchführung erfolgt phasenbasiert; dokumentieren Sie die wichtigsten Ergebnise je Phase.
 
 ### 4.1 Understand & Define
 
@@ -93,7 +93,7 @@ Die Durchführung erfolgt phasenbasiert; dokumentieren Sie die wichtigsten Ergeb
 - Recherche via Gespräche mit Segler:innen und Nutzerstudien
 - Analyse von bestehenden Plattformen (AllTrails, Komoot, Google Maps)
 
-**Wesentliche Erkenntnisse:**
+**Wesentliche Erkenntnise:**
 1. Segler:innen möchten ihre Spots zentral speichern, ohne mehrere Apps zu nutzen
 2. Visuelle Darstellung auf der Karte ist wichtiger als Textlisten
 3. Planung von mehrtägigen Routen ist ein häufiger Use-Case
@@ -106,14 +106,14 @@ Die Durchführung erfolgt phasenbasiert; dokumentieren Sie die wichtigsten Ergeb
 Es wurden 8 verschiedene Skizzen für die Hauptfunktionen erstellt, um verschiedene Darstellungsarten für Karte, Route und Navigation zu testen:
 
 **Skizze 1: Map mit Basis-Route**
-- Große Karte mit einfacher Linie zwischen Start- und Zielpunkt
-- Minimalistisch, fokussiert auf geografische Übersicht
+- Grosse Karte mit einfacher Linie zwischen Start- und Zielpunkt
+- Minimalistisch, fokusiert auf geografische Übersicht
 - Problem: Zu wenig Kontext für Zwischenstopps
 
 **Skizze 2: Map mit Etappen-Markern**
 - Karte mit Route-Linie und mehreren Markern für Zwischenpunkte
 - Zeigt klar alle Stops entlang der Route
-- Besser für mehrtägige Touren geeignet
+- Beser für mehrtägige Touren geeignet
 
 **Skizze 3: Map mit Zusatz-Informationen**
 - Karte mit Route plus Legende (Start Zeit, Station, Wind, Strömung, Vorschlag)
@@ -172,15 +172,15 @@ Es wurden 8 verschiedene Skizzen für die Hauptfunktionen erstellt, um verschied
 - Wiederverwendete Komponenten: Header, Footer, Hero, SpotCard
 
 **Oberflächenentwürfe:**
-1. **Startseite:** Hero mit großem Hintergrundbild (Segelboot), Navigation zu Spots/Map/Tour
+1. **Startseite:** Hero mit grossem Hintergrundbild (Segelboot), Navigation zu Spots/Map/Tour
 2. **Spots-Liste:** Übersichtliche Kartenliste mit Name, Region, Favoriten-Stern
 3. **Karte:** Leaflet mit Marker-Layer, Info-Popup bei Klick, Zoom/Pan-Kontrolle
 4. **Tour-Planung:** Zwei-spaltig – Links: Tour-Builder (Reihenfolge sortieren), Rechts: Karte mit Route
-5. **Route-Seite:** Große Karte mit Polylinie (Route), Marker für Start/End/Intermediate Points, Distanz/Zeitangabe in Sidebar
+5. **Route-Seite:** Grosse Karte mit Polylinie (Route), Marker für Start/End/Intermediate Points, Distanz/Zeitangabe in Sidebar
 
 **Designentscheidungen:**
-- Editorial Look mit großem Hintergrundbild (inspirierende Segelfotos)
-- Ruhige Farben: Dunkelblau, Weiß, Accent-Orange
+- Editorial Look mit grossem Hintergrundbild (inspirierende Segelfotos)
+- Ruhige Farben: Dunkelblau, Weiss, Accent-Orange
 - Klare Typographie (Headlines: Serif, Body: Sans-Serif)
 - Fokus auf wenige Kern-Aktionen pro Seite (kein Overload)
 - Mobile-responsive (Breakpoint 768px)
@@ -226,7 +226,7 @@ Es wurden 8 verschiedene Skizzen für die Hauptfunktionen erstellt, um verschied
 **State/Stores:**
 - `tourPlan` Store – aktuelle Tour (localStorage für Persistenz)
 - `spots` Store – alle Spots (von MongoDB)
-- `user` Store – aktueller Nutzer (optional, Session)
+- `user` Store – aktueller Nutzer (optional, Sesion)
 
 **Daten & Schnittstellen:**
 
@@ -259,9 +259,9 @@ Es wurden 8 verschiedene Skizzen für die Hauptfunktionen erstellt, um verschied
 
 **Besondere Entscheidungen:**
 - Nur eine Tour gleichzeitig (einfacher Workflow)
-- Route über direkte See-Linie (Haversine-Formel) statt Straßen-Routing
+- Route über direkte See-Linie (Haversine-Formel) statt Strassen-Routing
 - Favoriten-Toggle ohne Page-Reload (SvelteKit enhance)
-- LocalStorage für aktuellen Tour-Plan (Persistenz zwischen Sessions)
+- LocalStorage für aktuellen Tour-Plan (Persistenz zwischen Sesions)
 - Keine User-Auth in MVP (anonymous Spots + localStorage)
 
 ### 4.5 Validate
@@ -270,12 +270,12 @@ Es wurden 8 verschiedene Skizzen für die Hauptfunktionen erstellt, um verschied
 
 **Ziele der Prüfung:**
 1. Ist die Tour-Planung intuitiv?
-2. Können Nutzer:innen schnell einen Spot erfassen?
+2. Können Nutzer:innen schnell einen Spot erfasen?
 3. Sind die Karten-Interaktionen verständlich?
 
-**Vorgehen:** Moderiertes Usability-Testing mit Think-Aloud-Protokoll, durchgeführt in der Klasse während der Unterrichtszeit
+**Vorgehen:** Moderiertes Usability-Testing mit Think-Aloud-Protokoll, durchgeführt in der Klase während der Unterrichtszeit
 
-**Stichprobe:** 2 Studenten aus meiner Klasse (unterschiedliche Tech-Affinität, keine Segelerfahrung notwendig)
+**Stichprobe:** 2 Studenten aus meiner Klase (unterschiedliche Tech-Affinität, keine Segelerfahrung notwendig)
 
 **Aufgaben/Szenarien:**
 1. "Erstelle einen neuen Spot an einem beliebigen Ort. Nutze Karte oder Formular."
@@ -288,22 +288,22 @@ Es wurden 8 verschiedene Skizzen für die Hauptfunktionen erstellt, um verschied
 - Durchschn. Zeit Aufgabe 2: ~4 Min
 - **Findings:**
   - Beide Tester fanden die Navigation intuitiv und die Karte übersichtlich
-  - Ein Tester vermisste eine deutlichere Rückmeldung beim Hinzufügen eines Spots zur Tour
+  - Ein Tester vermiste eine deutlichere Rückmeldung beim Hinzufügen eines Spots zur Tour
   - Der Tour-Builder war anfangs nicht selbsterklärend (Reihenfolge der Spots unklar)
   - Das minimalistische Design wurde positiv bewertet
 
-**Zusammenfassung der Resultate:**
-Das Konzept funktioniert gut und ist auch ohne Segelerfahrung verständlich. Die Karten-Interaktionen und Spot-Erstellung sind intuitiv. Verbesserungsbedarf besteht bei der Feedback-Kommunikation und bei Hinweistexten im Tour-Builder.
+**Zusammenfasung der Resultate:**
+Das Konzept funktioniert gut und ist auch ohne Segelerfahrung verständlich. Die Karten-Interaktionen und Spot-Erstellung sind intuitiv. Verbeserungsbedarf besteht bei der Feedback-Kommunikation und bei Hinweistexten im Tour-Builder.
 
-**Abgeleitete Verbesserungen (priorisiert):**
+**Abgeleitete Verbeserungen (priorisiert):**
 1. **Hinweis-Text im Tour-Builder:** "Spots mit Maus ziehen zum Sortieren" (deutlicher machen)
 2. **Bestätigungstoast:** "Spot zur Tour hinzugefügt" nach Aktion (direktes Feedback)
 3. **Visual Feedback:** Aktive Tour-Spots farblich hervorheben
 
-**Umgesetzte Anpassungen:**
-- ✅ Hinweis-Text im Tour-Builder eingefügt
-- ✅ Bestätigungstoast nach Spot-Aktion hinzugefügt
-- ⏳ Visual Feedback für aktive Tour-Spots (geplant)
+**Umgesetzte Anpasungen:**
+-  Hinweis-Text im Tour-Builder eingefügt
+-  Bestätigungstoast nach Spot-Aktion hinzugefügt
+-  Visual Feedback für aktive Tour-Spots (geplant)
 
 ---
 
@@ -322,7 +322,7 @@ Das Konzept funktioniert gut und ist auch ohne Segelerfahrung verständlich. Die
 - Erhöht Engagement und Wiederbesuchsrate
 
 **Nutzer-Profile:**
-- Registrierung mit E-Mail/Passwort
+- Registrierung mit E-Mail/Paswort
 - Profilseite mit eigenen Spots und Touren
 - Avatar und Biografie (optional)
 - Andere Nutzer:innen können Profile besuchen
@@ -334,7 +334,7 @@ Das Konzept funktioniert gut und ist auch ohne Segelerfahrung verständlich. Die
 
 **Statistiken:**
 - Persönliches Dashboard mit:
-  - Anzahl erfasste Spots
+  - Anzahl erfaste Spots
   - Geplante Touren & Gesamtdistanz
   - Häufigste Regionen
 
@@ -344,7 +344,7 @@ Das Konzept funktioniert gut und ist auch ohne Segelerfahrung verständlich. Die
 
 ### Abgrenzung
 
-Diese Features sind **klar außerhalb des Mindestumfangs** und wurden **nicht in MVP integriert**, um Scope klein zu halten.
+Diese Features sind **klar ausserhalb des Mindestumfangs** und wurden **nicht in MVP integriert**, um Scope klein zu halten.
 
 ---
 
@@ -357,10 +357,10 @@ Diese Features sind **klar außerhalb des Mindestumfangs** und wurden **nicht in
   - `/src/lib/components/` – Komponenten
   - `/src/lib/stores/` – Pinia/Svelte Stores
   - `/docs/screenshots/` – Referenz-Screenshots
-  - `/public/` – Static Assets
+  - `/public/` – Static Asets
 
 **Commit-Praxis:**
-- Sprechende Commit-Messages: "feat: add map component", "fix: tour calculation"
+- Sprechende Commit-Mesages: "feat: add map component", "fix: tour calculation"
 - Branches: `main` (Production), `develop` (Development)
 
 ---
@@ -387,19 +387,19 @@ Diese Features sind **klar außerhalb des Mindestumfangs** und wurden **nicht in
 
 ### Eigene Leistung (Abgrenzung)
 
-- ✅ Design-Entscheide (Map-first, Ruhiges Layout)
-- ✅ Finale Implementierung und Testing
-- ✅ Validierung mit Nutzern
-- ✅ Feature-Priorisierung und Scope-Management
-- ✅ Alle Datenbankschemas und API-Design
-- ✅ Deployment & Production-Readiness
+- Design-Entscheide (Map-first, Ruhiges Layout)
+- Finale Implementierung und Testing
+- Validierung mit Nutzern
+- Feature-Priorisierung und Scope-Management
+- Alle Datenbankschemas und API-Design
+- Deployment & Production-Readines
 
 ### Reflexion
 
-- KI spart Zeit bei Standard-Tasks (Boilerplate, Error-Messages)
+- KI spart Zeit bei Standard-Tasks (Boilerplate, Error-Mesages)
 - KI braucht klare Vorgaben und Nachkontrolle
-- Qualitätssicherung und Strategic Design bleibt Verantwortung des Teams
-- KI kann Code-Struktur verbessern, aber nicht Design-Entscheidungen treffen
+- Qualitätsicherung und Strategic Design bleibt Verantwortung des Teams
+- KI kann Code-Struktur verbesern, aber nicht Design-Entscheidungen treffen
 
 ---
 
@@ -422,10 +422,6 @@ Diese Features sind **klar außerhalb des Mindestumfangs** und wurden **nicht in
 
 ---
 
-**Hinweis:** Massgeblich sind die im **Unterricht** und auf **Moodle** kommunizierten Anforderungen.
+**Hinweis:** Masgeblich sind die im **Unterricht** und auf **Moodle** kommunizierten Anforderungen.
 
 ---
-
-*Dokumentation erstellt: Januar 2026*
-*Verfasser: [Dein Name]*
-*Modul: [Web Design / User Experience / Digital Product Design]*
