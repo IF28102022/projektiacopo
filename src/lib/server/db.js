@@ -1,9 +1,9 @@
 // src/lib/server/db.js
 import { MongoClient } from "mongodb";
-import { MONGODB_URI, MONGODB_DBNAME } from "$env/dynamic/private";
+import { env } from "$env/dynamic/private";
 
-const uri = MONGODB_URI;
-const dbName = MONGODB_DBNAME || "segelspots";
+const uri = env.MONGODB_URI;
+const dbName = env.MONGODB_DBNAME || "segelspots";
 
 if (!uri) {
     throw new Error("MONGODB_URI ist nicht gesetzt (.env)");
