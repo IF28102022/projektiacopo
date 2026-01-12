@@ -114,7 +114,7 @@
             reader.readAsDataURL(file);
         });
 
-    const createPreview = (src, maxWidth = 320, quality = 0.7) =>
+    const resizeImage = (src, maxSize = 1600, quality = 0.82) =>
         new Promise((resolve) => {
             const image = new Image();
             image.onload = () => {
@@ -122,7 +122,8 @@
                     resolve("");
                     return;
                 }
-                const scale = Math.min(1, maxWidth / image.width);
+                const maxDim = Math.max(image.width, image.height);
+                const scale = Math.min(1, maxSize / maxDim);
                 const width = Math.max(1, Math.round(image.width * scale));
                 const height = Math.max(1, Math.round(image.height * scale));
                 const canvas = document.createElement("canvas");
@@ -148,8 +149,10 @@
         const newImages = await Promise.all(
             fileList.map(async (file) => {
                 const data = await fileToDataUrl(file);
-                const preview = await createPreview(data.src);
-                return { ...data, preview };
+                const resized = await resizeImage(data.src, 1600, 0.82);
+                const src = resized || data.src;
+                const preview = await resizeImage(src, 320, 0.7);
+                return { ...data, src, preview };
             }),
         );
 

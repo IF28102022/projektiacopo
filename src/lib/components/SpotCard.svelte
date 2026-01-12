@@ -12,9 +12,14 @@
         ? spot.imageDataList.filter(Boolean)
         : [];
     $: coverImage =
-        (spot?.imagePreview || imageList[0] || spot?.imageData || spot?.imageUrl || "")
-            .trim() || null;
+        (spot?.imagePreview || imageList[0] || spot?.imageUrl || "").trim() || null;
     $: isFavorite = Boolean(spot?.isFavorite);
+    let imageFailed = false;
+    $: imageSrc =
+        coverImage || (spot?.id ? `/api/spots/image?id=${encodeURIComponent(spot.id)}` : "");
+    $: if (imageSrc) {
+        imageFailed = false;
+    }
     let favoritePending = false;
     let favoriteError = "";
     let errorTimeout;
@@ -77,8 +82,17 @@
     {/if}
 
     <a class="card-link" href={`/spots/${spot.id}`}>
-        <div class="thumb" style={coverImage ? `background-image: url(${coverImage})` : ""}>
-            {#if !coverImage}
+        <div class="thumb">
+            {#if imageSrc && !imageFailed}
+                <img
+                    src={imageSrc}
+                    alt={spot?.name ? `${spot.name} preview` : "Spot preview"}
+                    loading="lazy"
+                    decoding="async"
+                    on:error={() => (imageFailed = true)}
+                />
+            {/if}
+            {#if !imageSrc || imageFailed}
                 <div class="thumb-placeholder">🗺️</div>
             {/if}
         </div>
@@ -121,13 +135,22 @@
     }
 
     .thumb {
+        position: relative;
         border-radius: 0.75rem 0.75rem 0 0;
         background: linear-gradient(135deg, #f3f6fb, #e9eef7);
-        background-size: cover;
-        background-position: center;
         min-height: 120px;
         display: grid;
         place-items: center;
+        overflow: hidden;
+    }
+
+    .thumb img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
     }
 
     .thumb-placeholder {
