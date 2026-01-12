@@ -32,6 +32,7 @@
     $: activeImage = images[activeImageIndex] || null;
     $: imageDataListJson = JSON.stringify(images.map((img) => img.src));
     $: firstImage = images[0]?.src || "";
+    $: imagePreview = images[0]?.preview || "";
 
     let map;
     let marker;
@@ -113,12 +114,44 @@
             reader.readAsDataURL(file);
         });
 
+    const createPreview = (src, maxWidth = 320, quality = 0.7) =>
+        new Promise((resolve) => {
+            const image = new Image();
+            image.onload = () => {
+                if (!image.width || !image.height) {
+                    resolve("");
+                    return;
+                }
+                const scale = Math.min(1, maxWidth / image.width);
+                const width = Math.max(1, Math.round(image.width * scale));
+                const height = Math.max(1, Math.round(image.height * scale));
+                const canvas = document.createElement("canvas");
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext("2d");
+                if (!ctx) {
+                    resolve("");
+                    return;
+                }
+                ctx.drawImage(image, 0, 0, width, height);
+                resolve(canvas.toDataURL("image/jpeg", quality));
+            };
+            image.onerror = () => resolve("");
+            image.src = src;
+        });
+
     async function handleFiles(files) {
         const fileList = files ? Array.from(files) : [];
         if (!fileList.length) return;
 
         const startEmpty = images.length === 0;
-        const newImages = await Promise.all(fileList.map((file) => fileToDataUrl(file)));
+        const newImages = await Promise.all(
+            fileList.map(async (file) => {
+                const data = await fileToDataUrl(file);
+                const preview = await createPreview(data.src);
+                return { ...data, preview };
+            }),
+        );
 
         images = [...images, ...newImages];
         if (startEmpty) activeImageIndex = 0;
@@ -382,6 +415,7 @@
                             <p>Optional</p>
                         </div>
                         <input type="hidden" name="imageData" value={firstImage} />
+                        <input type="hidden" name="imagePreview" value={imagePreview} />
                         <input type="hidden" name="imageDataList" value={imageDataListJson} />
                         <div
                             class="dropzone {dragActive ? 'drop-active' : ''}"

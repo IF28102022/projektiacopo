@@ -44,14 +44,13 @@ export async function load({ locals, url }) {
         .find(
             filter,
             {
-                // Nur die wirklich benötigten Felder laden, um Base64-Blob-Transfers klein zu halten
+                // Nur die wirklich benötigten Felder laden, um Payloads klein zu halten
                 projection: {
                     name: 1,
                     region: 1,
                     description: 1,
                     imageUrl: 1,
-                    imageData: 1,
-                    imageDataList: { $slice: 1 }, // nur erstes Bild als Preview
+                    imagePreview: 1,
                     spotType: 1,
                     depthMin: 1,
                     depthMax: 1,
@@ -99,9 +98,8 @@ export async function load({ locals, url }) {
                 name: s.name,
                 region: s.region,
                 description: s.description,
-                imageData: s.imageData,   // neu
                 imageUrl: s.imageUrl,     // falls du noch alte Einträge hast
-                imageDataList: s.imageDataList || [],
+                imagePreview: s.imagePreview,
                 spotType: s.spotType,
                 depthMin: s.depthMin,
                 depthMax: s.depthMax,

@@ -39,8 +39,6 @@ export async function load({ locals }) {
                     region: 1,
                     description: 1,
                     imageUrl: 1,
-                    imageData: 1,
-                    imageDataList: { $slice: 1 }, // nur erstes Bild als Preview
                     lat: 1,
                     lng: 1,
                     depthMin: 1,
@@ -69,9 +67,7 @@ export async function load({ locals }) {
             spotType: spot.spotType,
             region: spot.region,
             description: spot.description,
-            imageData: spot.imageData,
             imageUrl: spot.imageUrl,
-            imageDataList: spot.imageDataList || [],
             lat: spot.lat,
             lng: spot.lng,
             depthMin: spot.depthMin,

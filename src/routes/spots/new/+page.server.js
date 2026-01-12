@@ -39,6 +39,7 @@ export const actions = {
         const depthMax = depthMaxRaw === null || depthMaxRaw === "" ? null : Number(depthMaxRaw);
         const facilitiesRaw = form.getAll("facilities").map((f) => String(f));
         const imageDataSingle = String(form.get("imageData") || "").trim();
+        const imagePreview = String(form.get("imagePreview") || "").trim();
         const imageDataListRaw = form.get("imageDataList");
         let imageDataList = [];
         if (imageDataListRaw) {
@@ -101,6 +102,7 @@ export const actions = {
             notesSkipper,
             imageData,   // erstes Bild (Fallback)
             imageDataList, // alle Bilder als Base64
+            imagePreview,
             lat,
             lng,
             createdAt: new Date(),

@@ -12,7 +12,8 @@
         ? spot.imageDataList.filter(Boolean)
         : [];
     $: coverImage =
-        (imageList[0] || spot?.imageData || spot?.imageUrl || "").trim() || null;
+        (spot?.imagePreview || imageList[0] || spot?.imageData || spot?.imageUrl || "")
+            .trim() || null;
     $: isFavorite = Boolean(spot?.isFavorite);
     let favoritePending = false;
     let favoriteError = "";
